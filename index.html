@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EXILED IP Tool</title>
+<title>EXILED IP Intelligence</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
 body{height:100vh;background:url('https://i.pinimg.com/originals/3f/7a/f8/3f7af8b97413964df82f69bfea89a19c.gif') center/cover no-repeat fixed;display:flex;justify-content:center;align-items:center;color:white;overflow-x:hidden;transition:0.5s;}
 a{text-decoration:none;color:white;}
-.card{background:rgba(0,0,0,0.85);border-radius:25px;padding:40px;width:450px;max-width:95%;backdrop-filter:blur(4px);box-shadow:0 0 60px rgba(255,255,255,0.1);transform:translateY(20px);opacity:0;animation:fadeInUp 0.8s forwards;}
+.card{background:rgba(0,0,0,0.85);border-radius:25px;padding:40px;width:550px;max-width:95%;backdrop-filter:blur(4px);box-shadow:0 0 60px rgba(255,255,255,0.1);transform:translateY(20px);opacity:0;animation:fadeInUp 0.8s forwards;}
 @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
 .logo{text-align:center;font-size:2rem;font-weight:800;letter-spacing:4px;margin-bottom:25px;animation:fadeInUp 1s forwards;}
 input{width:100%;padding:12px;margin-bottom:15px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.4);color:white;font-size:1rem;outline:none;transition:0.3s;}
@@ -25,8 +25,6 @@ button:hover{background:white;color:black;transform:scale(1.05);}
 .page{display:none;opacity:0;transform:translateY(20px);transition:0.5s;}
 .page.active{display:block;opacity:1;transform:translateY(0);}
 pre{overflow-x:auto; text-align:left; margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;}
-.profile-pic{width:100px;height:100px;border-radius:50%;border:2px solid white;margin:0 auto 20px;object-fit:cover;transition:0.3s;}
-.profile-pic:hover{transform:scale(1.1);}
 </style>
 </head>
 <body>
@@ -63,7 +61,7 @@ pre{overflow-x:auto; text-align:left; margin-top:10px; background:rgba(255,255,2
     <!-- HOME PAGE -->
     <div class="page active" id="home">
         <h2>Welcome, <span id="displayUsername"></span>!</h2>
-        <p>Use the "IP Lookup" tab to get information about any IP address.</p>
+        <p>Use the "IP Lookup" tab to get maximum intelligence about any IP address.</p>
     </div>
 
     <!-- IP LOOKUP PAGE -->
@@ -84,20 +82,17 @@ const supabase = window.supabase.createClient(
     "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI"
 );
 
-// Toggle login/signup
 function toggleForm(){
     loginCard.style.display = loginCard.style.display==="none"?"block":"none";
     signupCard.style.display = signupCard.style.display==="none"?"block":"none";
 }
 
-// Tabs
 function showPage(page, btn){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.getElementById(page).classList.add('active');
     if(btn){document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
 }
 
-// Signup
 async function signup(){
     signupStatus.innerText="Creating account...";
     const email = signupEmail.value;
@@ -112,7 +107,6 @@ async function signup(){
     signupStatus.innerText="Account created! Login now.";
 }
 
-// Login
 async function login(){
     loginStatus.innerText="Logging in...";
     const email = loginEmail.value;
@@ -122,65 +116,58 @@ async function login(){
     loadDashboard(data.user);
 }
 
-// Load Dashboard
 async function loadDashboard(user){
     loginCard.style.display="none";
     signupCard.style.display="none";
     dashboard.style.display="block";
-
     let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
     displayUsername.innerText = profile.username;
 }
 
-// Logout
 async function logout(){
     await supabase.auth.signOut();
     dashboard.style.display="none";
     loginCard.style.display="block";
 }
 
-// Auto login
 supabase.auth.getSession().then(({ data })=>{
     if(data.session){loadDashboard(data.session.user);}
 });
 
-// Advanced IP Lookup (uses multiple free APIs)
+// Advanced IP Lookup
 async function lookupIP(){
     const ip = ipInput.value.trim();
     if(!ip){ ipStatus.innerText = "Enter an IP address"; return; }
-
     ipStatus.innerText = "Fetching data...";
     ipResult.innerText = "";
 
-    try {
-        let results = {};
+    const results = {};
 
-        // First API: ipapi.co
-        const res1 = await fetch(`https://ipapi.co/${ip}/json/`);
-        const data1 = await res1.json();
-        results["ipapi.co"] = data1;
+    // Multiple APIs to maximize info
+    const apis = [
+        {url:`https://ipapi.co/${ip}/json/`, name:"ipapi.co"},
+        {url:`https://ipwhois.app/json/${ip}`, name:"ipwhois.io"},
+        {url:`https://ipinfo.io/${ip}/json?token=YOUR_TOKEN_HERE`, name:"ipinfo.io (optional)"},
+        {url:`https://vpnapi.io/api/${ip}?key=demo`, name:"vpnapi.io"},
+        {url:`https://ipqualityscore.com/api/json/ip/demo/${ip}`, name:"ipqualityscore.com"}
+    ];
 
-        // Second API: ipwhois.io
-        const res2 = await fetch(`https://ipwhois.app/json/${ip}`);
-        const data2 = await res2.json();
-        results["ipwhois.io"] = data2;
-
-        // Third API: ipinfo.io (limited free usage, token optional)
+    for(let api of apis){
         try{
-            const res3 = await fetch(`https://ipinfo.io/${ip}/json?token=YOUR_TOKEN_HERE`);
-            if(res3.ok){
-                const data3 = await res3.json();
-                results["ipinfo.io"] = data3;
+            const res = await fetch(api.url);
+            if(res.ok){
+                const data = await res.json();
+                results[api.name] = data;
+            } else {
+                results[api.name] = {error:`Failed with status ${res.status}`};
             }
-        } catch(e){ console.warn("ipinfo.io failed:", e); }
-
-        ipStatus.innerText = "Lookup complete!";
-        ipResult.innerText = JSON.stringify(results, null, 2);
-
-    } catch(e){
-        ipStatus.innerText = "Error fetching IP info";
-        console.error(e);
+        } catch(e){
+            results[api.name] = {error:"Request failed"};
+        }
     }
+
+    ipStatus.innerText = "Lookup complete!";
+    ipResult.innerText = JSON.stringify(results, null, 2);
 }
 </script>
 </body>
