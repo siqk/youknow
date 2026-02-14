@@ -9,6 +9,7 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+
 body{
     min-height:100vh;
     background:url('https://i.pinimg.com/originals/f2/f3/93/f2f393327208542afade5799bcd3814a.gif') no-repeat center center fixed;
@@ -17,6 +18,7 @@ body{
     align-items:center;
     justify-content:center;
 }
+
 .app-container{
     width:100%;
     max-width:1000px;
@@ -25,8 +27,20 @@ body{
     border:1px solid rgba(255,255,255,0.2);
     padding:2rem;
 }
-.auth-section,.dashboard-section{display:flex;justify-content:center;align-items:center;flex-grow:1;}
-.dashboard-section{display:none;flex-direction:column;}
+
+.auth-section,.dashboard-section{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-grow:1;
+}
+
+.dashboard-section{
+    display:none;
+    flex-direction:column;
+    width:100%;
+}
+
 .auth-card{
     background:rgba(0,0,0,0.3);
     border-radius:30px;
@@ -35,7 +49,13 @@ body{
     max-width:420px;
     border:1px solid rgba(255,255,255,0.3);
 }
-.auth-tabs{display:flex;gap:1rem;margin-bottom:1.5rem;}
+
+.auth-tabs{
+    display:flex;
+    gap:1rem;
+    margin-bottom:1.5rem;
+}
+
 .auth-tab{
     flex:1;
     padding:.8rem;
@@ -45,12 +65,20 @@ body{
     cursor:pointer;
     border-radius:15px;
 }
+
 .auth-tab.active{
     background:rgba(255,255,255,.2);
     color:#fff;
 }
-.auth-form{display:flex;flex-direction:column;gap:1rem;}
+
+.auth-form{
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+}
+
 .hidden{display:none;}
+
 input{
     padding:.8rem;
     border-radius:15px;
@@ -58,6 +86,7 @@ input{
     background:rgba(0,0,0,.4);
     color:#fff;
 }
+
 button{
     padding:.9rem;
     border-radius:100px;
@@ -65,9 +94,37 @@ button{
     cursor:pointer;
     font-weight:bold;
 }
+
 .auth-button{background:#fff;color:#000;}
 .logout-btn{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.3);}
-.users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:2rem;}
+
+.nav-tabs{
+    display:flex;
+    gap:1rem;
+    margin:1rem 0;
+}
+
+.nav-btn{
+    padding:.6rem 1.5rem;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.3);
+    background:rgba(0,0,0,.4);
+    color:#fff;
+    cursor:pointer;
+}
+
+.nav-btn.active{
+    background:#fff;
+    color:#000;
+}
+
+.users-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:1rem;
+    margin-top:1rem;
+}
+
 .user-card{
     padding:1rem;
     border-radius:20px;
@@ -75,7 +132,9 @@ button{
     border:1px solid rgba(255,255,255,.2);
     color:#fff;
 }
+
 .admin-card{border:2px solid red;}
+
 .admin-tag{
     background:red;
     padding:.2rem .6rem;
@@ -83,6 +142,7 @@ button{
     font-size:.7rem;
     margin-left:.5rem;
 }
+
 .error-message{
     color:#ff6b6b;
     margin-bottom:1rem;
@@ -112,7 +172,7 @@ button{
 </div>
 
 <div id="signupForm" class="auth-form hidden">
-<input type="text" id="signupUsername" placeholder="Username">
+<input type="text" id="signupUsername" placeholder="Choose Username">
 <input type="email" id="signupEmail" placeholder="Email">
 <input type="password" id="signupPassword" placeholder="Password (min 6)">
 <button id="signupBtn" class="auth-button">Create Account</button>
@@ -123,24 +183,37 @@ button{
 
 <!-- DASHBOARD -->
 <div id="dashboardSection" class="dashboard-section">
+
 <h1 style="color:white;">Glass Dashboard</h1>
 <p id="userGreeting" style="color:white;"></p>
+
+<div class="nav-tabs">
+<button id="homeTabBtn" class="nav-btn active">Home</button>
+<button id="usersTabBtn" class="nav-btn">Users</button>
 <button id="logoutBtn" class="logout-btn">Logout</button>
+</div>
+
+<div id="homeContent">
+<h2 style="color:white;">Welcome to Home</h2>
+<p style="color:white;">This is your main dashboard.</p>
+</div>
+
+<div id="usersContent" class="hidden">
 <div id="usersContainer" class="users-grid"></div>
 </div>
 
+</div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
 const supabaseUrl = "https://opixidygpndbfuisjkrk.supabase.co";
-const supabaseKey = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI"; // <-- replace this
-
+const supabaseKey = "YOUR_PUBLIC_ANON_KEY";
 const { createClient } = supabase;
 const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-const ADMIN_EMAIL = "ikiikikikijujijij@gmail.com";
+const ADMIN_EMAIL = "admin@gmail.com";
 
 // DOM
 const loginTab = document.getElementById("loginTab");
@@ -152,10 +225,16 @@ const loginBtn = document.getElementById("loginBtn");
 const signupBtn = document.getElementById("signupBtn");
 const authSection = document.getElementById("authSection");
 const dashboardSection = document.getElementById("dashboardSection");
-const usersContainer = document.getElementById("usersContainer");
 const logoutBtn = document.getElementById("logoutBtn");
 const userGreeting = document.getElementById("userGreeting");
 
+const homeTabBtn = document.getElementById("homeTabBtn");
+const usersTabBtn = document.getElementById("usersTabBtn");
+const homeContent = document.getElementById("homeContent");
+const usersContent = document.getElementById("usersContent");
+const usersContainer = document.getElementById("usersContainer");
+
+// TAB SWITCH AUTH
 loginTab.onclick = () => {
 loginTab.classList.add("active");
 signupTab.classList.remove("active");
@@ -188,32 +267,24 @@ showError("Fill all fields");
 return;
 }
 
-const { data, error } = await supabaseClient.auth.signUp({
-email,
-password
-});
+const { data, error } = await supabaseClient.auth.signUp({ email, password });
 
 if(error){ showError(error.message); return; }
 
-const user = data.user;
-
-if(user){
+if(data.user){
 await supabaseClient.from("profiles").insert({
-id: user.id,
+id: data.user.id,
 username: username,
 email: email,
 is_admin: email === ADMIN_EMAIL
 });
 }
 
-alert("Signup successful! Confirm your email.");
-signupUsername.value="";
-signupEmail.value="";
-signupPassword.value="";
+alert("Signup successful! Confirm email.");
 loginTab.click();
 };
 
-// LOGIN (EMAIL REQUIRED)
+// LOGIN
 loginBtn.onclick = async () => {
 const email = loginEmail.value.trim();
 const password = loginPassword.value;
@@ -223,10 +294,7 @@ showError("Fill all fields");
 return;
 }
 
-const { error } = await supabaseClient.auth.signInWithPassword({
-email,
-password
-});
+const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
 if(error){ showError(error.message); }
 };
@@ -236,29 +304,53 @@ logoutBtn.onclick = async () => {
 await supabaseClient.auth.signOut();
 };
 
-// AUTH LISTENER
-supabaseClient.auth.onAuthStateChange((event, session)=>{
+// AUTH STATE
+supabaseClient.auth.onAuthStateChange(async (event, session)=>{
 if(session){
 authSection.style.display="none";
 dashboardSection.style.display="flex";
-loadUsers();
+
+const { data } = await supabaseClient
+.from("profiles")
+.select("*")
+.eq("id", session.user.id)
+.single();
+
+if(data){
+userGreeting.textContent = "Welcome " + data.username;
+}
 }else{
 dashboardSection.style.display="none";
 authSection.style.display="flex";
 }
 });
 
-// LOAD USERS FROM DATABASE
+// HOME / USERS NAV
+homeTabBtn.onclick = () => {
+homeTabBtn.classList.add("active");
+usersTabBtn.classList.remove("active");
+homeContent.classList.remove("hidden");
+usersContent.classList.add("hidden");
+};
+
+usersTabBtn.onclick = async () => {
+usersTabBtn.classList.add("active");
+homeTabBtn.classList.remove("active");
+usersContent.classList.remove("hidden");
+homeContent.classList.add("hidden");
+
+loadUsers();
+};
+
+// LOAD USERS
 async function loadUsers(){
 usersContainer.innerHTML="";
 
-const { data: profiles, error } = await supabaseClient
+const { data } = await supabaseClient
 .from("profiles")
 .select("*");
 
-if(error){ console.error(error); return; }
-
-profiles.forEach(profile=>{
+data.forEach(profile=>{
 const card = document.createElement("div");
 card.className = "user-card " + (profile.is_admin ? "admin-card":"");
 
@@ -279,4 +371,3 @@ usersContainer.appendChild(card);
 
 </body>
 </html>
-
