@@ -2,14 +2,33 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>exiled</title>
+  <title>exiled · redirecting</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .loader {
+      text-align: center;
+      opacity: 0.7;
+    }
+  </style>
   <script>
-    // Redirect to index.html but keep the path
-    sessionStorage.redirect = location.href;
+    // Store the path we tried to access
+    sessionStorage.setItem('redirectPath', window.location.pathname);
+    // Redirect to index
+    window.location.replace('/index.html');
   </script>
-  <meta http-equiv="refresh" content="0;URL='/index.html'">
 </head>
 <body>
-  <p>Redirecting...</p>
+  <div class="loader">
+    <h2>exiled</h2>
+    <p>redirecting you...</p>
+  </div>
 </body>
 </html>
