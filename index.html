@@ -1,33 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EXILED</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
 <style>
+/* ====== Reset & Body ====== */
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
-body{height:100vh;background:url('https://i.pinimg.com/originals/3f/7a/f8/3f7af8b97413964df82f69bfea89a19c.gif') center/cover no-repeat fixed;display:flex;justify-content:center;align-items:center;color:white;}
-.card{background:rgba(0,0,0,0.85);border:1px solid rgba(255,255,255,0.1);border-radius:25px;padding:50px 40px;width:400px;max-width:95%;backdrop-filter:blur(4px);animation:fadeIn .6s ease;}
-.logo{text-align:center;font-size:2.3rem;font-weight:800;letter-spacing:6px;margin-bottom:35px;}
-input{width:100%;padding:14px;margin-bottom:20px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.4);color:white;font-size:1rem;outline:none;}
-button{width:100%;padding:14px;border:1px solid white;border-radius:30px;background:transparent;color:white;font-weight:600;cursor:pointer;transition:.3s;}
-button:hover{background:white;color:black;}
-.link{text-align:center;margin-top:20px;font-size:.85rem;color:rgba(255,255,255,0.6);cursor:pointer;}
+body{height:100vh;background:url('https://i.pinimg.com/originals/3f/7a/f8/3f7af8b97413964df82f69bfea89a19c.gif') center/cover no-repeat fixed;display:flex;justify-content:center;align-items:center;color:white;overflow-x:hidden;transition:0.5s;}
+a{text-decoration:none;color:white;}
+/* ====== Cards ====== */
+.card{background:rgba(0,0,0,0.85);border-radius:25px;padding:50px 40px;width:400px;max-width:95%;backdrop-filter:blur(4px);box-shadow:0 0 60px rgba(255,255,255,0.1);transform:translateY(20px);opacity:0;animation:fadeInUp 0.8s forwards;}
+@keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
+.logo{text-align:center;font-size:2.3rem;font-weight:800;letter-spacing:6px;margin-bottom:35px;animation:fadeInUp 1s forwards;}
+input{width:100%;padding:14px;margin-bottom:20px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.4);color:white;font-size:1rem;outline:none;transition:0.3s;}
+input:focus{border-bottom:1px solid white;}
+button{width:100%;padding:14px;border:1px solid white;border-radius:30px;background:transparent;color:white;font-weight:600;cursor:pointer;transition:0.3s;}
+button:hover{background:white;color:black;transform:scale(1.05);}
+.link{text-align:center;margin-top:20px;font-size:.85rem;color:rgba(255,255,255,0.6);cursor:pointer;transition:0.3s;}
 .link:hover{color:white;}
-.dashboard{display:none;text-align:center;width:100%;max-width:600px;}
-.nav{display:flex;justify-content:center;margin-bottom:20px;}
-.nav button{flex:1;margin:0 5px;}
-.page{display:none;}
-.page.active{display:block;}
-.profile-pic{width:100px;height:100px;border-radius:50%;border:2px solid white;margin:0 auto 20px;object-fit:cover;}
 .status{text-align:center;font-size:.85rem;margin-top:10px;color:#ccc;}
-.public-profile{display:none;text-align:center;width:100%;max-width:600px;}
-.public-profile .profile-pic{margin-bottom:20px;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+/* ====== Dashboard ====== */
+.dashboard{display:none;text-align:center;width:100%;max-width:600px;animation:fadeInUp 1s forwards;}
+.nav{display:flex;justify-content:center;margin-bottom:20px;}
+.nav button{flex:1;margin:0 5px;transition:.3s;}
+.nav button.active{background:white;color:black;}
+.page{display:none;opacity:0;transform:translateY(20px);transition:0.5s;}
+.page.active{display:block;opacity:1;transform:translateY(0);}
+.profile-pic{width:120px;height:120px;border-radius:50%;border:2px solid white;margin:0 auto 20px;object-fit:cover;transition:0.3s;}
+.profile-pic:hover{transform:scale(1.1);}
+input[type="text"]{transition:0.3s;}
+input[type="text"]:focus{background:rgba(255,255,255,0.05);}
 </style>
 </head>
 <body>
@@ -60,10 +65,10 @@ button:hover{background:white;color:black;}
         <img src="" class="profile-pic" id="profileImage">
     </div>
     <div class="nav">
-        <button onclick="showPage('home')">Home</button>
-        <button onclick="showPage('profile')">Profile</button>
+        <button class="active" onclick="showPage('home', this)">Home</button>
+        <button onclick="showPage('profile', this)">Profile</button>
     </div>
-    <div class="page" id="home">
+    <div class="page active" id="home">
         <h2>Welcome, <span id="displayUsername"></span>!</h2>
         <p>Your vanity URL: <span id="vanityURL"></span></p>
     </div>
@@ -78,11 +83,12 @@ button:hover{background:white;color:black;}
 </div>
 
 <!-- PUBLIC PROFILE -->
-<div class="public-profile card" id="publicProfile">
+<div class="card" id="publicProfile" style="display:none;">
     <div class="logo">EXILED</div>
     <img src="" class="profile-pic" id="publicAvatar">
     <h2 id="publicUsername"></h2>
-    <p id="publicVanityURL"></p>
+    <p id="publicVanity"></p>
+    <p class="status" id="publicStatus"></p>
 </div>
 
 <script>
@@ -98,8 +104,12 @@ function toggleForm(){
     signupCard.style.display = signupCard.style.display==="none"?"block":"none";
 }
 
-// Pages
-function showPage(page){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(page).classList.add('active');}
+// Tabs
+function showPage(page, btn){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+    if(btn){document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
+}
 
 // Signup
 async function signup(){
@@ -126,18 +136,23 @@ async function login(){
     loadDashboard(data.user);
 }
 
-// Load dashboard
+// Load Dashboard
 async function loadDashboard(user){
     loginCard.style.display="none";
     signupCard.style.display="none";
     dashboard.style.display="block";
-    showPage('home');
+    publicProfile.style.display="none";
+
     let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
     displayUsername.innerText = profile.username;
     vanityURL.innerText = `exiled.lat/${profile.username}`;
     profileImage.src = profile.avatar_url || "https://i.imgur.com/3GvwNBf.png";
     newUsername.value = profile.username;
     newAvatar.value = profile.avatar_url || "";
+
+    // Prevent viewing other profiles via URL
+    const path = window.location.pathname.slice(1).toLowerCase();
+    if(path && path !== profile.username){history.replaceState(null,"","/");}
 }
 
 // Update profile
@@ -145,7 +160,7 @@ async function updateProfile(){
     profileStatus.innerText="Updating...";
     let username = newUsername.value.trim().toLowerCase();
     let avatar = newAvatar.value;
-    let { data: user } = await supabase.auth.getUser();
+    let { data: { user } } = await supabase.auth.getUser();
     let { data: existing } = await supabase.from('profiles').select('username').eq('username', username).single();
     if(existing && existing.id!==user.id){profileStatus.innerText="Username taken!"; return;}
     await supabase.from('profiles').update({username, avatar_url:avatar}).eq('id', user.id);
@@ -160,33 +175,39 @@ async function logout(){
     loginCard.style.display="block";
 }
 
-// Auto session
+// Auto login
 supabase.auth.getSession().then(({ data })=>{
     if(data.session){loadDashboard(data.session.user);}
 });
 
-// PUBLIC PROFILE ROUTING
+// Detect path for public profile
 async function loadPublicProfile(username){
     loginCard.style.display="none";
     signupCard.style.display="none";
     dashboard.style.display="none";
     publicProfile.style.display="block";
+
     const { data: profile } = await supabase.from('profiles').select('*').eq('username', username).single();
     if(profile){
         publicUsername.innerText = profile.username;
         publicAvatar.src = profile.avatar_url || "https://i.imgur.com/3GvwNBf.png";
-        publicVanityURL.innerText = `exiled.lat/${profile.username}`;
+        publicVanity.innerText = `exiled.lat/${profile.username}`;
     } else {
         publicUsername.innerText = "User not found";
         publicAvatar.src = "https://i.imgur.com/3GvwNBf.png";
-        publicVanityURL.innerText = "";
+        publicVanity.innerText = "";
+        publicStatus.innerText = "No such user exists.";
     }
 }
 
-// Detect URL path
+// Path detection
 const path = window.location.pathname.slice(1).toLowerCase();
-if(path){loadPublicProfile(path);}
+if(path){
+    supabase.auth.getSession().then(({data})=>{
+        if(data.session){loadDashboard(data.session.user);}
+        else{loadPublicProfile(path);}
+    });
+}
 </script>
-
 </body>
 </html>
