@@ -3,36 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EXILED</title>
+<title>EXILED IP Tool</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-/* ====== Reset & Body ====== */
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
 body{height:100vh;background:url('https://i.pinimg.com/originals/3f/7a/f8/3f7af8b97413964df82f69bfea89a19c.gif') center/cover no-repeat fixed;display:flex;justify-content:center;align-items:center;color:white;overflow-x:hidden;transition:0.5s;}
 a{text-decoration:none;color:white;}
-/* ====== Cards ====== */
-.card{background:rgba(0,0,0,0.85);border-radius:25px;padding:50px 40px;width:400px;max-width:95%;backdrop-filter:blur(4px);box-shadow:0 0 60px rgba(255,255,255,0.1);transform:translateY(20px);opacity:0;animation:fadeInUp 0.8s forwards;}
+.card{background:rgba(0,0,0,0.85);border-radius:25px;padding:40px;width:450px;max-width:95%;backdrop-filter:blur(4px);box-shadow:0 0 60px rgba(255,255,255,0.1);transform:translateY(20px);opacity:0;animation:fadeInUp 0.8s forwards;}
 @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
-.logo{text-align:center;font-size:2.3rem;font-weight:800;letter-spacing:6px;margin-bottom:35px;animation:fadeInUp 1s forwards;}
-input{width:100%;padding:14px;margin-bottom:20px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.4);color:white;font-size:1rem;outline:none;transition:0.3s;}
+.logo{text-align:center;font-size:2rem;font-weight:800;letter-spacing:4px;margin-bottom:25px;animation:fadeInUp 1s forwards;}
+input{width:100%;padding:12px;margin-bottom:15px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.4);color:white;font-size:1rem;outline:none;transition:0.3s;}
 input:focus{border-bottom:1px solid white;}
-button{width:100%;padding:14px;border:1px solid white;border-radius:30px;background:transparent;color:white;font-weight:600;cursor:pointer;transition:0.3s;}
+button{width:100%;padding:12px;border:1px solid white;border-radius:30px;background:transparent;color:white;font-weight:600;cursor:pointer;transition:0.3s;}
 button:hover{background:white;color:black;transform:scale(1.05);}
-.link{text-align:center;margin-top:20px;font-size:.85rem;color:rgba(255,255,255,0.6);cursor:pointer;transition:0.3s;}
-.link:hover{color:white;}
 .status{text-align:center;font-size:.85rem;margin-top:10px;color:#ccc;}
-/* ====== Dashboard ====== */
 .dashboard{display:none;text-align:center;width:100%;max-width:600px;animation:fadeInUp 1s forwards;}
 .nav{display:flex;justify-content:center;margin-bottom:20px;}
 .nav button{flex:1;margin:0 5px;transition:.3s;}
 .nav button.active{background:white;color:black;}
 .page{display:none;opacity:0;transform:translateY(20px);transition:0.5s;}
 .page.active{display:block;opacity:1;transform:translateY(0);}
-.profile-pic{width:120px;height:120px;border-radius:50%;border:2px solid white;margin:0 auto 20px;object-fit:cover;transition:0.3s;}
+pre{overflow-x:auto; text-align:left; margin-top:10px; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;}
+.profile-pic{width:100px;height:100px;border-radius:50%;border:2px solid white;margin:0 auto 20px;object-fit:cover;transition:0.3s;}
 .profile-pic:hover{transform:scale(1.1);}
-input[type="text"]{transition:0.3s;}
-input[type="text"]:focus{background:rgba(255,255,255,0.05);}
 </style>
 </head>
 <body>
@@ -42,7 +36,7 @@ input[type="text"]:focus{background:rgba(255,255,255,0.05);}
     <div class="logo">EXILED</div>
     <input type="email" id="loginEmail" placeholder="Email">
     <input type="password" id="loginPassword" placeholder="Password">
-    <button onclick="login()">ENTER</button>
+    <button onclick="login()">LOGIN</button>
     <div class="link" onclick="toggleForm()">Create Account</div>
     <div class="status" id="loginStatus"></div>
 </div>
@@ -53,7 +47,7 @@ input[type="text"]:focus{background:rgba(255,255,255,0.05);}
     <input type="email" id="signupEmail" placeholder="Email">
     <input type="password" id="signupPassword" placeholder="Password">
     <input type="text" id="signupUsername" placeholder="Choose a username">
-    <button onclick="signup()">CREATE</button>
+    <button onclick="signup()">SIGNUP</button>
     <div class="link" onclick="toggleForm()">Back to Login</div>
     <div class="status" id="signupStatus"></div>
 </div>
@@ -61,34 +55,26 @@ input[type="text"]:focus{background:rgba(255,255,255,0.05);}
 <!-- DASHBOARD -->
 <div class="dashboard card" id="dashboard">
     <div class="logo">EXILED</div>
-    <div class="profile-pic-wrapper">
-        <img src="" class="profile-pic" id="profileImage">
-    </div>
     <div class="nav">
         <button class="active" onclick="showPage('home', this)">Home</button>
-        <button onclick="showPage('profile', this)">Profile</button>
+        <button onclick="showPage('ipLookup', this)">IP Lookup</button>
     </div>
+
+    <!-- HOME PAGE -->
     <div class="page active" id="home">
         <h2>Welcome, <span id="displayUsername"></span>!</h2>
-        <p>Your vanity URL: <span id="vanityURL"></span></p>
+        <p>Use the "IP Lookup" tab to get information about any IP address.</p>
     </div>
-    <div class="page" id="profile">
-        <h3>Edit Profile</h3>
-        <input type="text" id="newUsername" placeholder="Change username">
-        <input type="text" id="newAvatar" placeholder="Avatar image URL">
-        <button onclick="updateProfile()">Update Profile</button>
-        <div class="status" id="profileStatus"></div>
-    </div>
-    <button onclick="logout()">LOGOUT</button>
-</div>
 
-<!-- PUBLIC PROFILE -->
-<div class="card" id="publicProfile" style="display:none;">
-    <div class="logo">EXILED</div>
-    <img src="" class="profile-pic" id="publicAvatar">
-    <h2 id="publicUsername"></h2>
-    <p id="publicVanity"></p>
-    <p class="status" id="publicStatus"></p>
+    <!-- IP LOOKUP PAGE -->
+    <div class="page" id="ipLookup">
+        <input type="text" id="ipInput" placeholder="Enter IP address">
+        <button onclick="lookupIP()">Lookup IP</button>
+        <div class="status" id="ipStatus"></div>
+        <pre id="ipResult"></pre>
+    </div>
+
+    <button onclick="logout()">LOGOUT</button>
 </div>
 
 <script>
@@ -141,31 +127,9 @@ async function loadDashboard(user){
     loginCard.style.display="none";
     signupCard.style.display="none";
     dashboard.style.display="block";
-    publicProfile.style.display="none";
 
     let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
     displayUsername.innerText = profile.username;
-    vanityURL.innerText = `exiled.lat/${profile.username}`;
-    profileImage.src = profile.avatar_url || "https://i.imgur.com/3GvwNBf.png";
-    newUsername.value = profile.username;
-    newAvatar.value = profile.avatar_url || "";
-
-    // Prevent viewing other profiles via URL
-    const path = window.location.pathname.slice(1).toLowerCase();
-    if(path && path !== profile.username){history.replaceState(null,"","/");}
-}
-
-// Update profile
-async function updateProfile(){
-    profileStatus.innerText="Updating...";
-    let username = newUsername.value.trim().toLowerCase();
-    let avatar = newAvatar.value;
-    let { data: { user } } = await supabase.auth.getUser();
-    let { data: existing } = await supabase.from('profiles').select('username').eq('username', username).single();
-    if(existing && existing.id!==user.id){profileStatus.innerText="Username taken!"; return;}
-    await supabase.from('profiles').update({username, avatar_url:avatar}).eq('id', user.id);
-    profileStatus.innerText="Updated!";
-    loadDashboard(user);
 }
 
 // Logout
@@ -180,33 +144,43 @@ supabase.auth.getSession().then(({ data })=>{
     if(data.session){loadDashboard(data.session.user);}
 });
 
-// Detect path for public profile
-async function loadPublicProfile(username){
-    loginCard.style.display="none";
-    signupCard.style.display="none";
-    dashboard.style.display="none";
-    publicProfile.style.display="block";
+// Advanced IP Lookup (uses multiple free APIs)
+async function lookupIP(){
+    const ip = ipInput.value.trim();
+    if(!ip){ ipStatus.innerText = "Enter an IP address"; return; }
 
-    const { data: profile } = await supabase.from('profiles').select('*').eq('username', username).single();
-    if(profile){
-        publicUsername.innerText = profile.username;
-        publicAvatar.src = profile.avatar_url || "https://i.imgur.com/3GvwNBf.png";
-        publicVanity.innerText = `exiled.lat/${profile.username}`;
-    } else {
-        publicUsername.innerText = "User not found";
-        publicAvatar.src = "https://i.imgur.com/3GvwNBf.png";
-        publicVanity.innerText = "";
-        publicStatus.innerText = "No such user exists.";
+    ipStatus.innerText = "Fetching data...";
+    ipResult.innerText = "";
+
+    try {
+        let results = {};
+
+        // First API: ipapi.co
+        const res1 = await fetch(`https://ipapi.co/${ip}/json/`);
+        const data1 = await res1.json();
+        results["ipapi.co"] = data1;
+
+        // Second API: ipwhois.io
+        const res2 = await fetch(`https://ipwhois.app/json/${ip}`);
+        const data2 = await res2.json();
+        results["ipwhois.io"] = data2;
+
+        // Third API: ipinfo.io (limited free usage, token optional)
+        try{
+            const res3 = await fetch(`https://ipinfo.io/${ip}/json?token=YOUR_TOKEN_HERE`);
+            if(res3.ok){
+                const data3 = await res3.json();
+                results["ipinfo.io"] = data3;
+            }
+        } catch(e){ console.warn("ipinfo.io failed:", e); }
+
+        ipStatus.innerText = "Lookup complete!";
+        ipResult.innerText = JSON.stringify(results, null, 2);
+
+    } catch(e){
+        ipStatus.innerText = "Error fetching IP info";
+        console.error(e);
     }
-}
-
-// Path detection
-const path = window.location.pathname.slice(1).toLowerCase();
-if(path){
-    supabase.auth.getSession().then(({data})=>{
-        if(data.session){loadDashboard(data.session.user);}
-        else{loadPublicProfile(path);}
-    });
 }
 </script>
 </body>
