@@ -2,27 +2,26 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>exiled</title>
+  <title>exiled.lat</title>
   <style>
     body {
-      background: black;
+      background: #0a0a0a;
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Inter', sans-serif;
       margin: 0;
     }
     .loader {
       text-align: center;
-      opacity: 0.7;
     }
     .spinner {
       width: 50px;
       height: 50px;
-      border: 3px solid rgba(255,255,255,0.1);
-      border-top-color: #ffd700;
+      border: 3px solid #2a2a2a;
+      border-top-color: #ff4444;
       border-radius: 50%;
       animation: spin 1s infinite linear;
       margin: 20px auto;
@@ -32,15 +31,14 @@
     }
   </style>
   <script>
-    // Get the full path
-    const path = window.location.pathname;
-    // Redirect to index.html with the path preserved
-    window.location.replace('/index.html');
+    // Store the path and redirect to index
+    sessionStorage.setItem('redirectPath', window.location.pathname);
+    window.location.replace('/');
   </script>
 </head>
 <body>
   <div class="loader">
-    <h2>exiled</h2>
+    <h1 style="color: #ff4444;">exiled.lat</h1>
     <div class="spinner"></div>
     <p>redirecting to exile...</p>
   </div>
