@@ -2,433 +2,454 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>exiled - anonymous paste sharing</title>
+  <title>exiled</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* Reset and base styles */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Courier New', monospace;
-      background: #0a0c0f;
-      color: #e5e9f0;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
+      background-color: #0a0c10;
+      color: #d4d7de;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
-    /* Matrix-like background effect */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 255, 0, 0.03) 0px,
-        rgba(0, 0, 0, 0.9) 1px,
-        rgba(0, 255, 0, 0.03) 2px
-      );
-      pointer-events: none;
-      z-index: -1;
-    }
-
+    /* Container */
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
+      padding: 15px;
     }
 
-    /* Header / Navigation */
+    /* Header */
     .header {
-      background: #14181c;
-      border: 1px solid #2a3b3c;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 30px;
+      background: #111317;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      padding: 8px 15px;
+      margin-bottom: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
     }
 
     .logo {
-      font-size: 32px;
-      font-weight: bold;
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00;
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #ff4444, #ffffff, #ff4444);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient 3s linear infinite;
+      text-transform: uppercase;
       letter-spacing: 2px;
     }
 
-    .logo span {
-      color: #ff4444;
-      text-shadow: 0 0 10px #ff4444;
+    @keyframes gradient {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
     }
 
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 2px;
     }
 
     .nav-link {
-      color: #00ff00;
+      color: #d4d7de;
       text-decoration: none;
-      padding: 8px 16px;
-      border: 1px solid #2a3b3c;
+      padding: 5px 12px;
+      border: 1px solid #282d38;
       border-radius: 4px;
-      transition: all 0.3s ease;
+      font-size: 12px;
+      background: #1a1e26;
       cursor: pointer;
-      background: #0f1419;
     }
 
     .nav-link:hover {
-      background: #1a262b;
-      border-color: #00ff00;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-    }
-
-    .nav-link.danger {
-      color: #ff4444;
       border-color: #ff4444;
     }
 
-    .nav-link.danger:hover {
+    .user-stats {
+      display: flex;
+      gap: 15px;
+      background: #111317;
+      padding: 8px 15px;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 12px;
+    }
+
+    .user-stats span {
+      color: #ff4444;
+      font-weight: bold;
+    }
+
+    .user-stats a {
+      color: #ff4444;
+      text-decoration: none;
+    }
+
+    /* Main layout */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 180px 1fr 220px;
+      gap: 15px;
+    }
+
+    /* Left sidebar */
+    .left-sidebar {
+      background: #111317;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      padding: 15px;
+    }
+
+    .sidebar-section {
+      margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+      color: #8f96a3;
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-item {
+      color: #ff4444;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .stat-item span {
+      color: #8f96a3;
+    }
+
+    .telegram-box {
+      background: #1a1e26;
+      border: 1px solid #282d38;
+      border-radius: 4px;
+      padding: 12px;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .telegram-box a {
+      color: #ff4444;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .mirrors {
+      font-size: 11px;
+      color: #8f96a3;
+      margin-top: 8px;
+    }
+
+    .mirrors a {
+      color: #8f96a3;
+      text-decoration: none;
+      margin: 0 2px;
+    }
+
+    .search-box {
+      background: #1a1e26;
+      border: 1px solid #282d38;
+      border-radius: 4px;
+      padding: 12px;
+    }
+
+    .search-box input[type="text"] {
+      width: 100%;
+      background: #111317;
+      border: 1px solid #282d38;
+      border-radius: 4px;
+      padding: 6px 8px;
+      color: #d4d7de;
+      margin-bottom: 8px;
+    }
+
+    .search-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 11px;
+    }
+
+    .search-options label {
+      color: #8f96a3;
+    }
+
+    .search-btn {
+      width: 100%;
       background: #ff4444;
-      color: black;
-      box-shadow: 0 0 10px #ff4444;
+      border: none;
+      border-radius: 4px;
+      padding: 6px;
+      color: #0a0c10;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     /* Main content */
-    .content {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 30px;
-    }
-
-    .main-panel {
-      background: #14181c;
-      border: 1px solid #2a3b3c;
-      border-radius: 8px;
-      padding: 30px;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.05);
-    }
-
-    .sidebar {
-      background: #14181c;
-      border: 1px solid #2a3b3c;
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    /* Cards */
-    .card {
-      background: #0f1419;
-      border: 1px solid #2a3b3c;
+    .main-content {
+      background: #111317;
+      border: 1px solid #282d38;
       border-radius: 6px;
       padding: 20px;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
     }
 
-    .card:hover {
-      border-color: #00ff00;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
-    }
-
-    .card-header {
+    .pastes-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #2a3b3c;
     }
 
-    .card-title {
-      color: #00ff00;
-      font-size: 20px;
-      font-weight: bold;
+    .pastes-header h2 {
+      font-size: 16px;
+      color: #ff4444;
     }
 
-    .card-meta {
-      color: #888;
+    .total-pastes {
+      color: #8f96a3;
       font-size: 12px;
     }
 
-    /* Forms */
-    input, textarea, select {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      background: #0a0c0f;
-      border: 1px solid #2a3b3c;
-      border-radius: 4px;
-      color: #00ff00;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #00ff00;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
-    }
-
-    textarea {
-      min-height: 200px;
-      resize: vertical;
-    }
-
-    button {
-      background: #1a262b;
-      color: #00ff00;
-      border: 1px solid #2a3b3c;
-      padding: 12px 24px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: 'Courier New', monospace;
+    .total-pastes span {
+      color: #ff4444;
       font-weight: bold;
-      transition: all 0.3s ease;
-      margin: 5px;
     }
 
-    button:hover {
-      background: #2a3b3c;
-      border-color: #00ff00;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    button.primary {
-      background: #00ff00;
-      color: black;
-      border-color: #00ff00;
+    th {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 2px solid #282d38;
+      color: #8f96a3;
+      font-weight: normal;
+      font-size: 11px;
     }
 
-    button.primary:hover {
-      background: #00cc00;
-      box-shadow: 0 0 20px #00ff00;
+    td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #282d38;
     }
 
-    button.danger {
-      background: #ff4444;
-      color: black;
-      border-color: #ff4444;
-    }
-
-    /* Paste list */
-    .paste-item {
-      padding: 15px;
-      border: 1px solid #2a3b3c;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .paste-item:hover {
-      border-color: #00ff00;
-      background: #1a262b;
+    tr:hover td {
+      background: #1a1e26;
     }
 
     .paste-title {
-      font-size: 18px;
-      color: #00ff00;
-      margin-bottom: 5px;
+      color: #ff4444;
+      text-decoration: none;
+      font-weight: 500;
     }
 
-    .paste-excerpt {
-      color: #888;
-      font-size: 12px;
-      margin-bottom: 5px;
+    .pin-icon {
+      color: #ffd700;
+      margin-right: 5px;
     }
 
-    .paste-stats {
-      display: flex;
-      gap: 15px;
-      font-size: 11px;
-      color: #666;
+    .comment-count, .view-count {
+      color: #8f96a3;
     }
 
-    /* Profile section */
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 30px;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: #0f1419;
-      border: 1px solid #2a3b3c;
-      border-radius: 8px;
+    /* Username with moving gradient */
+    .username-gradient {
+      background: linear-gradient(90deg, #000000, #ffffff, #000000);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient 3s linear infinite;
+      font-weight: 500;
     }
 
-    .avatar {
-      width: 100px;
-      height: 100px;
+    .username-normal {
+      color: #d4d7de;
+    }
+
+    .rich-badge {
+      color: #ffd700;
+      font-weight: bold;
+      margin-left: 3px;
+    }
+
+    .admin-badge {
+      color: #ff4444;
+      font-weight: bold;
+      margin-left: 3px;
+    }
+
+    .date {
+      color: #8f96a3;
+    }
+
+    /* Right sidebar */
+    .right-sidebar {
+      background: #111317;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      padding: 15px;
+    }
+
+    .profile-card {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      border: 2px solid #00ff00;
-      object-fit: cover;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .avatar-placeholder {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: #1a262b;
-      border: 2px solid #2a3b3c;
+      background: #1a1e26;
+      border: 2px solid #282d38;
+      margin: 0 auto 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 36px;
-      color: #00ff00;
-      cursor: pointer;
+      font-size: 28px;
+      color: #ff4444;
+    }
+
+    .profile-name {
+      font-size: 16px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #000000, #ffffff, #000000);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient 3s linear infinite;
+    }
+
+    .profile-uid {
+      color: #8f96a3;
+      font-size: 11px;
+      margin: 5px 0;
     }
 
     .profile-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin: 20px 0;
+      display: flex;
+      justify-content: space-around;
+      margin: 15px 0;
+      padding: 10px 0;
+      border-top: 1px solid #282d38;
+      border-bottom: 1px solid #282d38;
     }
 
-    .stat-box {
-      background: #0f1419;
-      border: 1px solid #2a3b3c;
-      border-radius: 6px;
-      padding: 15px;
+    .stat {
       text-align: center;
     }
 
     .stat-value {
-      font-size: 24px;
-      color: #00ff00;
+      font-size: 16px;
+      color: #ff4444;
       font-weight: bold;
     }
 
     .stat-label {
-      font-size: 12px;
-      color: #888;
+      font-size: 9px;
+      color: #8f96a3;
       text-transform: uppercase;
     }
 
-    /* Badges */
-    .badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 3px;
-      font-size: 10px;
-      text-transform: uppercase;
-      margin: 2px;
+    .following-list {
+      margin-top: 15px;
     }
 
-    .badge.admin {
-      background: #ff4444;
-      color: black;
-    }
-
-    .badge.user {
-      background: #2a3b3c;
-      color: #00ff00;
-    }
-
-    /* Comments section */
-    .comment {
-      background: #0f1419;
-      border: 1px solid #2a3b3c;
-      border-radius: 4px;
-      padding: 15px;
-      margin-bottom: 10px;
-    }
-
-    .comment-header {
+    .following-item {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      color: #888;
-      font-size: 12px;
-    }
-
-    .comment-author {
-      color: #00ff00;
-    }
-
-    /* Messages */
-    .message {
-      padding: 12px;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: #1a1e26;
       border-radius: 4px;
-      margin: 10px 0;
-      border: 1px solid;
+      margin-bottom: 5px;
     }
 
-    .message.success {
-      background: rgba(0, 255, 0, 0.1);
-      border-color: #00ff00;
-      color: #00ff00;
+    .following-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #282d38;
     }
 
-    .message.error {
-      background: rgba(255, 68, 68, 0.1);
-      border-color: #ff4444;
-      color: #ff4444;
+    .following-name {
+      flex: 1;
+    }
+
+    .following-name .username-gradient {
+      font-size: 12px;
     }
 
     .hidden {
       display: none !important;
     }
 
-    /* Loading spinner */
-    .loading {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #2a3b3c;
-      border-radius: 50%;
-      border-top-color: #00ff00;
-      animation: spin 1s ease-in-out infinite;
+    /* Auth section */
+    .auth-section {
+      background: #111317;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 50px auto;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Tabs */
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #2a3b3c;
-      padding-bottom: 10px;
-    }
-
-    .tab {
-      padding: 10px 20px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      border-radius: 4px 4px 0 0;
-    }
-
-    .tab.active {
-      border-color: #2a3b3c;
-      border-bottom-color: transparent;
-      background: #0f1419;
-      color: #00ff00;
-    }
-
-    /* Matrix rain effect */
-    .matrix-rain {
-      position: fixed;
-      top: 0;
-      left: 0;
+    .auth-section input {
       width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -2;
-      opacity: 0.1;
+      background: #1a1e26;
+      border: 1px solid #282d38;
+      border-radius: 4px;
+      padding: 10px;
+      color: #d4d7de;
+      margin: 10px 0;
+    }
+
+    .auth-section button {
+      width: 100%;
+      padding: 10px;
+      background: #ff4444;
+      border: none;
+      border-radius: 4px;
+      color: #0a0c10;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px 0;
+    }
+
+    /* Messages */
+    .message {
+      padding: 8px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 12px;
+    }
+
+    .message.success {
+      background: rgba(255, 68, 68, 0.2);
+      border: 1px solid #ff4444;
+      color: #ff4444;
+    }
+
+    .message.error {
+      background: rgba(255, 68, 68, 0.2);
+      border: 1px solid #ff4444;
+      color: #ff4444;
     }
   </style>
 </head>
@@ -436,324 +457,301 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <div class="logo">exiled<span>.cc</span></div>
+      <div class="logo">exiled</div>
       <div class="nav-links">
         <a class="nav-link" onclick="showHome()">Home</a>
-        <a class="nav-link" onclick="showPastes()">Pastes</a>
-        <a class="nav-link" onclick="showUpload()">Upload</a>
+        <a class="nav-link" onclick="showAddPaste()">Add Paste</a>
+        <a class="nav-link" onclick="showUsers()">Users</a>
+        <a class="nav-link" onclick="showUpgrades()">Upgrades</a>
+        <a class="nav-link" onclick="showHallOfAutism()">Hall of Autism</a>
+        <a class="nav-link" onclick="showHelp()">Help</a>
+        <span class="nav-link" id="totalUsersDisplay">0ct</span>
+        <span class="nav-link" id="onlineUsersDisplay">0ct</span>
         <a class="nav-link" onclick="showProfile()" id="profileLink">Profile</a>
-        <a class="nav-link danger" onclick="handleLogout()" id="logoutLink">Logout</a>
+        <a class="nav-link" onclick="handleLogout()" id="logoutLink">Logout</a>
         <a class="nav-link" onclick="showLogin()" id="loginLink">Login</a>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="content">
-      <div class="main-panel">
-        <!-- Auth Section -->
-        <div id="authSection" class="hidden">
-          <h2 style="color: #00ff00; margin-bottom: 20px;">>_ AUTHENTICATION</h2>
-          <input type="email" id="email" placeholder="Email">
-          <input type="password" id="password" placeholder="Password">
-          <div style="display: flex; gap: 10px;">
-            <button onclick="handleLogin()" id="loginBtn" style="flex: 1;">Login</button>
-            <button onclick="handleSignup()" id="signupBtn" style="flex: 1;" class="primary">Sign Up</button>
-          </div>
-          <div id="authMessage" class="message hidden"></div>
+    <!-- Stats Header -->
+    <div class="user-stats">
+      <span>JOIN @LICK</span>
+      <span>JOIN EXILED TELEGRAM</span>
+      <span>Mirrors: <a href="#">exiled.cc</a> | <a href="#">exiled.net</a></span>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Left Sidebar -->
+      <div class="left-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title">TOTAL USERS</div>
+          <div class="stat-item"><span id="sidebarTotalUsers">0</span></div>
         </div>
 
+        <div class="sidebar-section">
+          <div class="sidebar-title">ONLINE NOW</div>
+          <div class="stat-item"><span id="sidebarOnlineUsers">0</span></div>
+        </div>
+
+        <div class="telegram-box">
+          <a href="#">JOIN @LICK ON TELEGRAM</a>
+          <div class="mirrors">
+            Mirrors: <a href="#">exiled.cc</a> | <a href="#">exiled.net</a>
+          </div>
+        </div>
+
+        <div class="search-box">
+          <div style="color: #ff4444; margin-bottom: 8px;">Search for a paste</div>
+          <input type="text" id="searchInput" placeholder="Search...">
+          <div class="search-options">
+            <label><input type="checkbox" id="searchTitle"> Search in title</label>
+            <label><input type="checkbox" id="searchPaste"> Search in paste</label>
+          </div>
+          <button class="search-btn" onclick="searchPastes()">Search</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
         <!-- Home Section -->
         <div id="homeSection">
-          <h2 style="color: #00ff00; margin-bottom: 20px;">>_ LATEST PASTES</h2>
-          <div id="latestPastes"></div>
+          <div class="pastes-header">
+            <h2>Pinned Pastes</h2>
+            <div class="total-pastes">Showing <span id="visiblePastes">100</span> (of <span id="totalPastesCount">173435</span> total) pastes</div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Comments</th>
+                <th>Views</th>
+                <th>Created by</th>
+                <th>Added</th>
+              </tr>
+            </thead>
+            <tbody id="pinnedPastes">
+              <!-- Pinned pastes will be inserted here -->
+            </tbody>
+          </table>
+
+          <div style="margin: 20px 0 10px; border-bottom: 2px solid #282d38;"></div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Comments</th>
+                <th>Views</th>
+                <th>Created by</th>
+                <th>Added</th>
+              </tr>
+            </thead>
+            <tbody id="allPastes">
+              <!-- All pastes will be inserted here -->
+            </tbody>
+          </table>
         </div>
 
-        <!-- Pastes Section -->
-        <div id="pastesSection" class="hidden">
-          <h2 style="color: #00ff00; margin-bottom: 20px;">>_ ALL PASTES</h2>
-          <div style="margin-bottom: 20px;">
-            <select id="pasteFilter" onchange="filterPastes()">
-              <option value="latest">Latest</option>
-              <option value="popular">Most Viewed</option>
-              <option value="trending">Trending</option>
-            </select>
-          </div>
-          <div id="pastesList"></div>
-        </div>
-
-        <!-- Upload Section -->
-        <div id="uploadSection" class="hidden">
-          <h2 style="color: #00ff00; margin-bottom: 20px;">>_ UPLOAD PASTE</h2>
-          <input type="text" id="pasteTitle" placeholder="Title">
-          <select id="pasteCategory">
-            <option value="general">General</option>
-            <option value="dox">Dox</option>
-            <option value="leaks">Leaks</option>
-            <option value="credentials">Credentials</option>
-            <option value="other">Other</option>
-          </select>
-          <textarea id="pasteContent" placeholder="Paste content..."></textarea>
-          <div style="display: flex; gap: 10px;">
-            <input type="checkbox" id="privatePaste"> <label style="color: #888;">Private</label>
-          </div>
-          <button onclick="uploadPaste()" class="primary" id="uploadBtn">Upload Paste</button>
-          <div id="uploadMessage" class="message hidden"></div>
+        <!-- Auth Section -->
+        <div id="authSection" class="auth-section hidden">
+          <h2 style="color: #ff4444; text-align: center; margin-bottom: 20px;">Login to exiled</h2>
+          <input type="email" id="email" placeholder="Email">
+          <input type="password" id="password" placeholder="Password">
+          <button onclick="handleLogin()" id="loginBtn">Login</button>
+          <button onclick="handleSignup()" id="signupBtn" style="background: #1a1e26; color: #ff4444;">Sign Up</button>
+          <div id="authMessage" class="message hidden"></div>
         </div>
 
         <!-- Profile Section -->
         <div id="profileSection" class="hidden">
-          <h2 style="color: #00ff00; margin-bottom: 20px;">>_ PROFILE</h2>
-          
-          <!-- Profile Header -->
-          <div class="profile-header">
-            <div onclick="document.getElementById('avatarInput').click()">
-              <img id="avatarImage" class="avatar hidden" src="" alt="Profile">
-              <div id="avatarPlaceholder" class="avatar-placeholder">?</div>
+          <div style="display: grid; grid-template-columns: 300px 1fr; gap: 20px;">
+            <div style="background: #1a1e26; border: 1px solid #282d38; border-radius: 6px; padding: 20px;">
+              <div style="text-align: center;">
+                <div class="profile-avatar" style="width: 100px; height: 100px; font-size: 48px; margin: 0 auto 15px;" id="profileAvatar">
+                  <span id="profileAvatarText">?</span>
+                </div>
+                <div class="profile-name" id="profileUsername">Loading...</div>
+                <div class="profile-uid" id="profileUID">UID: </div>
+              </div>
+
+              <div class="profile-stats">
+                <div class="stat">
+                  <div class="stat-value" id="profilePastes">0</div>
+                  <div class="stat-label">Pastes</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-value" id="profileLikes">0</div>
+                  <div class="stat-label">Likes</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-value" id="profileFollowers">0</div>
+                  <div class="stat-label">Followers</div>
+                </div>
+              </div>
+
+              <div style="background: #111317; border: 1px solid #282d38; border-radius: 4px; padding: 12px; margin: 15px 0;">
+                <div style="color: #8f96a3; font-size: 11px;">Member since</div>
+                <div id="profileJoined" style="color: #ff4444;">Loading...</div>
+              </div>
+
+              <div id="profileBio" style="color: #d4d7de; margin: 15px 0;">No bio yet.</div>
+
+              <button onclick="toggleEditProfile()" id="editProfileBtn" style="width: 100%; padding: 8px; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; color: #d4d7de; cursor: pointer;">Edit Profile</button>
+
+              <div id="editProfileForm" class="hidden" style="margin-top: 15px;">
+                <input type="text" id="editUsername" placeholder="Username" style="width: 100%; background: #111317; border: 1px solid #282d38; border-radius: 4px; padding: 8px; color: #d4d7de; margin: 5px 0;">
+                <textarea id="editBio" placeholder="Bio" rows="3" style="width: 100%; background: #111317; border: 1px solid #282d38; border-radius: 4px; padding: 8px; color: #d4d7de; margin: 5px 0;"></textarea>
+                <button onclick="saveProfile()" style="width: 100%; padding: 8px; background: #ff4444; border: none; border-radius: 4px; color: #0a0c10; font-weight: bold;">Save Changes</button>
+              </div>
             </div>
-            <input type="file" id="avatarInput" class="hidden" accept="image/*" onchange="handleAvatarUpload(event)">
-            <div>
-              <h3 id="profileUsername" style="color: #00ff00; margin-bottom: 5px;"></h3>
-              <p id="profileEmail" style="color: #888;"></p>
-              <p id="profileMemberSince" style="color: #666; font-size: 12px;"></p>
+
+            <div style="background: #1a1e26; border: 1px solid #282d38; border-radius: 6px; padding: 20px;">
+              <div style="display: flex; gap: 10px; border-bottom: 1px solid #282d38; padding-bottom: 10px; margin-bottom: 20px;">
+                <div style="color: #ff4444; font-weight: bold;">Pastes</div>
+                <div style="color: #8f96a3;">Comments</div>
+              </div>
+              <div id="userPastes"></div>
             </div>
           </div>
-
-          <!-- Stats -->
-          <div class="profile-stats">
-            <div class="stat-box">
-              <div class="stat-value" id="profilePastes">0</div>
-              <div class="stat-label">Pastes</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" id="profileViews">0</div>
-              <div class="stat-label">Views</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" id="profileReputation">0</div>
-              <div class="stat-label">Rep</div>
-            </div>
-          </div>
-
-          <!-- Bio -->
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Bio</span>
-              <span class="card-meta" onclick="toggleBioEdit()" style="cursor: pointer;">[edit]</span>
-            </div>
-            <div id="bioDisplay">No bio yet.</div>
-            <div id="bioEdit" class="hidden">
-              <textarea id="bioInput" rows="3"></textarea>
-              <button onclick="saveBio()">Save Bio</button>
-            </div>
-          </div>
-
-          <!-- User's Pastes -->
-          <div class="tabs">
-            <div class="tab active" onclick="switchProfileTab('pastes')" id="tabPastes">My Pastes</div>
-            <div class="tab" onclick="switchProfileTab('saved')" id="tabSaved">Saved</div>
-          </div>
-          <div id="userPastes"></div>
-        </div>
-
-        <!-- Single Paste View -->
-        <div id="pasteViewSection" class="hidden">
-          <div id="pasteView"></div>
         </div>
       </div>
 
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <h3 style="color: #00ff00; margin-bottom: 15px;">>_ STATS</h3>
-        <div style="margin-bottom: 20px;">
-          <p>Total Pastes: <span id="totalPastes">0</span></p>
-          <p>Online Users: <span id="onlineUsers">0</span></p>
-          <p>Today: <span id="todayPastes">0</span></p>
+      <!-- Right Sidebar -->
+      <div class="right-sidebar">
+        <!-- Profile Card (logged in) -->
+        <div id="profileCard" class="hidden">
+          <div class="profile-card">
+            <div class="profile-avatar" onclick="showProfile()">
+              <span id="sidebarAvatar">?</span>
+            </div>
+            <div class="profile-name" id="sidebarUsername">Guest</div>
+            <div class="profile-uid" id="sidebarUID">UID: </div>
+            
+            <div class="profile-stats">
+              <div class="stat">
+                <div class="stat-value" id="sidebarPastes">0</div>
+                <div class="stat-label">Pastes</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value" id="sidebarLikes">0</div>
+                <div class="stat-label">Likes</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value" id="sidebarFollowers">0</div>
+                <div class="stat-label">Followers</div>
+              </div>
+            </div>
+
+            <button onclick="showProfile()" style="width: 100%; padding: 6px; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; color: #d4d7de; cursor: pointer;">View Profile</button>
+          </div>
+
+          <div class="following-list">
+            <div class="sidebar-title">FOLLOWING · FOLLOWERS</div>
+            <div id="followingList"></div>
+          </div>
         </div>
 
-        <h3 style="color: #00ff00; margin-bottom: 15px;">>_ CATEGORIES</h3>
-        <div id="categories">
-          <div class="paste-item" onclick="filterByCategory('general')">General (0)</div>
-          <div class="paste-item" onclick="filterByCategory('dox')">Dox (0)</div>
-          <div class="paste-item" onclick="filterByCategory('leaks')">Leaks (0)</div>
-          <div class="paste-item" onclick="filterByCategory('credentials')">Credentials (0)</div>
-          <div class="paste-item" onclick="filterByCategory('other')">Other (0)</div>
+        <!-- Login Prompt (logged out) -->
+        <div id="loginPrompt">
+          <div class="profile-card">
+            <div class="profile-avatar">?</div>
+            <div class="profile-name">Guest</div>
+            <button onclick="showLogin()" style="width: 100%; padding: 6px; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; color: #d4d7de; cursor: pointer;">Login / Sign Up</button>
+          </div>
         </div>
-
-        <h3 style="color: #00ff00; margin: 20px 0 15px;">>_ TRENDING</h3>
-        <div id="trendingPastes"></div>
       </div>
     </div>
   </div>
 
-  <!-- Matrix rain effect -->
-  <div class="matrix-rain" id="matrixRain"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // --- Supabase Setup ---
+    // Supabase setup
     const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
     
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // --- Global State ---
+    // Global state
     let currentUser = null;
     let currentProfile = null;
-    let pastes = [];
-    let currentView = 'home';
+    const RICH_USER_EMAIL = "ikiikikikijujijij@gmail.com";
 
-    // --- DOM Elements ---
+    // DOM Elements
     const sections = {
-      auth: document.getElementById('authSection'),
       home: document.getElementById('homeSection'),
-      pastes: document.getElementById('pastesSection'),
-      upload: document.getElementById('uploadSection'),
-      profile: document.getElementById('profileSection'),
-      pasteView: document.getElementById('pasteViewSection')
+      auth: document.getElementById('authSection'),
+      profile: document.getElementById('profileSection')
     };
 
-    const navLinks = {
-      login: document.getElementById('loginLink'),
-      logout: document.getElementById('logoutLink'),
-      profile: document.getElementById('profileLink')
-    };
+    // Initialize
+    (async function init() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      currentUser = session?.user || null;
+      updateUI();
+      loadPastes();
+      updateStats();
+    })();
 
-    // --- Navigation ---
-    function showSection(sectionName) {
-      Object.values(sections).forEach(s => s.classList.add('hidden'));
-      if (sections[sectionName]) {
-        sections[sectionName].classList.remove('hidden');
-        currentView = sectionName;
-      }
+    // Navigation
+    function showHome() {
+      hideAllSections();
+      sections.home.classList.remove('hidden');
+      loadPastes();
     }
 
-    function showHome() { showSection('home'); loadPastes(); }
-    function showPastes() { showSection('pastes'); loadAllPastes(); }
-    function showUpload() { 
-      if (!currentUser) {
-        showMessage(document.getElementById('uploadMessage'), 'Please login to upload', 'error');
-        showSection('auth');
-        return;
-      }
-      showSection('upload'); 
+    function showLogin() {
+      hideAllSections();
+      sections.auth.classList.remove('hidden');
     }
-    function showProfile() { 
+
+    function showProfile() {
       if (!currentUser) {
-        showSection('auth');
+        showLogin();
         return;
       }
-      showSection('profile'); 
+      hideAllSections();
+      sections.profile.classList.remove('hidden');
       loadUserProfile();
     }
-    function showLogin() { showSection('auth'); }
 
-    // --- Message Display ---
-    function showMessage(element, message, type = 'error') {
-      element.textContent = message;
-      element.className = `message ${type}`;
-      element.classList.remove('hidden');
-      setTimeout(() => element.classList.add('hidden'), 5000);
+    function showAddPaste() { alert('Add Paste feature coming soon'); }
+    function showUsers() { alert('Users page coming soon'); }
+    function showUpgrades() { alert('Upgrades page coming soon'); }
+    function showHallOfAutism() { alert('Hall of Autism coming soon'); }
+    function showHelp() { alert('Help page coming soon'); }
+
+    function hideAllSections() {
+      Object.values(sections).forEach(s => s.classList.add('hidden'));
     }
 
-    // --- Authentication ---
-    async function handleSignup() {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+    // Update UI based on auth state
+    function updateUI() {
+      const profileLink = document.getElementById('profileLink');
+      const logoutLink = document.getElementById('logoutLink');
+      const loginLink = document.getElementById('loginLink');
+      const profileCard = document.getElementById('profileCard');
+      const loginPrompt = document.getElementById('loginPrompt');
 
-      if (!email || !password) {
-        showMessage(authMessage, 'Email and password required', 'error');
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient.auth.signUp({ 
-          email, 
-          password 
-        });
-
-        if (error) throw error;
-
-        // Create profile
-        await supabaseClient.from('profiles').insert([{
-          id: data.user.id,
-          email: email,
-          username: email.split('@')[0],
-          created_at: new Date().toISOString()
-        }]);
-
-        showMessage(authMessage, 'Signup successful! Check email for confirmation.', 'success');
-      } catch (error) {
-        showMessage(authMessage, error.message, 'error');
+      if (currentUser) {
+        profileLink.classList.remove('hidden');
+        logoutLink.classList.remove('hidden');
+        loginLink.classList.add('hidden');
+        profileCard.classList.remove('hidden');
+        loginPrompt.classList.add('hidden');
+        loadSidebarProfile();
+      } else {
+        profileLink.classList.add('hidden');
+        logoutLink.classList.add('hidden');
+        loginLink.classList.remove('hidden');
+        profileCard.classList.add('hidden');
+        loginPrompt.classList.remove('hidden');
       }
     }
 
-    async function handleLogin() {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ 
-          email, 
-          password 
-        });
-
-        if (error) throw error;
-        
-        showMessage(authMessage, 'Login successful!', 'success');
-        setTimeout(() => showHome(), 1000);
-      } catch (error) {
-        showMessage(authMessage, error.message, 'error');
-      }
-    }
-
-    async function handleLogout() {
-      await supabaseClient.auth.signOut();
-      showHome();
-      updateNavForUser(null);
-    }
-
-    // --- Paste Functions ---
-    async function uploadPaste() {
-      if (!currentUser) {
-        showSection('auth');
-        return;
-      }
-
-      const title = document.getElementById('pasteTitle').value.trim();
-      const content = document.getElementById('pasteContent').value.trim();
-      const category = document.getElementById('pasteCategory').value;
-      const isPrivate = document.getElementById('privatePaste').checked;
-
-      if (!title || !content) {
-        showMessage(uploadMessage, 'Title and content required', 'error');
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient.from('pastes').insert([{
-          title,
-          content,
-          category,
-          is_private: isPrivate,
-          user_id: currentUser.id,
-          username: currentProfile?.username || 'Anonymous',
-          views: 0,
-          created_at: new Date().toISOString()
-        }]);
-
-        if (error) throw error;
-
-        showMessage(uploadMessage, 'Paste uploaded!', 'success');
-        document.getElementById('pasteTitle').value = '';
-        document.getElementById('pasteContent').value = '';
-        
-        setTimeout(() => showPastes(), 1500);
-      } catch (error) {
-        showMessage(uploadMessage, error.message, 'error');
-      }
-    }
-
+    // Load pastes
     async function loadPastes() {
       try {
         const { data, error } = await supabaseClient
@@ -761,124 +759,87 @@
           .select('*')
           .eq('is_private', false)
           .order('created_at', { ascending: false })
-          .limit(10);
+          .limit(100);
 
         if (error) throw error;
 
-        const container = document.getElementById('latestPastes');
-        container.innerHTML = '';
-        
-        data.forEach(paste => {
-          container.innerHTML += `
-            <div class="paste-item" onclick="viewPaste('${paste.id}')">
-              <div class="paste-title">> ${paste.title}</div>
-              <div class="paste-excerpt">${paste.content.substring(0, 100)}...</div>
-              <div class="paste-stats">
-                <span>👁️ ${paste.views || 0}</span>
-                <span>📅 ${new Date(paste.created_at).toLocaleDateString()}</span>
-                <span>🏷️ ${paste.category}</span>
-                <span>👤 ${paste.username}</span>
-              </div>
-            </div>
-          `;
-        });
-
-        updateStats();
-      } catch (error) {
-        console.error('Error loading pastes:', error);
-      }
-    }
-
-    async function loadAllPastes() {
-      try {
-        const { data, error } = await supabaseClient
-          .from('pastes')
-          .select('*')
-          .eq('is_private', false)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        const container = document.getElementById('pastesList');
-        container.innerHTML = '';
-        
-        data.forEach(paste => {
-          container.innerHTML += `
-            <div class="paste-item" onclick="viewPaste('${paste.id}')">
-              <div class="paste-title">> ${paste.title}</div>
-              <div class="paste-excerpt">${paste.content.substring(0, 150)}...</div>
-              <div class="paste-stats">
-                <span>👁️ ${paste.views || 0}</span>
-                <span>📅 ${new Date(paste.created_at).toLocaleDateString()}</span>
-                <span>🏷️ ${paste.category}</span>
-                <span>👤 ${paste.username}</span>
-              </div>
-            </div>
-          `;
-        });
-      } catch (error) {
-        console.error('Error loading pastes:', error);
-      }
-    }
-
-    async function viewPaste(pasteId) {
-      try {
-        // Increment views
-        await supabaseClient.rpc('increment_paste_views', { paste_id: pasteId });
-
-        const { data, error } = await supabaseClient
-          .from('pastes')
-          .select('*, profiles(username, avatar_url)')
-          .eq('id', pasteId)
-          .single();
-
-        if (error) throw error;
-
-        const container = document.getElementById('pasteView');
-        container.innerHTML = `
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">> ${data.title}</span>
-              <span class="card-meta">#${data.category}</span>
-            </div>
-            <div style="margin: 20px 0; padding: 20px; background: #0a0c0f; border: 1px solid #2a3b3c; white-space: pre-wrap; font-family: monospace;">
-              ${data.content}
-            </div>
-            <div class="paste-stats" style="margin-bottom: 20px;">
-              <span>👁️ ${data.views || 0} views</span>
-              <span>📅 ${new Date(data.created_at).toLocaleString()}</span>
-              <span>👤 Uploaded by ${data.profiles?.username || 'Anonymous'}</span>
-            </div>
-            
-            <h3 style="color: #00ff00; margin: 20px 0 10px;">>_ COMMENTS</h3>
-            <div id="commentsSection">
-              ${data.comments ? data.comments.map(c => `
-                <div class="comment">
-                  <div class="comment-header">
-                    <span class="comment-author">${c.author}</span>
-                    <span>${new Date(c.created_at).toLocaleDateString()}</span>
-                  </div>
-                  <div>${c.content}</div>
-                </div>
-              `).join('') : '<p style="color: #666;">No comments yet.</p>'}
-            </div>
-            
-            ${currentUser ? `
-              <div style="margin-top: 20px;">
-                <textarea id="commentContent" placeholder="Add comment..." rows="3"></textarea>
-                <button onclick="addComment('${pasteId}')">Add Comment</button>
-              </div>
-            ` : ''}
-          </div>
+        // Pinned pastes (matching the image)
+        const pinnedPastes = document.getElementById('pinnedPastes');
+        pinnedPastes.innerHTML = `
+          <tr>
+            <td><span class="pin-icon">📌</span><a class="paste-title">Can Blabcity Owner</a></td>
+            <td class="comment-count">842</td>
+            <td class="view-count">0</td>
+            <td><span class="username-gradient">vvsivsvs</span><span class="rich-badge">[Rich]</span></td>
+            <td class="date">Feb 12, 2026</td>
+          </tr>
+          <tr>
+            <td><span class="pin-icon">📌</span><a class="paste-title">Revenge Jack Butterfield</a></td>
+            <td class="comment-count">2026</td>
+            <td class="view-count">0</td>
+            <td><span class="username-normal">Anonymous</span></td>
+            <td class="date">Feb 8, 2026</td>
+          </tr>
+          <tr>
+            <td><span class="pin-icon">📌</span><a class="paste-title">JOIN LICK ON TELEGRAM</a></td>
+            <td class="comment-count">2415</td>
+            <td class="view-count">0</td>
+            <td><span class="username-normal">Anonymous</span></td>
+            <td class="date">Feb 7, 2026</td>
+          </tr>
+          <tr>
+            <td><span class="pin-icon">📌</span><a class="paste-title">NCSC UK undercover agents</a></td>
+            <td class="comment-count">174</td>
+            <td class="view-count">12551</td>
+            <td><span class="username-normal">Anonymous</span></td>
+            <td class="date">Jan 8, 2026</td>
+          </tr>
+          <tr>
+            <td><span class="pin-icon">📌</span><a class="paste-title">How to Ensure Your Paste Stays Up</a></td>
+            <td class="comment-count">260259</td>
+            <td class="view-count">0</td>
+            <td><span class="username-normal">Admin</span><span class="admin-badge">[Admin]</span></td>
+            <td class="date">Nov 20, 2020</td>
+          </tr>
+          <tr>
+            <td><span class="pin-icon">📌</span><a class="paste-title">Transparency Report</a></td>
+            <td class="comment-count">156672</td>
+            <td class="view-count">0</td>
+            <td><span class="username-gradient">handline</span><span class="admin-badge">[Manager]</span></td>
+            <td class="date">Jun 20, 2020</td>
+          </tr>
         `;
 
-        showSection('pasteView');
+        // All pastes
+        const allPastes = document.getElementById('allPastes');
+        allPastes.innerHTML = '';
+        
+        if (data && data.length > 0) {
+          data.forEach(paste => {
+            const isRichUser = paste.email === RICH_USER_EMAIL;
+            allPastes.innerHTML += `
+              <tr>
+                <td><a class="paste-title" onclick="viewPaste('${paste.id}')">${escapeHtml(paste.title)}</a></td>
+                <td class="comment-count">0</td>
+                <td class="view-count">${paste.views || 0}</td>
+                <td>
+                  <span class="${isRichUser ? 'username-gradient' : 'username-normal'}">${escapeHtml(paste.username || 'Anonymous')}</span>
+                  ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+                </td>
+                <td class="date">${new Date(paste.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+              </tr>
+            `;
+          });
+        }
+
+        document.getElementById('totalPastesCount').textContent = '173435';
+        document.getElementById('visiblePastes').textContent = data?.length || 0;
       } catch (error) {
-        console.error('Error viewing paste:', error);
+        console.error('Error loading pastes:', error);
       }
     }
 
-    // --- Profile Functions ---
+    // Load user profile
     async function loadUserProfile() {
       if (!currentUser) return;
 
@@ -892,198 +853,242 @@
         if (error) throw error;
 
         currentProfile = data;
+        const isRichUser = currentUser.email === RICH_USER_EMAIL;
 
-        document.getElementById('profileUsername').textContent = data.username || 'Anonymous';
-        document.getElementById('profileEmail').textContent = currentUser.email;
-        document.getElementById('bioDisplay').textContent = data.bio || 'No bio yet.';
-        document.getElementById('bioInput').value = data.bio || '';
+        // Update profile display
+        document.getElementById('profileUsername').innerHTML = `
+          <span class="${isRichUser ? 'username-gradient' : 'username-normal'}">${escapeHtml(data.username || 'Anonymous')}</span>
+          ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+        `;
+        document.getElementById('profileUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
+        document.getElementById('profileJoined').textContent = new Date(data.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        document.getElementById('profileBio').textContent = data.bio || 'No bio yet.';
         
-        if (data.created_at) {
-          document.getElementById('profileMemberSince').textContent = 
-            `Member since ${new Date(data.created_at).toLocaleDateString()}`;
-        }
-
-        if (data.avatar_url) {
-          document.getElementById('avatarImage').src = data.avatar_url;
-          document.getElementById('avatarImage').classList.remove('hidden');
-          document.getElementById('avatarPlaceholder').classList.add('hidden');
-        }
+        // Edit form
+        document.getElementById('editUsername').value = data.username || '';
+        document.getElementById('editBio').value = data.bio || '';
 
         // Load user's pastes
-        const { data: userPastes, error: pastesError } = await supabaseClient
-          .from('pastes')
-          .select('*')
-          .eq('user_id', currentUser.id)
-          .order('created_at', { ascending: false });
-
-        if (!pastesError) {
-          document.getElementById('profilePastes').textContent = userPastes.length;
-          
-          const container = document.getElementById('userPastes');
-          container.innerHTML = '';
-          userPastes.forEach(paste => {
-            container.innerHTML += `
-              <div class="paste-item" onclick="viewPaste('${paste.id}')">
-                <div class="paste-title">> ${paste.title}</div>
-                <div class="paste-stats">
-                  <span>👁️ ${paste.views || 0}</span>
-                  <span>📅 ${new Date(paste.created_at).toLocaleDateString()}</span>
-                  ${paste.is_private ? '<span style="color: #ff4444;">🔒 Private</span>' : ''}
-                </div>
-              </div>
-            `;
-          });
-        }
+        loadUserPastes();
       } catch (error) {
         console.error('Error loading profile:', error);
       }
     }
 
-    async function handleAvatarUpload(event) {
-      const file = event.target.files[0];
-      if (!file || !currentUser) return;
+    // Load sidebar profile
+    async function loadSidebarProfile() {
+      if (!currentUser) return;
 
       try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${currentUser.id}/${Date.now()}.${fileExt}`;
-        
-        const { error: uploadError } = await supabaseClient.storage
-          .from('avatars')
-          .upload(fileName, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabaseClient.storage
-          .from('avatars')
-          .getPublicUrl(fileName);
-
-        const { error: updateError } = await supabaseClient
+        const { data, error } = await supabaseClient
           .from('profiles')
-          .update({ avatar_url: publicUrl })
-          .eq('id', currentUser.id);
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
 
-        if (updateError) throw updateError;
+        if (error) throw error;
 
-        document.getElementById('avatarImage').src = publicUrl;
-        document.getElementById('avatarImage').classList.remove('hidden');
-        document.getElementById('avatarPlaceholder').classList.add('hidden');
-        
-        showMessage(dashboardMessage, 'Avatar updated!', 'success');
+        const isRichUser = currentUser.email === RICH_USER_EMAIL;
+
+        document.getElementById('sidebarUsername').innerHTML = `
+          <span class="${isRichUser ? 'username-gradient' : 'username-normal'}">${escapeHtml(data.username || 'Anonymous')}</span>
+        `;
+        document.getElementById('sidebarUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
+        document.getElementById('sidebarPastes').textContent = data.paste_count || 0;
+        document.getElementById('sidebarLikes').textContent = data.likes || 0;
+        document.getElementById('sidebarFollowers').textContent = data.followers || 0;
       } catch (error) {
-        showMessage(dashboardMessage, error.message, 'error');
+        console.error('Error loading sidebar profile:', error);
       }
     }
 
-    async function saveBio() {
-      const bio = document.getElementById('bioInput').value.trim();
+    // Load user pastes
+    async function loadUserPastes() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('pastes')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const container = document.getElementById('userPastes');
+        container.innerHTML = '';
+
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="color: #8f96a3; text-align: center;">No pastes yet.</p>';
+          return;
+        }
+
+        data.forEach(paste => {
+          container.innerHTML += `
+            <div style="padding: 10px; border-bottom: 1px solid #282d38;">
+              <div style="color: #ff4444; cursor: pointer;" onclick="viewPaste('${paste.id}')">${escapeHtml(paste.title)}</div>
+              <div style="color: #8f96a3; font-size: 11px;">${new Date(paste.created_at).toLocaleDateString()} · ${paste.views || 0} views</div>
+            </div>
+          `;
+        });
+
+        document.getElementById('profilePastes').textContent = data.length;
+      } catch (error) {
+        console.error('Error loading user pastes:', error);
+      }
+    }
+
+    // Authentication
+    async function handleSignup() {
+      const email = document.getElementById('email')?.value.trim();
+      const password = document.getElementById('password')?.value;
+
+      if (!email || !password) {
+        showMessage('authMessage', 'Email and password required', 'error');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({ 
+          email, 
+          password 
+        });
+
+        if (error) throw error;
+
+        if (data.user) {
+          await supabaseClient
+            .from('profiles')
+            .upsert({
+              id: data.user.id,
+              email: email,
+              username: email.split('@')[0],
+              created_at: new Date().toISOString()
+            });
+        }
+
+        showMessage('authMessage', 'Signup successful! Check email for confirmation.', 'success');
+      } catch (error) {
+        showMessage('authMessage', error.message, 'error');
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('email')?.value.trim();
+      const password = document.getElementById('password')?.value;
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+          email, 
+          password 
+        });
+
+        if (error) throw error;
+        
+        showMessage('authMessage', 'Login successful!', 'success');
+        setTimeout(() => showHome(), 1000);
+      } catch (error) {
+        showMessage('authMessage', error.message, 'error');
+      }
+    }
+
+    async function handleLogout() {
+      await supabaseClient.auth.signOut();
+      currentUser = null;
+      currentProfile = null;
+      updateUI();
+      showHome();
+    }
+
+    // Profile editing
+    function toggleEditProfile() {
+      const form = document.getElementById('editProfileForm');
+      const btn = document.getElementById('editProfileBtn');
       
+      if (form.classList.contains('hidden')) {
+        form.classList.remove('hidden');
+        btn.textContent = 'Cancel';
+      } else {
+        form.classList.add('hidden');
+        btn.textContent = 'Edit Profile';
+      }
+    }
+
+    async function saveProfile() {
+      const username = document.getElementById('editUsername').value.trim();
+      const bio = document.getElementById('editBio').value.trim();
+
       try {
         const { error } = await supabaseClient
           .from('profiles')
-          .update({ bio })
+          .update({
+            username: username || null,
+            bio: bio || null
+          })
           .eq('id', currentUser.id);
 
         if (error) throw error;
 
-        document.getElementById('bioDisplay').textContent = bio || 'No bio yet.';
-        document.getElementById('bioEdit').classList.add('hidden');
-        showMessage(dashboardMessage, 'Bio updated!', 'success');
+        await loadUserProfile();
+        await loadSidebarProfile();
+        toggleEditProfile();
+        showMessage('authMessage', 'Profile updated!', 'success');
       } catch (error) {
-        showMessage(dashboardMessage, error.message, 'error');
+        showMessage('authMessage', error.message, 'error');
       }
     }
 
-    // --- Utility Functions ---
-    function updateNavForUser(user) {
-      if (user) {
-        navLinks.login.classList.add('hidden');
-        navLinks.logout.classList.remove('hidden');
-        navLinks.profile.classList.remove('hidden');
-      } else {
-        navLinks.login.classList.remove('hidden');
-        navLinks.logout.classList.add('hidden');
-        navLinks.profile.classList.add('hidden');
-      }
-    }
-
+    // Update stats
     async function updateStats() {
       try {
         const { count } = await supabaseClient
-          .from('pastes')
+          .from('profiles')
           .select('*', { count: 'exact', head: true });
 
-        document.getElementById('totalPastes').textContent = count || 0;
-        document.getElementById('onlineUsers').textContent = Math.floor(Math.random() * 50) + 10;
-        document.getElementById('todayPastes').textContent = Math.floor(Math.random() * 20) + 1;
+        document.getElementById('totalUsersDisplay').textContent = `${count || 0}ct`;
+        document.getElementById('sidebarTotalUsers').textContent = count || 0;
+        
+        const online = Math.floor(Math.random() * 100) + 500;
+        document.getElementById('onlineUsersDisplay').textContent = `${online}ct`;
+        document.getElementById('sidebarOnlineUsers').textContent = online;
       } catch (error) {
         console.error('Error updating stats:', error);
       }
     }
 
-    // Matrix rain effect
-    function createMatrixRain() {
-      const canvas = document.createElement('canvas');
-      canvas.style.position = 'fixed';
-      canvas.style.top = '0';
-      canvas.style.left = '0';
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
-      canvas.style.pointerEvents = 'none';
-      canvas.style.zIndex = '-1';
-      canvas.style.opacity = '0.1';
-      
-      document.body.appendChild(canvas);
-      
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-      const fontSize = 14;
-      const columns = canvas.width / fontSize;
-      const drops = [];
-
-      for (let x = 0; x < columns; x++) {
-        drops[x] = 1;
-      }
-
-      function draw() {
-        ctx.fillStyle = 'rgba(10, 12, 15, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = '#0f0';
-        ctx.font = `${fontSize}px monospace`;
-
-        for (let i = 0; i < drops.length; i++) {
-          const text = chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-          }
-          drops[i]++;
-        }
-      }
-
-      setInterval(draw, 35);
+    // Utility functions
+    function showMessage(elementId, message, type) {
+      const element = document.getElementById(elementId);
+      element.textContent = message;
+      element.className = `message ${type}`;
+      element.classList.remove('hidden');
+      setTimeout(() => element.classList.add('hidden'), 5000);
     }
 
-    // --- Auth State Change ---
+    function escapeHtml(unsafe) {
+      if (!unsafe) return '';
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function searchPastes() {
+      alert('Search functionality coming soon');
+    }
+
+    function viewPaste(id) {
+      alert(`View paste: ${id}`);
+    }
+
+    // Auth state change listener
     supabaseClient.auth.onAuthStateChange((event, session) => {
       currentUser = session?.user || null;
-      updateNavForUser(currentUser);
-      if (currentUser) loadUserProfile();
+      updateUI();
+      if (currentUser) {
+        loadSidebarProfile();
+      }
     });
-
-    // Initialize
-    (async function init() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      currentUser = session?.user || null;
-      updateNavForUser(currentUser);
-      showHome();
-      createMatrixRain();
-      updateStats();
-    })();
   </script>
 </body>
 </html>
