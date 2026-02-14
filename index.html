@@ -22,22 +22,21 @@
       align-items: center;
       justify-content: center;
       color: white;
-      transition: background 0.3s;
     }
 
-    /* animated backdrop overlay */
+    /* animated backdrop */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(3px);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
       z-index: 0;
-      animation: fadeBlur 1.2s ease-out;
+      animation: fadeBlur 1s ease-out;
     }
 
     @keyframes fadeBlur {
-      0% { backdrop-filter: blur(0px); background: rgba(0,0,0,0.2); }
-      100% { backdrop-filter: blur(3px); background: rgba(0,0,0,0.5); }
+      0% { backdrop-filter: blur(0px); background: rgba(0,0,0,0.3); }
+      100% { backdrop-filter: blur(8px); background: rgba(0,0,0,0.7); }
     }
 
     .container {
@@ -46,92 +45,100 @@
       width: 100%;
       max-width: 1200px;
       padding: 20px;
-      animation: floatIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    @keyframes floatIn {
-      0% { opacity: 0; transform: scale(0.96) translateY(30px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(50px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* cards */
+    /* glass card effect */
     .glass-card {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(10, 10, 10, 0.8);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 40px;
-      padding: 40px 38px;
+      padding: 45px;
       box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.05) inset;
-      transition: transform 0.3s, box-shadow 0.4s;
+      transition: all 0.4s;
     }
 
     .glass-card:hover {
-      box-shadow: 0 35px 70px rgba(0,0,0,0.9), 0 0 0 1.5px rgba(255,255,255,0.2) inset;
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.95);
     }
 
-    /* auth wrapper */
+    /* auth cards */
     .auth-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 80vh;
     }
 
     .auth-card {
       width: 420px;
       max-width: 100%;
-      animation: cardPop 0.5s ease;
+      animation: popIn 0.6s ease;
     }
 
-    @keyframes cardPop {
-      0% { opacity: 0; transform: scale(0.9); }
-      100% { opacity: 1; transform: scale(1); }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9) rotate(-2deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
     }
 
     h1 {
-      font-size: 3.2rem;
+      font-size: 4rem;
       font-weight: 700;
-      letter-spacing: 6px;
+      letter-spacing: 10px;
       text-align: center;
-      background: linear-gradient(130deg, #fff, #aaa);
+      background: linear-gradient(135deg, #fff, #aaa, #fff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 25px;
-      filter: drop-shadow(0 4px 6px black);
+      margin-bottom: 30px;
+      filter: drop-shadow(0 4px 20px black);
+      animation: titleGlow 3s infinite;
+    }
+
+    @keyframes titleGlow {
+      0%, 100% { filter: drop-shadow(0 4px 20px black); letter-spacing: 10px; }
+      50% { filter: drop-shadow(0 4px 40px rgba(255,255,255,0.3)); letter-spacing: 12px; }
     }
 
     .input-group {
-      margin: 20px 0;
+      margin: 25px 0;
       position: relative;
     }
 
     .input-group input {
       width: 100%;
       background: rgba(255,255,255,0.07);
-      border: 1.5px solid rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.1);
       border-radius: 60px;
-      padding: 18px 24px;
+      padding: 20px 28px;
       font-size: 1rem;
       color: white;
       outline: none;
-      transition: all 0.25s;
+      transition: all 0.3s;
     }
 
     .input-group input:focus {
-      border-color: rgba(255,255,255,0.5);
+      border-color: rgba(255,255,255,0.6);
       background: rgba(255,255,255,0.15);
-      transform: scale(1.02);
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      transform: scale(1.02) translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.1);
     }
 
     .input-group label {
       position: absolute;
-      left: 24px;
-      top: 18px;
+      left: 28px;
+      top: 20px;
       color: #aaa;
+      transition: 0.3s;
       pointer-events: none;
-      transition: 0.2s;
-      background: transparent;
-      padding: 0 6px;
+      font-size: 1rem;
     }
 
     .input-group input:focus ~ label,
@@ -139,11 +146,12 @@
       top: -12px;
       left: 20px;
       font-size: 0.8rem;
-      color: #ccc;
+      color: white;
       background: rgba(0,0,0,0.6);
       backdrop-filter: blur(4px);
       border-radius: 30px;
-      padding: 2px 12px;
+      padding: 4px 15px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
     .input-group input::placeholder {
@@ -151,57 +159,80 @@
     }
 
     .btn {
-      background: rgba(255,255,255,0.1);
-      border: 1.5px solid rgba(255,255,255,0.2);
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      border: 2px solid rgba(255,255,255,0.2);
       border-radius: 60px;
-      padding: 18px 28px;
+      padding: 20px 35px;
       width: 100%;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: white;
       cursor: pointer;
-      transition: 0.3s;
-      margin: 10px 0;
-      letter-spacing: 1px;
-      backdrop-filter: blur(5px);
+      transition: all 0.3s;
+      margin: 15px 0;
+      letter-spacing: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
     }
 
     .btn:hover {
-      background: rgba(255,255,255,0.25);
+      background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
       border-color: rgba(255,255,255,0.5);
-      transform: translateY(-5px);
-      box-shadow: 0 18px 30px -10px black;
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -10px black;
     }
 
     .btn:active {
-      transform: scale(0.98);
+      transform: translateY(0);
     }
 
     .link {
-      color: #ccc;
+      color: #aaa;
       text-align: center;
       display: block;
       margin-top: 20px;
       cursor: pointer;
-      text-decoration: none;
-      border-bottom: 1px dashed transparent;
-      transition: 0.2s;
+      transition: all 0.3s;
+      font-size: 1rem;
     }
 
     .link:hover {
       color: white;
-      border-bottom-color: #aaa;
+      transform: translateX(8px);
+      letter-spacing: 1px;
     }
 
     .message {
       min-height: 30px;
       color: #ffd966;
       text-align: center;
-      font-size: 0.9rem;
-      margin: 8px 0;
+      font-size: 0.95rem;
+      margin: 15px 0;
+      animation: shake 0.5s;
     }
 
-    /* DASHBOARD (flex zone) */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+      20%, 40%, 60%, 80% { transform: translateX(3px); }
+    }
+
+    /* DASHBOARD */
     .dashboard {
       display: none;
     }
@@ -212,64 +243,86 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 20px;
-      margin-bottom: 30px;
+      margin-bottom: 35px;
+      animation: slideRight 0.6s;
     }
 
-    .user-greeting {
+    @keyframes slideRight {
+      0% { opacity: 0; transform: translateX(-30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .user-badge {
       background: rgba(255,255,255,0.1);
-      padding: 14px 32px;
+      padding: 15px 35px;
       border-radius: 60px;
       border: 1px solid rgba(255,255,255,0.2);
       font-weight: 500;
       font-size: 1.2rem;
-      backdrop-filter: blur(8px);
-      transition: 0.3s;
-      animation: glowPulse 4s infinite;
+      backdrop-filter: blur(5px);
+      animation: badgePulse 3s infinite;
     }
 
-    @keyframes glowPulse {
-      0% { box-shadow: 0 0 5px rgba(255,255,255,0.1); }
-      50% { box-shadow: 0 0 20px rgba(255,255,255,0.2); }
-      100% { box-shadow: 0 0 5px rgba(255,255,255,0.1); }
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.1); }
+      50% { box-shadow: 0 0 30px 0 rgba(255,255,255,0.2); }
     }
 
     .username-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 16px;
+      gap: 20px;
       margin: 40px 0;
     }
 
     .user-card {
-      background: rgba(20,20,20,0.7);
-      backdrop-filter: blur(8px);
+      background: rgba(30, 30, 30, 0.7);
+      backdrop-filter: blur(5px);
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 40px;
-      padding: 24px 8px;
+      border-radius: 30px;
+      padding: 25px 10px;
       text-align: center;
       font-size: 1.2rem;
       font-weight: 500;
-      transition: 0.25s;
+      transition: all 0.4s;
       cursor: pointer;
       word-break: break-word;
-      animation: cardFade 0.6s;
+      animation: cardAppear 0.5s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes cardAppear {
+      from { opacity: 0; transform: scale(0.8) translateY(30px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .user-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.6s;
+    }
+
+    .user-card:hover::before {
+      left: 100%;
     }
 
     .user-card:hover {
-      background: rgba(255,255,255,0.15);
-      transform: translateY(-8px) scale(1.02);
+      transform: translateY(-10px) scale(1.05);
       border-color: rgba(255,255,255,0.4);
-      box-shadow: 0 25px 30px -12px black;
+      background: rgba(255,255,255,0.15);
+      box-shadow: 0 25px 40px -10px black;
     }
 
     .user-card.highlight {
-      border: 2px solid gold;
+      border: 2px solid #ffd700;
       background: rgba(255,215,0,0.1);
-    }
-
-    @keyframes cardFade {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      box-shadow: 0 0 30px rgba(255,215,0,0.2);
     }
 
     .flex-actions {
@@ -277,130 +330,199 @@
       gap: 20px;
       flex-wrap: wrap;
       justify-content: center;
+      margin-top: 30px;
     }
 
     .small-btn {
       width: auto;
-      padding: 14px 36px;
-      background: rgba(255,255,255,0.05);
+      min-width: 180px;
+      padding: 15px 25px;
     }
 
-    .copy-url {
-      background: rgba(255,255,255,0.1);
-      border-radius: 30px;
-      padding: 12px 22px;
-      font-size: 0.9rem;
+    .url-box {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 60px;
+      padding: 15px 30px;
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .footer-note {
-      margin-top: 30px;
-      color: #aaa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       gap: 10px;
-      flex-wrap: wrap;
+      font-size: 1rem;
+      margin-top: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+      border: 2px dashed rgba(255,255,255,0.2);
     }
 
-    /* profile page (user view) */
+    .url-box:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.5);
+      transform: scale(1.05);
+      border-style: solid;
+    }
+
+    /* PROFILE PAGE */
     .profile-view {
       display: none;
       text-align: center;
     }
 
     .profile-card {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
+      animation: zoomIn 0.7s;
     }
 
-    .back-link {
-      margin-top: 30px;
-      display: inline-block;
+    @keyframes zoomIn {
+      0% { opacity: 0; transform: scale(0.8) rotate(-2deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
     }
 
     .big-username {
-      font-size: 4rem;
+      font-size: 6rem;
       font-weight: 700;
-      line-height: 1.2;
       margin: 20px 0;
-      text-shadow: 0 0 30px gold;
+      text-shadow: 0 0 30px rgba(255,215,0,0.3);
+      animation: float 4s infinite;
+      word-break: break-word;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .profile-stats {
+      margin: 40px 0;
+      padding: 25px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .back-btn {
+      width: auto;
+      padding: 18px 50px;
+      margin-top: 30px;
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      color: #888;
+      text-align: center;
+    }
+
+    .url-display {
+      font-size: 1.3rem;
+      color: #ffd700;
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 60px;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.9);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      border-left: 4px solid #ffd700;
+      animation: slideIn 0.3s;
+      z-index: 1000;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
     }
   </style>
 </head>
 <body>
 <div class="overlay"></div>
-<div class="container" id="appContainer">
+<div class="container">
 
-  <!-- LOGIN CARD -->
+  <!-- LOGIN -->
   <div id="loginCard" class="auth-wrapper">
     <div class="glass-card auth-card">
       <h1>EXILED</h1>
       <div class="input-group">
-        <input type="email" id="loginEmail" placeholder=" " autocomplete="email">
+        <input type="email" id="loginEmail" placeholder=" ">
         <label>email</label>
       </div>
       <div class="input-group">
-        <input type="password" id="loginPassword" placeholder=" " autocomplete="current-password">
+        <input type="password" id="loginPassword" placeholder=" ">
         <label>password</label>
       </div>
       <button class="btn" id="loginBtn">log in</button>
       <div class="message" id="loginMessage"></div>
-      <span class="link" id="switchToSignupBtn">no account? sign up →</span>
+      <span class="link" id="switchToSignup">no account? sign up →</span>
     </div>
   </div>
 
-  <!-- SIGNUP CARD -->
+  <!-- SIGNUP -->
   <div id="signupCard" class="auth-wrapper" style="display: none;">
     <div class="glass-card auth-card">
       <h1>EXILED</h1>
       <div class="input-group">
-        <input type="text" id="signupUsername" placeholder=" " autocomplete="off">
+        <input type="text" id="signupUsername" placeholder=" ">
         <label>username</label>
       </div>
       <div class="input-group">
-        <input type="email" id="signupEmail" placeholder=" " autocomplete="email">
+        <input type="email" id="signupEmail" placeholder=" ">
         <label>email</label>
       </div>
       <div class="input-group">
-        <input type="password" id="signupPassword" placeholder=" " autocomplete="new-password">
+        <input type="password" id="signupPassword" placeholder=" ">
         <label>password</label>
       </div>
       <button class="btn" id="signupBtn">sign up & flex</button>
       <div class="message" id="signupMessage"></div>
-      <span class="link" id="switchToLoginBtn">← back to login</span>
+      <span class="link" id="switchToLogin">← back to login</span>
     </div>
   </div>
 
-  <!-- DASHBOARD (flex all usernames) -->
+  <!-- DASHBOARD -->
   <div id="dashboard" class="dashboard glass-card">
     <div class="dash-header">
-      <h2 style="font-size:2.2rem;">🏝️ exiled.flex</h2>
-      <div class="user-greeting" id="currentUserBadge">@loading</div>
+      <h2 style="font-size: 2.5rem; background: linear-gradient(135deg, #fff, #ccc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏝️ FLEX ZONE</h2>
+      <div class="user-badge" id="currentUserBadge">@loading</div>
     </div>
-    <p style="margin-bottom: 5px;">🔹 click any card to visit profile page</p>
+    
+    <p style="margin-bottom: 20px; color: #aaa; font-size: 1.1rem;">click any card to visit their profile → exiled.lat/username</p>
+    
     <div class="username-grid" id="usernameList"></div>
     
     <div class="flex-actions">
-      <button class="btn small-btn" id="refreshBtn">↻ refresh exiles</button>
+      <button class="btn small-btn" id="refreshBtn">↻ refresh</button>
       <button class="btn small-btn" id="logoutBtn">leave exile</button>
     </div>
-    <div class="footer-note">
-      <span>✨ flex your handle — everyone sees it</span>
-      <span class="copy-url" id="profileUrlDisplay">🌐 exiled.lat/<span id="currentUserSlug">you</span></span>
+    
+    <div class="url-box" id="profileUrlBox" title="click to copy">
+      <span>🔗</span>
+      <span>exiled.lat/<span id="currentUserSlug">you</span></span>
     </div>
   </div>
 
-  <!-- PROFILE PAGE (individual user view) -->
+  <!-- PROFILE VIEW -->
   <div id="profileView" class="profile-view">
     <div class="glass-card profile-card">
-      <div class="big-username" id="profileUsername">@someone</div>
-      <div style="margin: 20px 0; opacity:0.8;">exiled since dark ages</div>
-      <div class="copy-url" style="justify-content: center;">exiled.lat/<span id="profileSlug"></span></div>
-      <button class="btn back-link" id="backToDashboardBtn">← back to flex</button>
+      <div class="big-username" id="profileUsername">@loading</div>
+      
+      <div class="url-display" id="profileUrl"></div>
+      
+      <div class="profile-stats">
+        <p style="font-size: 1.2rem;">✨ exiled since 2026 ✨</p>
+        <p style="margin-top: 20px; font-size: 1rem; color: #aaa;">⚡ flexing in the exile community ⚡</p>
+      </div>
+      
+      <button class="btn back-btn" id="backToDashboard">← back to flex</button>
+      
+      <div class="footer-note">
+        <span>exiled.lat/yourname · claim your space</span>
+      </div>
     </div>
   </div>
 
@@ -408,288 +530,386 @@
 
 <script>
   (function() {
-    // CONFIG
+    // Supabase setup
     const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // DOM
+    // DOM elements
     const loginCard = document.getElementById('loginCard');
     const signupCard = document.getElementById('signupCard');
     const dashboard = document.getElementById('dashboard');
     const profileView = document.getElementById('profileView');
-
+    
     const loginEmail = document.getElementById('loginEmail');
     const loginPassword = document.getElementById('loginPassword');
     const loginBtn = document.getElementById('loginBtn');
     const loginMessage = document.getElementById('loginMessage');
-
+    
     const signupUsername = document.getElementById('signupUsername');
     const signupEmail = document.getElementById('signupEmail');
     const signupPassword = document.getElementById('signupPassword');
     const signupBtn = document.getElementById('signupBtn');
     const signupMessage = document.getElementById('signupMessage');
-
-    const switchToSignup = document.getElementById('switchToSignupBtn');
-    const switchToLogin = document.getElementById('switchToLoginBtn');
-
-    const usernameListDiv = document.getElementById('usernameList');
+    
+    const switchToSignup = document.getElementById('switchToSignup');
+    const switchToLogin = document.getElementById('switchToLogin');
+    
+    const usernameList = document.getElementById('usernameList');
     const currentUserBadge = document.getElementById('currentUserBadge');
+    const currentUserSlug = document.getElementById('currentUserSlug');
     const refreshBtn = document.getElementById('refreshBtn');
     const logoutBtn = document.getElementById('logoutBtn');
-    const profileUrlDisplay = document.getElementById('profileUrlDisplay');
-    const currentUserSlug = document.getElementById('currentUserSlug');
-
-    // profile page elements
+    const profileUrlBox = document.getElementById('profileUrlBox');
+    
     const profileUsername = document.getElementById('profileUsername');
-    const profileSlug = document.getElementById('profileSlug');
-    const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+    const profileUrl = document.getElementById('profileUrl');
+    const backToDashboard = document.getElementById('backToDashboard');
 
-    // state
-    let currentUser = null; // { id, email, username }
+    // State
+    let currentUser = null;
     let allUsers = [];
 
-    // helper
-    function setMessage(el, text, isError = false) {
-      el.textContent = text;
-      el.style.color = isError ? '#faa' : '#b0e6d0';
-      if (text) setTimeout(() => el.textContent = '', 4000);
+    // Helper functions
+    function showMessage(element, text, isError = false) {
+      element.textContent = text;
+      element.style.color = isError ? '#ff9999' : '#ffd966';
+      setTimeout(() => { element.textContent = ''; }, 4000);
     }
 
-    // escape
-    function escapeHtml(t) { return String(t||'').replace(/[&<>"]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; if(m==='"') return '&quot;'; return m; }); }
-
-    // ---- fetch all profiles ----
-    async function fetchAllUsernames() {
-      const { data, error } = await supabase.from('profiles').select('id, username').order('username');
-      if (error) {
-        console.warn(error);
-        usernameListDiv.innerHTML = `<div class="user-card" style="grid-column:1/-1;">⚠️ no profiles table yet</div>`;
-        return [];
-      }
-      allUsers = data || [];
-      renderUsernameGrid();
-      return allUsers;
+    function showNotification(text, isError = false) {
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.textContent = text;
+      notif.style.background = isError ? 'rgba(255,0,0,0.8)' : 'rgba(0,0,0,0.9)';
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
     }
 
-    function renderUsernameGrid() {
-      if (!usernameListDiv) return;
-      if (!allUsers.length) {
-        usernameListDiv.innerHTML = `<div class="user-card" style="grid-column:1/-1;">🌀 no exiles, be the first</div>`;
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        if (m === '"') return '&quot;';
+        return m;
+      });
+    }
+
+    // Router - handle URL paths
+    async function handleRoute() {
+      const path = window.location.pathname;
+      
+      // If it's the root path, show appropriate view
+      if (path === '/' || path === '/index.html') {
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          dashboard.style.display = 'block';
+          loginCard.style.display = 'none';
+          signupCard.style.display = 'none';
+          profileView.style.display = 'none';
+        } else {
+          loginCard.style.display = 'flex';
+          dashboard.style.display = 'none';
+          profileView.style.display = 'none';
+        }
         return;
       }
-      let html = '';
-      allUsers.forEach(u => {
-        const isYou = currentUser && u.id === currentUser.id;
-        html += `<div class="user-card ${isYou ? 'highlight' : ''}" data-userid="${u.id}" data-username="${escapeHtml(u.username)}">@${escapeHtml(u.username)}${isYou ? ' · you' : ''}</div>`;
-      });
-      usernameListDiv.innerHTML = html;
-
-      // attach click to each card -> profile view
-      document.querySelectorAll('.user-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          const username = card.dataset.username;
-          if (username) showProfilePage(username);
-        });
-      });
+      
+      // Check if path is a username (e.g., /username)
+      const username = path.substring(1); // Remove leading /
+      if (username && !username.includes('/') && !username.includes('.')) {
+        // Try to find this username
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('username', username)
+          .maybeSingle();
+        
+        if (data) {
+          // Show profile page
+          showProfilePage(username);
+        } else {
+          // Username not found, redirect to home with message
+          window.history.pushState({}, '', '/');
+          showNotification('username not found', true);
+          const { data: sessionData } = await supabase.auth.getSession();
+          if (sessionData.session) {
+            dashboard.style.display = 'block';
+          } else {
+            loginCard.style.display = 'flex';
+          }
+        }
+      }
     }
 
-    // --- create/update profile ---
-    async function upsertProfile(userId, username) {
-      await supabase.from('profiles').upsert({ id: userId, username: username, updated_at: new Date() }, { onConflict: 'id' });
-    }
-
-    // --- show profile page (url change simulation) ---
+    // Profile page
     function showProfilePage(username) {
-      // hide main cards, show profileView
       loginCard.style.display = 'none';
       signupCard.style.display = 'none';
       dashboard.style.display = 'none';
       profileView.style.display = 'block';
-
-      profileUsername.textContent = '@' + username;
-      profileSlug.textContent = username;
-
-      // change url hash (so exiled.lat/username appears)
-      window.location.hash = username;
+      
+      profileUsername.textContent = `@${username}`;
+      profileUrl.textContent = `exiled.lat/${username}`;
     }
 
-    // check if hash = username -> show that profile
-    async function checkHashForProfile() {
-      if (!window.location.hash) return false;
-      const hash = window.location.hash.substring(1); // remove #
-      if (!hash) return false;
-
-      // find user with that username
-      const { data } = await supabase.from('profiles').select('username').eq('username', hash).maybeSingle();
-      if (data) {
-        // show profile directly (even if not logged in)
-        loginCard.style.display = 'none';
-        signupCard.style.display = 'none';
-        dashboard.style.display = 'none';
-        profileView.style.display = 'block';
-        profileUsername.textContent = '@' + data.username;
-        profileSlug.textContent = data.username;
-        return true;
+    // Fetch all users
+    async function fetchAllUsers() {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, username')
+        .order('username');
+      
+      if (error) {
+        console.warn('Fetch error:', error);
+        usernameList.innerHTML = '<div class="user-card" style="grid-column: 1/-1;">⚠️ no users yet</div>';
+        return [];
       }
-      return false;
+      
+      allUsers = data || [];
+      renderUserGrid();
+      return allUsers;
     }
 
-    // --- login ---
+    function renderUserGrid() {
+      if (!allUsers.length) {
+        usernameList.innerHTML = '<div class="user-card" style="grid-column: 1/-1;">🌀 be the first exile</div>';
+        return;
+      }
+      
+      let html = '';
+      allUsers.forEach(user => {
+        const isYou = currentUser && user.id === currentUser.id;
+        html += `<div class="user-card ${isYou ? 'highlight' : ''}" data-username="${escapeHtml(user.username)}">
+          @${escapeHtml(user.username)}${isYou ? ' 👑' : ''}
+        </div>`;
+      });
+      
+      usernameList.innerHTML = html;
+      
+      // Add click handlers
+      document.querySelectorAll('.user-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const username = card.dataset.username;
+          if (username) {
+            // Update URL and show profile
+            window.history.pushState({}, '', `/${username}`);
+            showProfilePage(username);
+          }
+        });
+      });
+    }
+
+    // Create/update profile
+    async function upsertProfile(userId, username) {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({ 
+          id: userId, 
+          username: username, 
+          updated_at: new Date() 
+        });
+      
+      if (error) {
+        console.error('Profile upsert error:', error);
+        return false;
+      }
+      return true;
+    }
+
+    // Login
     loginBtn.addEventListener('click', async () => {
       const email = loginEmail.value.trim();
-      const pass = loginPassword.value.trim();
-      if (!email || !pass) return setMessage(loginMessage, 'fill both fields', true);
-
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-      if (error) return setMessage(loginMessage, error.message, true);
+      const password = loginPassword.value.trim();
+      
+      if (!email || !password) {
+        showMessage(loginMessage, 'fill all fields', true);
+        return;
+      }
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      
+      if (error) {
+        showMessage(loginMessage, error.message, true);
+        return;
+      }
       
       const user = data.user;
-      const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).maybeSingle();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .maybeSingle();
+      
       let username = profile?.username || user.email?.split('@')[0] || 'exile';
-
-      // if no profile, create one
+      
       if (!profile) {
         await upsertProfile(user.id, username);
       }
-
+      
       currentUser = { id: user.id, email: user.email, username };
-      currentUserBadge.innerHTML = `@${username}`;
+      currentUserBadge.textContent = `@${username}`;
       currentUserSlug.textContent = username;
-      if (profileUrlDisplay) profileUrlDisplay.innerHTML = `🌐 exiled.lat/<span style="font-weight:600;">${username}</span>`;
-
-      await fetchAllUsernames();
-
-      // show dashboard
+      
+      await fetchAllUsers();
+      
       loginCard.style.display = 'none';
-      signupCard.style.display = 'none';
       dashboard.style.display = 'block';
       profileView.style.display = 'none';
-      loginMessage.textContent = '';
-
-      // clear any hash
-      window.location.hash = '';
+      
+      window.history.pushState({}, '', '/');
+      showNotification(`welcome back, @${username}!`);
     });
 
-    // --- signup ---
+    // Signup
     signupBtn.addEventListener('click', async () => {
-      const username = signupUsername.value.trim();
+      const username = signupUsername.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       const email = signupEmail.value.trim();
-      const pass = signupPassword.value.trim();
-      if (!username || !email || !pass) return setMessage(signupMessage, 'all fields required', true);
-
-      const { data, error } = await supabase.auth.signUp({ email, password: pass });
-      if (error) return setMessage(signupMessage, error.message, true);
-      if (!data.user) return;
-
-      await upsertProfile(data.user.id, username);
+      const password = signupPassword.value.trim();
       
-      // auto-login
-      const { error: loginError } = await supabase.auth.signInWithPassword({ email, password: pass });
-      if (loginError) {
-        switchToLoginView();
-        setMessage(loginMessage, 'signup OK, please log in', false);
+      if (!username || !email || !password) {
+        showMessage(signupMessage, 'all fields required', true);
         return;
       }
 
-      currentUser = { id: data.user.id, email, username };
-      currentUserBadge.innerHTML = `@${username}`;
-      currentUserSlug.textContent = username;
-      profileUrlDisplay.innerHTML = `🌐 exiled.lat/<span style="font-weight:600;">${username}</span>`;
-      await fetchAllUsernames();
-
-      dashboard.style.display = 'block';
-      signupCard.style.display = 'none';
-      loginCard.style.display = 'none';
-      profileView.style.display = 'none';
-      window.location.hash = '';
+      if (username.length < 3) {
+        showMessage(signupMessage, 'username must be at least 3 characters', true);
+        return;
+      }
+      
+      // Check if username exists
+      const { data: existing } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username)
+        .maybeSingle();
+      
+      if (existing) {
+        showMessage(signupMessage, 'username taken', true);
+        return;
+      }
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
+      
+      if (error) {
+        showMessage(signupMessage, error.message, true);
+        return;
+      }
+      
+      if (data.user) {
+        await upsertProfile(data.user.id, username);
+        
+        // Auto login
+        const { error: loginError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        
+        if (loginError) {
+          showMessage(signupMessage, 'signup ok, please login', false);
+          switchToLogin.click();
+          return;
+        }
+        
+        currentUser = { id: data.user.id, email, username };
+        currentUserBadge.textContent = `@${username}`;
+        currentUserSlug.textContent = username;
+        
+        await fetchAllUsers();
+        
+        dashboard.style.display = 'block';
+        signupCard.style.display = 'none';
+        profileView.style.display = 'none';
+        
+        window.history.pushState({}, '', '/');
+        showNotification(`welcome to exile, @${username}!`);
+      }
     });
 
-    // --- logout ---
+    // Logout
     logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut();
       currentUser = null;
       dashboard.style.display = 'none';
       profileView.style.display = 'none';
       loginCard.style.display = 'flex';
-      signupCard.style.display = 'none';
-      window.location.hash = '';
+      window.history.pushState({}, '', '/');
+      showNotification('logged out');
     });
 
-    // --- refresh ---
-    refreshBtn.addEventListener('click', fetchAllUsernames);
+    // Refresh
+    refreshBtn.addEventListener('click', fetchAllUsers);
 
-    // --- navigation links ---
+    // Navigation
     switchToSignup.addEventListener('click', () => {
       loginCard.style.display = 'none';
       signupCard.style.display = 'flex';
     });
+
     switchToLogin.addEventListener('click', () => {
       signupCard.style.display = 'none';
       loginCard.style.display = 'flex';
     });
 
-    backToDashboardBtn.addEventListener('click', () => {
-      if (currentUser) {
-        profileView.style.display = 'none';
+    backToDashboard.addEventListener('click', async () => {
+      window.history.pushState({}, '', '/');
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
         dashboard.style.display = 'block';
-        window.location.hash = '';
-      } else {
-        // not logged in, go to login
         profileView.style.display = 'none';
+      } else {
         loginCard.style.display = 'flex';
-        window.location.hash = '';
+        profileView.style.display = 'none';
       }
     });
 
-    // --- session init + hash check ---
+    // Copy URL
+    profileUrlBox.addEventListener('click', () => {
+      const text = `exiled.lat/${currentUserSlug.textContent}`;
+      navigator.clipboard.writeText(text);
+      showNotification('✨ url copied!');
+    });
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', handleRoute);
+
+    // Initialize
     async function init() {
-      // check hash first for public profile
-      const hashHandled = await checkHashForProfile();
-      if (hashHandled) return; // profile shown, no need to load session
-
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (sessionData.session) {
-        const user = sessionData.session.user;
-        const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).maybeSingle();
+      // Handle the current route
+      await handleRoute();
+      
+      // Get session and update UI
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        const user = data.session.user;
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', user.id)
+          .maybeSingle();
+        
         let username = profile?.username || user.email?.split('@')[0] || 'exile';
-        if (!profile) await upsertProfile(user.id, username);
-
+        
+        if (!profile) {
+          await upsertProfile(user.id, username);
+        }
+        
         currentUser = { id: user.id, email: user.email, username };
-        currentUserBadge.innerHTML = `@${username}`;
+        currentUserBadge.textContent = `@${username}`;
         currentUserSlug.textContent = username;
-        if (profileUrlDisplay) profileUrlDisplay.innerHTML = `🌐 exiled.lat/<span style="font-weight:600;">${username}</span>`;
-
-        await fetchAllUsernames();
-        dashboard.style.display = 'block';
-        loginCard.style.display = 'none';
-        signupCard.style.display = 'none';
-        profileView.style.display = 'none';
-      } else {
-        loginCard.style.display = 'flex';
-        dashboard.style.display = 'none';
-        profileView.style.display = 'none';
+        
+        await fetchAllUsers();
       }
     }
 
     init();
-
-    // on hash change (user types manually)
-    window.addEventListener('hashchange', async () => {
-      if (window.location.hash) {
-        await checkHashForProfile();
-      } else {
-        // if no hash, go to dashboard if logged in else login
-        if (currentUser) {
-          profileView.style.display = 'none';
-          dashboard.style.display = 'block';
-        } else {
-          profileView.style.display = 'none';
-          loginCard.style.display = 'flex';
-        }
-      }
-    });
-
   })();
 </script>
 </body>
