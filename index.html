@@ -881,8 +881,8 @@
   </div>
 </div>
 
-<!-- LOGIN MODAL (always available) -->
-<div id="loginModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: flex; align-items: center; justify-content: center;">
   <div class="auth-box" style="width: 100%; max-width: 400px; margin: 0;">
     <h2>Login to exiled</h2>
     <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
@@ -1108,7 +1108,8 @@
 
   // Open paste in new window
   function openPasteInNewWindow(pasteId) {
-    window.open(`/#paste/${pasteId}`, '_blank');
+    const url = `${window.location.origin}/#paste/${pasteId}`;
+    window.open(url, '_blank');
   }
 
   // View paste
