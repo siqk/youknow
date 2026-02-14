@@ -350,11 +350,11 @@
                     <button id="signupTab" class="auth-tab">Sign Up</button>
                 </div>
                 
-                <!-- Login Form -->
+                <!-- Login Form - Username & Password only -->
                 <div id="loginForm" class="auth-form">
                     <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" id="loginEmail" placeholder="your@gmail.com" required>
+                        <label>Username</label>
+                        <input type="text" id="loginUsername" placeholder="cooluser123" required>
                     </div>
                     <div class="input-group">
                         <label>Password</label>
@@ -363,7 +363,7 @@
                     <button id="loginBtn" class="auth-button">Log In</button>
                 </div>
 
-                <!-- Signup Form -->
+                <!-- Signup Form - Username, Email & Password -->
                 <div id="signupForm" class="auth-form hidden">
                     <div class="input-group">
                         <label>Username</label>
@@ -420,6 +420,10 @@
         // 🔴 SET YOUR ADMIN EMAIL HERE - Change this to YOUR email to become admin
         const ADMIN_EMAIL = 'admin@gmail.com'; // CHANGE THIS TO YOUR EMAIL (e.g., 'yourname@gmail.com')
 
+        // Store username to email mapping (in a real app, this would be in your database)
+        // This is a workaround since Supabase Auth uses email for login
+        const usernameToEmail = {};
+
         // Show error message
         function showError(message) {
             authError.textContent = message;
@@ -471,7 +475,14 @@
                 signupBtn.textContent = 'Creating Account...';
                 signupBtn.disabled = true;
 
-                // Sign up with Supabase Auth
+                // Store username-email mapping in localStorage (temporary solution)
+                // In production, you'd want this in a database table
+                localStorage.setItem(`username_${username}`, email);
+                
+                // Also store in our local object
+                usernameToEmail[username.toLowerCase()] = email;
+
+                // Sign up with Supabase Auth (using email)
                 const { data: authData, error: authError } = await supabase.auth.signUp({
                     email: email,
                     password: password,
@@ -488,7 +499,7 @@
                     // Check if this email should be admin
                     const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
                     
-                    // Try to insert into profiles table (if trigger doesn't exist)
+                    // Try to insert into profiles table
                     try {
                         const { error: insertError } = await supabase
                             .from('profiles')
@@ -525,12 +536,12 @@
             }
         });
 
-        // Login function
+        // Login function - using username and password
         loginBtn.addEventListener('click', async () => {
-            const email = document.getElementById('loginEmail').value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            if (!email || !password) {
+            if (!username || !password) {
                 showError('Please fill in all fields');
                 return;
             }
@@ -540,6 +551,32 @@
                 loginBtn.textContent = 'Logging in...';
                 loginBtn.disabled = true;
 
+                // Get email from username
+                // First check localStorage
+                let email = localStorage.getItem(`username_${username}`);
+                
+                // If not found in localStorage, try to fetch from profiles table
+                if (!email) {
+                    try {
+                        const { data: profiles, error } = await supabase
+                            .from('profiles')
+                            .select('email')
+                            .eq('username', username)
+                            .single();
+                        
+                        if (!error && profiles) {
+                            email = profiles.email;
+                        }
+                    } catch (e) {
+                        console.log('Could not fetch from profiles');
+                    }
+                }
+
+                if (!email) {
+                    throw new Error('Username not found');
+                }
+
+                // Attempt login with email and password
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password
@@ -548,7 +585,7 @@
                 if (error) throw error;
 
                 // Clear login form
-                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginUsername').value = '';
                 document.getElementById('loginPassword').value = '';
                 
                 // Dashboard will show automatically via onAuthStateChange
@@ -594,50 +631,51 @@
                     console.log('Profiles table not found, using auth metadata');
                 }
                 
-                // If no profiles table or empty, get from auth users
+                // If no profiles table or empty, create mock data
                 if (profiles.length === 0) {
-                    // Get all users from auth (limited - would need admin API for full list)
-                    // For demo, we'll show current user plus mock data
+                    // Get all usernames from localStorage
+                    const mockProfiles = [];
+                    
+                    // Add current user if logged in
                     if (user) {
-                        profiles = [
-                            {
-                                id: user.id,
-                                username: user.user_metadata?.username || user.email?.split('@')[0],
-                                email: user.email,
-                                is_admin: user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase(),
-                                created_at: new Date().toISOString()
-                            }
-                        ];
-                    } else {
-                        // Mock data for demonstration
-                        profiles = [
-                            { 
-                                id: '1', 
-                                username: 'john_doe', 
-                                email: 'john@gmail.com', 
-                                is_admin: false, 
-                                created_at: new Date(Date.now() - 86400000).toISOString() 
-                            },
-                            { 
-                                id: '2', 
-                                username: 'jane_smith', 
-                                email: 'jane@gmail.com', 
-                                is_admin: false, 
-                                created_at: new Date().toISOString() 
-                            }
-                        ];
-                        
-                        // Add admin if not in list
-                        if (ADMIN_EMAIL !== 'admin@gmail.com') {
-                            profiles.unshift({
-                                id: 'admin',
-                                username: 'admin_user',
-                                email: ADMIN_EMAIL,
-                                is_admin: true,
-                                created_at: new Date(Date.now() - 172800000).toISOString()
-                            });
-                        }
+                        mockProfiles.push({
+                            id: user.id,
+                            username: user.user_metadata?.username || user.email?.split('@')[0],
+                            email: user.email,
+                            is_admin: user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase(),
+                            created_at: new Date().toISOString()
+                        });
                     }
+                    
+                    // Add some mock users for demonstration
+                    const mockUsers = [
+                        { username: 'john_doe', email: 'john@gmail.com', is_admin: false },
+                        { username: 'jane_smith', email: 'jane@gmail.com', is_admin: false },
+                        { username: 'bob_wilson', email: 'bob@gmail.com', is_admin: false }
+                    ];
+                    
+                    mockUsers.forEach((mockUser, index) => {
+                        mockProfiles.push({
+                            id: `mock-${index}`,
+                            username: mockUser.username,
+                            email: mockUser.email,
+                            is_admin: mockUser.is_admin,
+                            created_at: new Date(Date.now() - (index * 86400000)).toISOString()
+                        });
+                    });
+                    
+                    // Add admin if not in list and not already added
+                    if (ADMIN_EMAIL !== 'admin@gmail.com' && !mockProfiles.some(p => p.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase())) {
+                        mockProfiles.unshift({
+                            id: 'admin',
+                            username: 'admin_user',
+                            email: ADMIN_EMAIL,
+                            is_admin: true,
+                            created_at: new Date(Date.now() - 172800000).toISOString()
+                        });
+                    }
+                    
+                    profiles = mockProfiles;
                 }
 
                 displayUsers(profiles);
@@ -711,7 +749,7 @@
                 loginBtn.disabled = false;
                 
                 // Clear forms
-                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginUsername').value = '';
                 document.getElementById('loginPassword').value = '';
                 document.getElementById('signupUsername').value = '';
                 document.getElementById('signupEmail').value = '';
