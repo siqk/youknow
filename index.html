@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>exiled · flex usernames</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ===== global – same vibe, even sharper ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    body, html {
+      height: 100%;
+      width: 100%;
+      background: url('https://i.pinimg.com/originals/f2/f3/93/f2f393327208542afade5799bcd3814a.gif') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    /* ===== cards ===== */
+    .card {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      border-radius: 24px;
+      padding: 45px 35px;
+      width: 400px;
+      max-width: 92%;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      margin-bottom: 28px;
+      font-weight: 700;
+      font-size: 2.4rem;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #fff, #ccc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-weight: 500;
+      margin-bottom: 25px;
+      color: #fff;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 20px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 40px;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    input:focus {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 40px;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(255,255,255,0.15);
+    }
+
+    .link {
+      margin-top: 22px;
+      color: #ccc;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-bottom: 1px dashed transparent;
+    }
+
+    .link:hover {
+      color: white;
+      border-bottom-color: #aaa;
+    }
+
+    .message {
+      min-height: 28px;
+      font-size: 0.9rem;
+      color: #ffd966;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    /* ===== dashboard ===== */
+    .dashboard {
+      display: none;
+      width: 90%;
+      max-width: 950px;
+      animation: fadeIn 0.6s;
+    }
+
+    .dashboard-container {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      border-radius: 32px;
+      padding: 35px 35px 45px;
+      width: 100%;
+      box-shadow: 0 30px 60px black;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 35px;
+      gap: 15px;
+    }
+
+    .dashboard-header h2 {
+      font-size: 2rem;
+      background: linear-gradient(145deg, #fff, #bbb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    .user-badge {
+      background: rgba(255,255,255,0.1);
+      padding: 12px 25px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.2);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logout-btn {
+      width: auto;
+      margin: 0;
+      padding: 12px 30px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .username-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 30px 0 20px;
+    }
+
+    .username-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 30px;
+      padding: 18px 12px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 1.1rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(2px);
+      transition: 0.2s;
+      word-break: break-word;
+    }
+
+    .username-card:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .flex-note {
+      color: #aaa;
+      margin: 15px 0 0;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .small-note {
+      color: #888;
+      font-size: 0.85rem;
+    }
+
+    hr {
+      border: 0.5px solid rgba(255,255,255,0.1);
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== LOGIN CARD ========= -->
+<div class="card" id="loginCard">
+  <h1>exiled</h1>
+  <input type="email" placeholder="email" id="loginEmail" autocomplete="email">
+  <input type="password" placeholder="password" id="loginPassword" autocomplete="current-password">
+  <button id="loginBtn">log in</button>
+  <div class="message" id="loginMessage"></div>
+  <span class="link" onclick="switchToSignup()">no account? sign up →</span>
+</div>
+
+<!-- ========== SIGNUP CARD ========= -->
+<div class="card" id="signupCard" style="display: none;">
+  <h1>exiled</h1>
+  <input type="text" placeholder="username" id="signupUsername" autocomplete="off">
+  <input type="email" placeholder="email" id="signupEmail" autocomplete="email">
+  <input type="password" placeholder="password" id="signupPassword" autocomplete="new-password">
+  <button id="signupBtn">sign up & flex</button>
+  <div class="message" id="signupMessage"></div>
+  <span class="link" onclick="switchToLogin()">← back to login</span>
+</div>
+
+<!-- ========== DASHBOARD (flex zone) ========= -->
+<div class="dashboard" id="dashboard">
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h2>🏴‍☠️ exiled · flex</h2>
+      <div class="user-badge" id="currentUserDisplay">
+        <span>⚡</span> <span id="loggedInUsername">@user</span>
+      </div>
+    </div>
+
+    <!-- username grid = all users except current one? better: show all to flex -->
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+      <p style="color: #ddd;">all exiles — drop your @</p>
+      <span class="small-note">total: <span id="totalCount">0</span></span>
+    </div>
+    <div class="username-grid" id="usernameList">
+      <!-- dynamically filled: each card shows a username -->
+    </div>
+
+    <hr>
+    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+      <button class="logout-btn" id="logoutBtn">leave exile</button>
+      <button class="logout-btn" id="refreshUsernamesBtn" style="background: rgba(255,255,255,0.1);">↻ refresh</button>
+    </div>
+    <div class="flex-note">✨ flex your username — everyone sees it ✨</div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- SUPABASE INIT (using provided keys) ----------
+    const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ---------- DOM elements ----------
+    const loginCard = document.getElementById('loginCard');
+    const signupCard = document.getElementById('signupCard');
+    const dashboard = document.getElementById('dashboard');
+
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginMessage = document.getElementById('loginMessage');
+
+    const signupUsername = document.getElementById('signupUsername');
+    const signupEmail = document.getElementById('signupEmail');
+    const signupPassword = document.getElementById('signupPassword');
+    const signupBtn = document.getElementById('signupBtn');
+    const signupMessage = document.getElementById('signupMessage');
+
+    const loggedInUsernameSpan = document.getElementById('loggedInUsername');
+    const usernameListDiv = document.getElementById('usernameList');
+    const totalCountSpan = document.getElementById('totalCount');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const refreshBtn = document.getElementById('refreshUsernamesBtn');
+
+    // ---------- state ----------
+    let currentUser = null;               // { id, email, username? }
+    let allUsers = [];
+
+    // ---------- helper: show message ----------
+    function setMessage(element, text, isError = false) {
+      element.textContent = text;
+      element.style.color = isError ? '#ffa07a' : '#b0e0e6';
+      if (text) setTimeout(() => { element.textContent = ''; }, 4000);
+    }
+
+    // ---------- UI switchers ----------
+    window.switchToSignup = function() {
+      loginCard.style.display = 'none';
+      signupCard.style.display = 'flex';
+      loginMessage.textContent = '';
+    };
+
+    window.switchToLogin = function() {
+      signupCard.style.display = 'none';
+      loginCard.style.display = 'flex';
+      signupMessage.textContent = '';
+    };
+
+    // ---------- load all usernames from 'profiles' (or auth.users metadata?) ----------
+    // we need a table: "profiles" with id (uuid), username, updated_at
+    // if not exists, we'll create on signup (via supabase insert).
+    // for demo: assume profiles table exists. if it fails, we adapt.
+    async function fetchAllUsernames() {
+      try {
+        // try to get from 'profiles' table, order by username
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, username')
+          .order('username', { ascending: true });
+
+        if (error) {
+          console.warn('profiles fetch error, maybe table missing?', error.message);
+          // fallback: show only current user? but we want flex. try auth.users? no.
+          // we'll mock for demo, but we push to profiles on signup.
+          // if table missing, we set empty array and show note
+          usernameListDiv.innerHTML = `<div class="username-card" style="grid-column:1/-1; color:#aaa;">⚠️ no profiles table — create one with id, username</div>`;
+          totalCountSpan.textContent = '?';
+          return [];
+        }
+        // filter out eventual duplicates? no.
+        allUsers = data || [];
+        renderUsernameGrid();
+        return allUsers;
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
+    }
+
+    function renderUsernameGrid() {
+      if (!usernameListDiv) return;
+      if (!allUsers.length) {
+        usernameListDiv.innerHTML = `<div class="username-card" style="grid-column:1/-1;">🧊 no exiles yet, be the first</div>`;
+        totalCountSpan.textContent = '0';
+        return;
+      }
+      let html = '';
+      allUsers.forEach(u => {
+        // highlight current user maybe? subtle
+        const isYou = currentUser && u.id === currentUser.id;
+        html += `<div class="username-card" style="${isYou ? 'border:1px solid rgba(255,215,0,0.5); background:rgba(255,215,0,0.05);' : ''}">${isYou ? '✨ ' : ''}@${escapeHtml(u.username)}${isYou ? ' (you)' : ''}</div>`;
+      });
+      usernameListDiv.innerHTML = html;
+      totalCountSpan.textContent = allUsers.length;
+    }
+
+    // simple escape
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"]/g, function(m) {
+        if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; if (m === '"') return '&quot;';
+        return m;
+      });
+    }
+
+    // ---------- update dashboard user info ----------
+    function setDashboardUser(username) {
+      loggedInUsernameSpan.textContent = username ? `@${username}` : '@exile';
+    }
+
+    // ---------- insert/upsert profile after signup ----------
+    async function createProfile(userId, username) {
+      // insert into profiles (id, username) - if conflict do nothing? we'll use upsert
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({ id: userId, username: username, updated_at: new Date() }, { onConflict: 'id' });
+
+      if (error) {
+        console.warn('profile upsert error:', error);
+        // maybe table missing? we still show but can't save
+      }
+    }
+
+    // ---------- signup ----------
+    signupBtn.addEventListener('click', async () => {
+      const username = signupUsername.value.trim();
+      const email = signupEmail.value.trim();
+      const password = signupPassword.value;
+
+      if (!username || !email || !password) {
+        setMessage(signupMessage, 'fill all fields', true);
+        return;
+      }
+
+      try {
+        // 1. sign up with supabase auth
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+        });
+
+        if (error) {
+          setMessage(signupMessage, error.message, true);
+          return;
+        }
+
+        const user = data.user;
+        if (!user) throw new Error('no user returned');
+
+        // 2. store username in profiles (tie to user.id)
+        await createProfile(user.id, username);
+
+        setMessage(signupMessage, 'signup OK! logging in...', false);
+
+        // 3. sign in automatically (or just wait for user to login) - we'll do manual login
+        // but we can auto-login for better UX: sign in with same credentials
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (signInError) {
+          // if auto fails, just show login card
+          switchToLogin();
+          setMessage(loginMessage, 'signup done, please log in', false);
+          return;
+        }
+
+        // success: get session and load dashboard
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session) {
+          currentUser = {
+            id: sessionData.session.user.id,
+            email: sessionData.session.user.email,
+            username: username, // we have it fresh
+          };
+          setDashboardUser(username);
+          // ensure profile exists (maybe race) but we did createProfile above
+          await fetchAllUsernames();  // now fetch all profiles
+          // switch view
+          signupCard.style.display = 'none';
+          dashboard.style.display = 'block';
+          setMessage(signupMessage, '');
+        } else {
+          switchToLogin();
+        }
+      } catch (err) {
+        setMessage(signupMessage, 'unexpected error', true);
+      }
+    });
+
+    // ---------- login ----------
+    loginBtn.addEventListener('click', async () => {
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value;
+
+      if (!email || !password) {
+        setMessage(loginMessage, 'enter both fields', true);
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        setMessage(loginMessage, error.message, true);
+        return;
+      }
+
+      const user = data.user;
+      if (!user) return;
+
+      // fetch username from profiles (by id)
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      let username = profile?.username || 'anon';
+      if (!profile && !profileError) {
+        // if no profile, create one using email localpart or something
+        username = user.email?.split('@')[0] || 'user';
+        await createProfile(user.id, username);
+      } else if (profileError) {
+        console.warn(profileError);
+        username = user.email?.split('@')[0] || 'user';
+      } else {
+        username = profile.username;
+      }
+
+      currentUser = {
+        id: user.id,
+        email: user.email,
+        username: username,
+      };
+
+      setDashboardUser(username);
+      await fetchAllUsernames();  // fetch all including self
+
+      loginCard.style.display = 'none';
+      signupCard.style.display = 'none';
+      dashboard.style.display = 'block';
+      loginMessage.textContent = '';
+    });
+
+    // ---------- logout ----------
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      currentUser = null;
+      dashboard.style.display = 'none';
+      loginCard.style.display = 'flex';
+      signupCard.style.display = 'none';
+      loginEmail.value = ''; loginPassword.value = '';
+    });
+
+    // ---------- refresh usernames ----------
+    refreshBtn.addEventListener('click', async () => {
+      await fetchAllUsernames();
+    });
+
+    // ---------- on load check session ----------
+    async function initSession() {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const session = sessionData?.session;
+      if (session) {
+        const user = session.user;
+        // get username from profiles
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        let username = profile?.username || user.email?.split('@')[0] || 'exile';
+        currentUser = { id: user.id, email: user.email, username: username };
+        setDashboardUser(username);
+        await fetchAllUsernames();
+        dashboard.style.display = 'block';
+        loginCard.style.display = 'none';
+        signupCard.style.display = 'none';
+      } else {
+        dashboard.style.display = 'none';
+        loginCard.style.display = 'flex';
+      }
+    }
+
+    // if profiles table doesn't exist, at least we try to create a dummy for demo: 
+    // we will rely on signup creation. 
+    // run init
+    initSession();
+
+    // small fallback: ensure signup message cleared
+  })();
+</script>
+
+<!-- extra note: profiles table schema: id (uuid references auth.users), username text, updated_at timestamptz -->
+</body>
+</html>
