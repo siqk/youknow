@@ -3,112 +3,189 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>exiled · flex usernames</title>
+  <title>exiled · flex your @</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
-  <!-- supabase client library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* ===== global – same vibe, even sharper ===== */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
-      transition: all 0.3s ease;
     }
 
     body, html {
-      height: 100%;
       width: 100%;
-      background: url('https://i.pinimg.com/originals/f2/f3/93/f2f393327208542afade5799bcd3814a.gif') no-repeat center center fixed;
-      background-size: cover;
+      min-height: 100vh;
+      background: url('https://i.pinimg.com/originals/f2/f3/93/f2f393327208542afade5799bcd3814a.gif') center/cover fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    /* animated backdrop overlay */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(3px);
+      z-index: 0;
+      animation: fadeBlur 1.2s ease-out;
+    }
+
+    @keyframes fadeBlur {
+      0% { backdrop-filter: blur(0px); background: rgba(0,0,0,0.2); }
+      100% { backdrop-filter: blur(3px); background: rgba(0,0,0,0.5); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px;
+      animation: floatIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @keyframes floatIn {
+      0% { opacity: 0; transform: scale(0.96) translateY(30px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* cards */
+    .glass-card {
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 40px;
+      padding: 40px 38px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.05) inset;
+      transition: transform 0.3s, box-shadow 0.4s;
+    }
+
+    .glass-card:hover {
+      box-shadow: 0 35px 70px rgba(0,0,0,0.9), 0 0 0 1.5px rgba(255,255,255,0.2) inset;
+    }
+
+    /* auth wrapper */
+    .auth-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #fff;
     }
 
-    /* ===== cards ===== */
-    .card {
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      border-radius: 24px;
-      padding: 45px 35px;
-      width: 400px;
-      max-width: 92%;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      animation: fadeUp 0.6s ease forwards;
+    .auth-card {
+      width: 420px;
+      max-width: 100%;
+      animation: cardPop 0.5s ease;
     }
 
-    @keyframes fadeUp {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
+    @keyframes cardPop {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     h1 {
-      margin-bottom: 28px;
+      font-size: 3.2rem;
       font-weight: 700;
-      font-size: 2.4rem;
-      letter-spacing: 3px;
-      background: linear-gradient(135deg, #fff, #ccc);
+      letter-spacing: 6px;
+      text-align: center;
+      background: linear-gradient(130deg, #fff, #aaa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-    }
-
-    h2 {
-      font-weight: 500;
       margin-bottom: 25px;
-      color: #fff;
+      filter: drop-shadow(0 4px 6px black);
     }
 
-    input {
+    .input-group {
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .input-group input {
       width: 100%;
-      padding: 16px 20px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 40px;
-      background: rgba(255,255,255,0.08);
-      color: white;
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 60px;
+      padding: 18px 24px;
       font-size: 1rem;
+      color: white;
       outline: none;
-      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.25s;
     }
 
-    input:focus {
+    .input-group input:focus {
+      border-color: rgba(255,255,255,0.5);
       background: rgba(255,255,255,0.15);
-      border-color: rgba(255,255,255,0.3);
-    }
-
-    button {
-      width: 100%;
-      padding: 16px;
-      margin-top: 20px;
-      border: none;
-      border-radius: 40px;
-      background: rgba(255,255,255,0.15);
-      color: white;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.2);
-      letter-spacing: 0.5px;
-    }
-
-    button:hover {
-      background: rgba(255,255,255,0.3);
       transform: scale(1.02);
-      box-shadow: 0 8px 20px rgba(255,255,255,0.15);
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 24px;
+      top: 18px;
+      color: #aaa;
+      pointer-events: none;
+      transition: 0.2s;
+      background: transparent;
+      padding: 0 6px;
+    }
+
+    .input-group input:focus ~ label,
+    .input-group input:not(:placeholder-shown) ~ label {
+      top: -12px;
+      left: 20px;
+      font-size: 0.8rem;
+      color: #ccc;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 30px;
+      padding: 2px 12px;
+    }
+
+    .input-group input::placeholder {
+      color: transparent;
+    }
+
+    .btn {
+      background: rgba(255,255,255,0.1);
+      border: 1.5px solid rgba(255,255,255,0.2);
+      border-radius: 60px;
+      padding: 18px 28px;
+      width: 100%;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      margin: 10px 0;
+      letter-spacing: 1px;
+      backdrop-filter: blur(5px);
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-5px);
+      box-shadow: 0 18px 30px -10px black;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
     }
 
     .link {
-      margin-top: 22px;
       color: #ccc;
-      font-size: 0.95rem;
+      text-align: center;
+      display: block;
+      margin-top: 20px;
       cursor: pointer;
+      text-decoration: none;
       border-bottom: 1px dashed transparent;
+      transition: 0.2s;
     }
 
     .link:hover {
@@ -117,175 +194,230 @@
     }
 
     .message {
-      min-height: 28px;
-      font-size: 0.9rem;
+      min-height: 30px;
       color: #ffd966;
-      margin-top: 8px;
       text-align: center;
+      font-size: 0.9rem;
+      margin: 8px 0;
     }
 
-    /* ===== dashboard ===== */
+    /* DASHBOARD (flex zone) */
     .dashboard {
       display: none;
-      width: 90%;
-      max-width: 950px;
-      animation: fadeIn 0.6s;
     }
 
-    .dashboard-container {
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
-      border-radius: 32px;
-      padding: 35px 35px 45px;
-      width: 100%;
-      box-shadow: 0 30px 60px black;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .dashboard-header {
+    .dash-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 35px;
-      gap: 15px;
+      gap: 20px;
+      margin-bottom: 30px;
     }
 
-    .dashboard-header h2 {
-      font-size: 2rem;
-      background: linear-gradient(145deg, #fff, #bbb);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 0;
-    }
-
-    .user-badge {
+    .user-greeting {
       background: rgba(255,255,255,0.1);
-      padding: 12px 25px;
-      border-radius: 50px;
+      padding: 14px 32px;
+      border-radius: 60px;
       border: 1px solid rgba(255,255,255,0.2);
       font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-size: 1.2rem;
+      backdrop-filter: blur(8px);
+      transition: 0.3s;
+      animation: glowPulse 4s infinite;
     }
 
-    .logout-btn {
-      width: auto;
-      margin: 0;
-      padding: 12px 30px;
-      background: rgba(255,255,255,0.05);
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 5px rgba(255,255,255,0.1); }
+      50% { box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+      100% { box-shadow: 0 0 5px rgba(255,255,255,0.1); }
     }
 
     .username-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
       gap: 16px;
-      margin: 30px 0 20px;
+      margin: 40px 0;
     }
 
-    .username-card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 30px;
-      padding: 18px 12px;
-      text-align: center;
-      font-weight: 500;
-      font-size: 1.1rem;
+    .user-card {
+      background: rgba(20,20,20,0.7);
+      backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.1);
-      backdrop-filter: blur(2px);
-      transition: 0.2s;
+      border-radius: 40px;
+      padding: 24px 8px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 500;
+      transition: 0.25s;
+      cursor: pointer;
       word-break: break-word;
+      animation: cardFade 0.6s;
     }
 
-    .username-card:hover {
+    .user-card:hover {
       background: rgba(255,255,255,0.15);
-      transform: translateY(-4px);
-      border-color: rgba(255,255,255,0.3);
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(255,255,255,0.4);
+      box-shadow: 0 25px 30px -12px black;
     }
 
-    .flex-note {
-      color: #aaa;
-      margin: 15px 0 0;
-      font-style: italic;
+    .user-card.highlight {
+      border: 2px solid gold;
+      background: rgba(255,215,0,0.1);
+    }
+
+    @keyframes cardFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .flex-actions {
       display: flex;
-      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
       justify-content: center;
+    }
+
+    .small-btn {
+      width: auto;
+      padding: 14px 36px;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .copy-url {
+      background: rgba(255,255,255,0.1);
+      border-radius: 30px;
+      padding: 12px 22px;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      color: #aaa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .small-note {
-      color: #888;
-      font-size: 0.85rem;
+    /* profile page (user view) */
+    .profile-view {
+      display: none;
+      text-align: center;
     }
 
-    hr {
-      border: 0.5px solid rgba(255,255,255,0.1);
+    .profile-card {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .back-link {
+      margin-top: 30px;
+      display: inline-block;
+    }
+
+    .big-username {
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1.2;
       margin: 20px 0;
+      text-shadow: 0 0 30px gold;
     }
   </style>
 </head>
 <body>
+<div class="overlay"></div>
+<div class="container" id="appContainer">
 
-<!-- ========== LOGIN CARD ========= -->
-<div class="card" id="loginCard">
-  <h1>exiled</h1>
-  <input type="email" placeholder="email" id="loginEmail" autocomplete="email">
-  <input type="password" placeholder="password" id="loginPassword" autocomplete="current-password">
-  <button id="loginBtn">log in</button>
-  <div class="message" id="loginMessage"></div>
-  <span class="link" onclick="switchToSignup()">no account? sign up →</span>
-</div>
-
-<!-- ========== SIGNUP CARD ========= -->
-<div class="card" id="signupCard" style="display: none;">
-  <h1>exiled</h1>
-  <input type="text" placeholder="username" id="signupUsername" autocomplete="off">
-  <input type="email" placeholder="email" id="signupEmail" autocomplete="email">
-  <input type="password" placeholder="password" id="signupPassword" autocomplete="new-password">
-  <button id="signupBtn">sign up & flex</button>
-  <div class="message" id="signupMessage"></div>
-  <span class="link" onclick="switchToLogin()">← back to login</span>
-</div>
-
-<!-- ========== DASHBOARD (flex zone) ========= -->
-<div class="dashboard" id="dashboard">
-  <div class="dashboard-container">
-    <div class="dashboard-header">
-      <h2>🏴‍☠️ exiled · flex</h2>
-      <div class="user-badge" id="currentUserDisplay">
-        <span>⚡</span> <span id="loggedInUsername">@user</span>
+  <!-- LOGIN CARD -->
+  <div id="loginCard" class="auth-wrapper">
+    <div class="glass-card auth-card">
+      <h1>EXILED</h1>
+      <div class="input-group">
+        <input type="email" id="loginEmail" placeholder=" " autocomplete="email">
+        <label>email</label>
       </div>
+      <div class="input-group">
+        <input type="password" id="loginPassword" placeholder=" " autocomplete="current-password">
+        <label>password</label>
+      </div>
+      <button class="btn" id="loginBtn">log in</button>
+      <div class="message" id="loginMessage"></div>
+      <span class="link" id="switchToSignupBtn">no account? sign up →</span>
     </div>
-
-    <!-- username grid = all users except current one? better: show all to flex -->
-    <div style="display: flex; justify-content: space-between; align-items: baseline;">
-      <p style="color: #ddd;">all exiles — drop your @</p>
-      <span class="small-note">total: <span id="totalCount">0</span></span>
-    </div>
-    <div class="username-grid" id="usernameList">
-      <!-- dynamically filled: each card shows a username -->
-    </div>
-
-    <hr>
-    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-      <button class="logout-btn" id="logoutBtn">leave exile</button>
-      <button class="logout-btn" id="refreshUsernamesBtn" style="background: rgba(255,255,255,0.1);">↻ refresh</button>
-    </div>
-    <div class="flex-note">✨ flex your username — everyone sees it ✨</div>
   </div>
+
+  <!-- SIGNUP CARD -->
+  <div id="signupCard" class="auth-wrapper" style="display: none;">
+    <div class="glass-card auth-card">
+      <h1>EXILED</h1>
+      <div class="input-group">
+        <input type="text" id="signupUsername" placeholder=" " autocomplete="off">
+        <label>username</label>
+      </div>
+      <div class="input-group">
+        <input type="email" id="signupEmail" placeholder=" " autocomplete="email">
+        <label>email</label>
+      </div>
+      <div class="input-group">
+        <input type="password" id="signupPassword" placeholder=" " autocomplete="new-password">
+        <label>password</label>
+      </div>
+      <button class="btn" id="signupBtn">sign up & flex</button>
+      <div class="message" id="signupMessage"></div>
+      <span class="link" id="switchToLoginBtn">← back to login</span>
+    </div>
+  </div>
+
+  <!-- DASHBOARD (flex all usernames) -->
+  <div id="dashboard" class="dashboard glass-card">
+    <div class="dash-header">
+      <h2 style="font-size:2.2rem;">🏝️ exiled.flex</h2>
+      <div class="user-greeting" id="currentUserBadge">@loading</div>
+    </div>
+    <p style="margin-bottom: 5px;">🔹 click any card to visit profile page</p>
+    <div class="username-grid" id="usernameList"></div>
+    
+    <div class="flex-actions">
+      <button class="btn small-btn" id="refreshBtn">↻ refresh exiles</button>
+      <button class="btn small-btn" id="logoutBtn">leave exile</button>
+    </div>
+    <div class="footer-note">
+      <span>✨ flex your handle — everyone sees it</span>
+      <span class="copy-url" id="profileUrlDisplay">🌐 exiled.lat/<span id="currentUserSlug">you</span></span>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE (individual user view) -->
+  <div id="profileView" class="profile-view">
+    <div class="glass-card profile-card">
+      <div class="big-username" id="profileUsername">@someone</div>
+      <div style="margin: 20px 0; opacity:0.8;">exiled since dark ages</div>
+      <div class="copy-url" style="justify-content: center;">exiled.lat/<span id="profileSlug"></span></div>
+      <button class="btn back-link" id="backToDashboardBtn">← back to flex</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
   (function() {
-    // ---------- SUPABASE INIT (using provided keys) ----------
+    // CONFIG
     const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ---------- DOM elements ----------
+    // DOM
     const loginCard = document.getElementById('loginCard');
     const signupCard = document.getElementById('signupCard');
     const dashboard = document.getElementById('dashboard');
+    const profileView = document.getElementById('profileView');
 
     const loginEmail = document.getElementById('loginEmail');
     const loginPassword = document.getElementById('loginPassword');
@@ -298,286 +430,267 @@
     const signupBtn = document.getElementById('signupBtn');
     const signupMessage = document.getElementById('signupMessage');
 
-    const loggedInUsernameSpan = document.getElementById('loggedInUsername');
-    const usernameListDiv = document.getElementById('usernameList');
-    const totalCountSpan = document.getElementById('totalCount');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const refreshBtn = document.getElementById('refreshUsernamesBtn');
+    const switchToSignup = document.getElementById('switchToSignupBtn');
+    const switchToLogin = document.getElementById('switchToLoginBtn');
 
-    // ---------- state ----------
-    let currentUser = null;               // { id, email, username? }
+    const usernameListDiv = document.getElementById('usernameList');
+    const currentUserBadge = document.getElementById('currentUserBadge');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const profileUrlDisplay = document.getElementById('profileUrlDisplay');
+    const currentUserSlug = document.getElementById('currentUserSlug');
+
+    // profile page elements
+    const profileUsername = document.getElementById('profileUsername');
+    const profileSlug = document.getElementById('profileSlug');
+    const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+
+    // state
+    let currentUser = null; // { id, email, username }
     let allUsers = [];
 
-    // ---------- helper: show message ----------
-    function setMessage(element, text, isError = false) {
-      element.textContent = text;
-      element.style.color = isError ? '#ffa07a' : '#b0e0e6';
-      if (text) setTimeout(() => { element.textContent = ''; }, 4000);
+    // helper
+    function setMessage(el, text, isError = false) {
+      el.textContent = text;
+      el.style.color = isError ? '#faa' : '#b0e6d0';
+      if (text) setTimeout(() => el.textContent = '', 4000);
     }
 
-    // ---------- UI switchers ----------
-    window.switchToSignup = function() {
-      loginCard.style.display = 'none';
-      signupCard.style.display = 'flex';
-      loginMessage.textContent = '';
-    };
+    // escape
+    function escapeHtml(t) { return String(t||'').replace(/[&<>"]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; if(m==='"') return '&quot;'; return m; }); }
 
-    window.switchToLogin = function() {
-      signupCard.style.display = 'none';
-      loginCard.style.display = 'flex';
-      signupMessage.textContent = '';
-    };
-
-    // ---------- load all usernames from 'profiles' (or auth.users metadata?) ----------
-    // we need a table: "profiles" with id (uuid), username, updated_at
-    // if not exists, we'll create on signup (via supabase insert).
-    // for demo: assume profiles table exists. if it fails, we adapt.
+    // ---- fetch all profiles ----
     async function fetchAllUsernames() {
-      try {
-        // try to get from 'profiles' table, order by username
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('id, username')
-          .order('username', { ascending: true });
-
-        if (error) {
-          console.warn('profiles fetch error, maybe table missing?', error.message);
-          // fallback: show only current user? but we want flex. try auth.users? no.
-          // we'll mock for demo, but we push to profiles on signup.
-          // if table missing, we set empty array and show note
-          usernameListDiv.innerHTML = `<div class="username-card" style="grid-column:1/-1; color:#aaa;">⚠️ no profiles table — create one with id, username</div>`;
-          totalCountSpan.textContent = '?';
-          return [];
-        }
-        // filter out eventual duplicates? no.
-        allUsers = data || [];
-        renderUsernameGrid();
-        return allUsers;
-      } catch (e) {
-        console.error(e);
+      const { data, error } = await supabase.from('profiles').select('id, username').order('username');
+      if (error) {
+        console.warn(error);
+        usernameListDiv.innerHTML = `<div class="user-card" style="grid-column:1/-1;">⚠️ no profiles table yet</div>`;
         return [];
       }
+      allUsers = data || [];
+      renderUsernameGrid();
+      return allUsers;
     }
 
     function renderUsernameGrid() {
       if (!usernameListDiv) return;
       if (!allUsers.length) {
-        usernameListDiv.innerHTML = `<div class="username-card" style="grid-column:1/-1;">🧊 no exiles yet, be the first</div>`;
-        totalCountSpan.textContent = '0';
+        usernameListDiv.innerHTML = `<div class="user-card" style="grid-column:1/-1;">🌀 no exiles, be the first</div>`;
         return;
       }
       let html = '';
       allUsers.forEach(u => {
-        // highlight current user maybe? subtle
         const isYou = currentUser && u.id === currentUser.id;
-        html += `<div class="username-card" style="${isYou ? 'border:1px solid rgba(255,215,0,0.5); background:rgba(255,215,0,0.05);' : ''}">${isYou ? '✨ ' : ''}@${escapeHtml(u.username)}${isYou ? ' (you)' : ''}</div>`;
+        html += `<div class="user-card ${isYou ? 'highlight' : ''}" data-userid="${u.id}" data-username="${escapeHtml(u.username)}">@${escapeHtml(u.username)}${isYou ? ' · you' : ''}</div>`;
       });
       usernameListDiv.innerHTML = html;
-      totalCountSpan.textContent = allUsers.length;
-    }
 
-    // simple escape
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>"]/g, function(m) {
-        if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; if (m === '"') return '&quot;';
-        return m;
+      // attach click to each card -> profile view
+      document.querySelectorAll('.user-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          const username = card.dataset.username;
+          if (username) showProfilePage(username);
+        });
       });
     }
 
-    // ---------- update dashboard user info ----------
-    function setDashboardUser(username) {
-      loggedInUsernameSpan.textContent = username ? `@${username}` : '@exile';
+    // --- create/update profile ---
+    async function upsertProfile(userId, username) {
+      await supabase.from('profiles').upsert({ id: userId, username: username, updated_at: new Date() }, { onConflict: 'id' });
     }
 
-    // ---------- insert/upsert profile after signup ----------
-    async function createProfile(userId, username) {
-      // insert into profiles (id, username) - if conflict do nothing? we'll use upsert
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({ id: userId, username: username, updated_at: new Date() }, { onConflict: 'id' });
+    // --- show profile page (url change simulation) ---
+    function showProfilePage(username) {
+      // hide main cards, show profileView
+      loginCard.style.display = 'none';
+      signupCard.style.display = 'none';
+      dashboard.style.display = 'none';
+      profileView.style.display = 'block';
 
-      if (error) {
-        console.warn('profile upsert error:', error);
-        // maybe table missing? we still show but can't save
-      }
+      profileUsername.textContent = '@' + username;
+      profileSlug.textContent = username;
+
+      // change url hash (so exiled.lat/username appears)
+      window.location.hash = username;
     }
 
-    // ---------- signup ----------
-    signupBtn.addEventListener('click', async () => {
-      const username = signupUsername.value.trim();
-      const email = signupEmail.value.trim();
-      const password = signupPassword.value;
+    // check if hash = username -> show that profile
+    async function checkHashForProfile() {
+      if (!window.location.hash) return false;
+      const hash = window.location.hash.substring(1); // remove #
+      if (!hash) return false;
 
-      if (!username || !email || !password) {
-        setMessage(signupMessage, 'fill all fields', true);
-        return;
+      // find user with that username
+      const { data } = await supabase.from('profiles').select('username').eq('username', hash).maybeSingle();
+      if (data) {
+        // show profile directly (even if not logged in)
+        loginCard.style.display = 'none';
+        signupCard.style.display = 'none';
+        dashboard.style.display = 'none';
+        profileView.style.display = 'block';
+        profileUsername.textContent = '@' + data.username;
+        profileSlug.textContent = data.username;
+        return true;
       }
+      return false;
+    }
 
-      try {
-        // 1. sign up with supabase auth
-        const { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password,
-        });
-
-        if (error) {
-          setMessage(signupMessage, error.message, true);
-          return;
-        }
-
-        const user = data.user;
-        if (!user) throw new Error('no user returned');
-
-        // 2. store username in profiles (tie to user.id)
-        await createProfile(user.id, username);
-
-        setMessage(signupMessage, 'signup OK! logging in...', false);
-
-        // 3. sign in automatically (or just wait for user to login) - we'll do manual login
-        // but we can auto-login for better UX: sign in with same credentials
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
-
-        if (signInError) {
-          // if auto fails, just show login card
-          switchToLogin();
-          setMessage(loginMessage, 'signup done, please log in', false);
-          return;
-        }
-
-        // success: get session and load dashboard
-        const { data: sessionData } = await supabase.auth.getSession();
-        if (sessionData?.session) {
-          currentUser = {
-            id: sessionData.session.user.id,
-            email: sessionData.session.user.email,
-            username: username, // we have it fresh
-          };
-          setDashboardUser(username);
-          // ensure profile exists (maybe race) but we did createProfile above
-          await fetchAllUsernames();  // now fetch all profiles
-          // switch view
-          signupCard.style.display = 'none';
-          dashboard.style.display = 'block';
-          setMessage(signupMessage, '');
-        } else {
-          switchToLogin();
-        }
-      } catch (err) {
-        setMessage(signupMessage, 'unexpected error', true);
-      }
-    });
-
-    // ---------- login ----------
+    // --- login ---
     loginBtn.addEventListener('click', async () => {
       const email = loginEmail.value.trim();
-      const password = loginPassword.value;
+      const pass = loginPassword.value.trim();
+      if (!email || !pass) return setMessage(loginMessage, 'fill both fields', true);
 
-      if (!email || !password) {
-        setMessage(loginMessage, 'enter both fields', true);
-        return;
-      }
-
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
-
-      if (error) {
-        setMessage(loginMessage, error.message, true);
-        return;
-      }
-
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      if (error) return setMessage(loginMessage, error.message, true);
+      
       const user = data.user;
-      if (!user) return;
+      const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).maybeSingle();
+      let username = profile?.username || user.email?.split('@')[0] || 'exile';
 
-      // fetch username from profiles (by id)
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      let username = profile?.username || 'anon';
-      if (!profile && !profileError) {
-        // if no profile, create one using email localpart or something
-        username = user.email?.split('@')[0] || 'user';
-        await createProfile(user.id, username);
-      } else if (profileError) {
-        console.warn(profileError);
-        username = user.email?.split('@')[0] || 'user';
-      } else {
-        username = profile.username;
+      // if no profile, create one
+      if (!profile) {
+        await upsertProfile(user.id, username);
       }
 
-      currentUser = {
-        id: user.id,
-        email: user.email,
-        username: username,
-      };
+      currentUser = { id: user.id, email: user.email, username };
+      currentUserBadge.innerHTML = `@${username}`;
+      currentUserSlug.textContent = username;
+      if (profileUrlDisplay) profileUrlDisplay.innerHTML = `🌐 exiled.lat/<span style="font-weight:600;">${username}</span>`;
 
-      setDashboardUser(username);
-      await fetchAllUsernames();  // fetch all including self
+      await fetchAllUsernames();
 
+      // show dashboard
       loginCard.style.display = 'none';
       signupCard.style.display = 'none';
       dashboard.style.display = 'block';
+      profileView.style.display = 'none';
       loginMessage.textContent = '';
+
+      // clear any hash
+      window.location.hash = '';
     });
 
-    // ---------- logout ----------
+    // --- signup ---
+    signupBtn.addEventListener('click', async () => {
+      const username = signupUsername.value.trim();
+      const email = signupEmail.value.trim();
+      const pass = signupPassword.value.trim();
+      if (!username || !email || !pass) return setMessage(signupMessage, 'all fields required', true);
+
+      const { data, error } = await supabase.auth.signUp({ email, password: pass });
+      if (error) return setMessage(signupMessage, error.message, true);
+      if (!data.user) return;
+
+      await upsertProfile(data.user.id, username);
+      
+      // auto-login
+      const { error: loginError } = await supabase.auth.signInWithPassword({ email, password: pass });
+      if (loginError) {
+        switchToLoginView();
+        setMessage(loginMessage, 'signup OK, please log in', false);
+        return;
+      }
+
+      currentUser = { id: data.user.id, email, username };
+      currentUserBadge.innerHTML = `@${username}`;
+      currentUserSlug.textContent = username;
+      profileUrlDisplay.innerHTML = `🌐 exiled.lat/<span style="font-weight:600;">${username}</span>`;
+      await fetchAllUsernames();
+
+      dashboard.style.display = 'block';
+      signupCard.style.display = 'none';
+      loginCard.style.display = 'none';
+      profileView.style.display = 'none';
+      window.location.hash = '';
+    });
+
+    // --- logout ---
     logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut();
       currentUser = null;
       dashboard.style.display = 'none';
+      profileView.style.display = 'none';
       loginCard.style.display = 'flex';
       signupCard.style.display = 'none';
-      loginEmail.value = ''; loginPassword.value = '';
+      window.location.hash = '';
     });
 
-    // ---------- refresh usernames ----------
-    refreshBtn.addEventListener('click', async () => {
-      await fetchAllUsernames();
+    // --- refresh ---
+    refreshBtn.addEventListener('click', fetchAllUsernames);
+
+    // --- navigation links ---
+    switchToSignup.addEventListener('click', () => {
+      loginCard.style.display = 'none';
+      signupCard.style.display = 'flex';
+    });
+    switchToLogin.addEventListener('click', () => {
+      signupCard.style.display = 'none';
+      loginCard.style.display = 'flex';
     });
 
-    // ---------- on load check session ----------
-    async function initSession() {
+    backToDashboardBtn.addEventListener('click', () => {
+      if (currentUser) {
+        profileView.style.display = 'none';
+        dashboard.style.display = 'block';
+        window.location.hash = '';
+      } else {
+        // not logged in, go to login
+        profileView.style.display = 'none';
+        loginCard.style.display = 'flex';
+        window.location.hash = '';
+      }
+    });
+
+    // --- session init + hash check ---
+    async function init() {
+      // check hash first for public profile
+      const hashHandled = await checkHashForProfile();
+      if (hashHandled) return; // profile shown, no need to load session
+
       const { data: sessionData } = await supabase.auth.getSession();
-      const session = sessionData?.session;
-      if (session) {
-        const user = session.user;
-        // get username from profiles
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('id', user.id)
-          .maybeSingle();
-
+      if (sessionData.session) {
+        const user = sessionData.session.user;
+        const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).maybeSingle();
         let username = profile?.username || user.email?.split('@')[0] || 'exile';
-        currentUser = { id: user.id, email: user.email, username: username };
-        setDashboardUser(username);
+        if (!profile) await upsertProfile(user.id, username);
+
+        currentUser = { id: user.id, email: user.email, username };
+        currentUserBadge.innerHTML = `@${username}`;
+        currentUserSlug.textContent = username;
+        if (profileUrlDisplay) profileUrlDisplay.innerHTML = `🌐 exiled.lat/<span style="font-weight:600;">${username}</span>`;
+
         await fetchAllUsernames();
         dashboard.style.display = 'block';
         loginCard.style.display = 'none';
         signupCard.style.display = 'none';
+        profileView.style.display = 'none';
       } else {
-        dashboard.style.display = 'none';
         loginCard.style.display = 'flex';
+        dashboard.style.display = 'none';
+        profileView.style.display = 'none';
       }
     }
 
-    // if profiles table doesn't exist, at least we try to create a dummy for demo: 
-    // we will rely on signup creation. 
-    // run init
-    initSession();
+    init();
 
-    // small fallback: ensure signup message cleared
+    // on hash change (user types manually)
+    window.addEventListener('hashchange', async () => {
+      if (window.location.hash) {
+        await checkHashForProfile();
+      } else {
+        // if no hash, go to dashboard if logged in else login
+        if (currentUser) {
+          profileView.style.display = 'none';
+          dashboard.style.display = 'block';
+        } else {
+          profileView.style.display = 'none';
+          loginCard.style.display = 'flex';
+        }
+      }
+    });
+
   })();
 </script>
-
-<!-- extra note: profiles table schema: id (uuid references auth.users), username text, updated_at timestamptz -->
 </body>
 </html>
