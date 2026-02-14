@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glass Dashboard</title>
+<title>Glass Dashboard with PFP</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-
 body{
     min-height:100vh;
     background:url('https://i.pinimg.com/originals/f2/f3/93/f2f393327208542afade5799bcd3814a.gif') no-repeat center center fixed;
@@ -18,7 +17,6 @@ body{
     align-items:center;
     justify-content:center;
 }
-
 .app-container{
     width:100%;
     max-width:1000px;
@@ -27,131 +25,52 @@ body{
     border:1px solid rgba(255,255,255,0.2);
     padding:2rem;
 }
-
 .auth-section,.dashboard-section{
     display:flex;
     justify-content:center;
     align-items:center;
     flex-grow:1;
 }
-
 .dashboard-section{
     display:none;
     flex-direction:column;
     width:100%;
 }
-
 .auth-card{
     background:rgba(0,0,0,0.3);
     border-radius:30px;
     padding:2rem;
     width:100%;
     max-width:420px;
-    border:1px solid rgba(255,255,255,0.3);
+    border:1px solid rgba(255,255,255,.3);
 }
-
-.auth-tabs{
-    display:flex;
-    gap:1rem;
-    margin-bottom:1.5rem;
-}
-
-.auth-tab{
-    flex:1;
-    padding:.8rem;
-    border:none;
-    background:transparent;
-    color:rgba(255,255,255,.5);
-    cursor:pointer;
-    border-radius:15px;
-}
-
-.auth-tab.active{
-    background:rgba(255,255,255,.2);
-    color:#fff;
-}
-
-.auth-form{
-    display:flex;
-    flex-direction:column;
-    gap:1rem;
-}
-
+.auth-tabs{display:flex;gap:1rem;margin-bottom:1.5rem;}
+.auth-tab{flex:1;padding:.8rem;border:none;background:transparent;color:rgba(255,255,255,.5);cursor:pointer;border-radius:15px;}
+.auth-tab.active{background:rgba(255,255,255,.2);color:#fff;}
+.auth-form{display:flex;flex-direction:column;gap:1rem;}
 .hidden{display:none;}
-
-input{
+input, button, select{
     padding:.8rem;
     border-radius:15px;
     border:1px solid rgba(255,255,255,.3);
     background:rgba(0,0,0,.4);
     color:#fff;
 }
-
-button{
-    padding:.9rem;
-    border-radius:100px;
-    border:none;
-    cursor:pointer;
-    font-weight:bold;
-}
-
+button{cursor:pointer;font-weight:bold;}
 .auth-button{background:#fff;color:#000;}
 .logout-btn{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.3);}
-
-.nav-tabs{
-    display:flex;
-    gap:1rem;
-    margin:1rem 0;
-}
-
-.nav-btn{
-    padding:.6rem 1.5rem;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,.3);
-    background:rgba(0,0,0,.4);
-    color:#fff;
-    cursor:pointer;
-}
-
-.nav-btn.active{
-    background:#fff;
-    color:#000;
-}
-
-.users-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-    gap:1rem;
-    margin-top:1rem;
-}
-
-.user-card{
-    padding:1rem;
-    border-radius:20px;
-    background:rgba(0,0,0,.4);
-    border:1px solid rgba(255,255,255,.2);
-    color:#fff;
-}
-
+.nav-tabs{display:flex;gap:1rem;margin:1rem 0;}
+.nav-btn{padding:.6rem 1.5rem;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff;cursor:pointer;}
+.nav-btn.active{background:#fff;color:#000;}
+.users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin-top:1rem;}
+.user-card{padding:1rem;border-radius:20px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.2);color:#fff;display:flex;flex-direction:column;align-items:center;}
+.user-card img{width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:.5rem;}
 .admin-card{border:2px solid red;}
-
-.admin-tag{
-    background:red;
-    padding:.2rem .6rem;
-    border-radius:100px;
-    font-size:.7rem;
-    margin-left:.5rem;
-}
-
-.error-message{
-    color:#ff6b6b;
-    margin-bottom:1rem;
-    text-align:center;
-}
+.admin-tag{background:red;padding:.2rem .6rem;border-radius:100px;font-size:.7rem;margin-left:.5rem;}
+.error-message{color:#ff6b6b;margin-bottom:1rem;text-align:center;}
 </style>
 </head>
 <body>
-
 <div class="app-container">
 
 <!-- AUTH -->
@@ -194,8 +113,15 @@ button{
 </div>
 
 <div id="homeContent">
-<h2 style="color:white;">Welcome to Home</h2>
-<p style="color:white;">This is your main dashboard.</p>
+<h2 style="color:white;">Home</h2>
+<p style="color:white;">Edit your profile below:</p>
+
+<div style="display:flex;gap:1rem;align-items:center;">
+<input type="text" id="editUsername" placeholder="Change Username">
+<input type="file" id="editAvatar">
+<button id="updateProfileBtn" class="auth-button">Update Profile</button>
+</div>
+
 </div>
 
 <div id="usersContent" class="hidden">
@@ -206,10 +132,10 @@ button{
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", async function(){
 
 const supabaseUrl = "https://opixidygpndbfuisjkrk.supabase.co";
-const supabaseKey = "YOUR_PUBLIC_ANON_KEY";
+const supabaseKey = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI"; 
 const { createClient } = supabase;
 const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
@@ -234,27 +160,15 @@ const homeContent = document.getElementById("homeContent");
 const usersContent = document.getElementById("usersContent");
 const usersContainer = document.getElementById("usersContainer");
 
-// TAB SWITCH AUTH
-loginTab.onclick = () => {
-loginTab.classList.add("active");
-signupTab.classList.remove("active");
-loginForm.classList.remove("hidden");
-signupForm.classList.add("hidden");
-authError.classList.add("hidden");
-};
+const editUsername = document.getElementById("editUsername");
+const editAvatar = document.getElementById("editAvatar");
+const updateProfileBtn = document.getElementById("updateProfileBtn");
 
-signupTab.onclick = () => {
-signupTab.classList.add("active");
-loginTab.classList.remove("active");
-signupForm.classList.remove("hidden");
-loginForm.classList.add("hidden");
-authError.classList.add("hidden");
-};
+// AUTH TABS
+loginTab.onclick = () => { loginTab.classList.add("active"); signupTab.classList.remove("active"); loginForm.classList.remove("hidden"); signupForm.classList.add("hidden"); authError.classList.add("hidden"); };
+signupTab.onclick = () => { signupTab.classList.add("active"); loginTab.classList.remove("active"); signupForm.classList.remove("hidden"); loginForm.classList.add("hidden"); authError.classList.add("hidden"); };
 
-function showError(msg){
-authError.textContent = msg;
-authError.classList.remove("hidden");
-}
+function showError(msg){ authError.textContent = msg; authError.classList.remove("hidden"); }
 
 // SIGNUP
 signupBtn.onclick = async () => {
@@ -262,21 +176,17 @@ const username = signupUsername.value.trim();
 const email = signupEmail.value.trim();
 const password = signupPassword.value;
 
-if(!username || !email || !password){
-showError("Fill all fields");
-return;
-}
+if(!username||!email||!password){ showError("Fill all fields"); return; }
 
 const { data, error } = await supabaseClient.auth.signUp({ email, password });
-
 if(error){ showError(error.message); return; }
 
 if(data.user){
 await supabaseClient.from("profiles").insert({
 id: data.user.id,
-username: username,
-email: email,
-is_admin: email === ADMIN_EMAIL
+username,
+email,
+is_admin: email===ADMIN_EMAIL
 });
 }
 
@@ -288,21 +198,13 @@ loginTab.click();
 loginBtn.onclick = async () => {
 const email = loginEmail.value.trim();
 const password = loginPassword.value;
-
-if(!email || !password){
-showError("Fill all fields");
-return;
-}
-
+if(!email||!password){ showError("Fill all fields"); return; }
 const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
 if(error){ showError(error.message); }
 };
 
 // LOGOUT
-logoutBtn.onclick = async () => {
-await supabaseClient.auth.signOut();
-};
+logoutBtn.onclick = async ()=>{ await supabaseClient.auth.signOut(); };
 
 // AUTH STATE
 supabaseClient.auth.onAuthStateChange(async (event, session)=>{
@@ -310,14 +212,10 @@ if(session){
 authSection.style.display="none";
 dashboardSection.style.display="flex";
 
-const { data } = await supabaseClient
-.from("profiles")
-.select("*")
-.eq("id", session.user.id)
-.single();
-
+const { data } = await supabaseClient.from("profiles").select("*").eq("id", session.user.id).single();
 if(data){
 userGreeting.textContent = "Welcome " + data.username;
+editUsername.value = data.username;
 }
 }else{
 dashboardSection.style.display="none";
@@ -327,44 +225,56 @@ authSection.style.display="flex";
 
 // HOME / USERS NAV
 homeTabBtn.onclick = () => {
-homeTabBtn.classList.add("active");
-usersTabBtn.classList.remove("active");
-homeContent.classList.remove("hidden");
-usersContent.classList.add("hidden");
+homeTabBtn.classList.add("active"); usersTabBtn.classList.remove("active");
+homeContent.classList.remove("hidden"); usersContent.classList.add("hidden");
 };
 
 usersTabBtn.onclick = async () => {
-usersTabBtn.classList.add("active");
-homeTabBtn.classList.remove("active");
-usersContent.classList.remove("hidden");
-homeContent.classList.add("hidden");
-
+usersTabBtn.classList.add("active"); homeTabBtn.classList.remove("active");
+usersContent.classList.remove("hidden"); homeContent.classList.add("hidden");
 loadUsers();
 };
 
 // LOAD USERS
 async function loadUsers(){
 usersContainer.innerHTML="";
-
-const { data } = await supabaseClient
-.from("profiles")
-.select("*");
-
+const { data } = await supabaseClient.from("profiles").select("*");
 data.forEach(profile=>{
 const card = document.createElement("div");
-card.className = "user-card " + (profile.is_admin ? "admin-card":"");
-
+card.className = "user-card " + (profile.is_admin?"admin-card":"");
+const avatar = profile.avatar_url || "https://i.pravatar.cc/80?u="+profile.id;
 card.innerHTML = `
-<h3>
-${profile.username}
-${profile.is_admin ? '<span class="admin-tag">ADMIN</span>' : ''}
-</h3>
+<img src="${avatar}" alt="PFP">
+<h3>${profile.username} ${profile.is_admin?'<span class="admin-tag">ADMIN</span>':''}</h3>
 <p>${profile.email}</p>
 `;
-
 usersContainer.appendChild(card);
 });
 }
+
+// UPDATE PROFILE
+updateProfileBtn.onclick = async ()=>{
+const session = (await supabaseClient.auth.getSession()).data.session;
+if(!session) return;
+
+let avatarUrl;
+if(editAvatar.files.length>0){
+const file = editAvatar.files[0];
+const fileExt = file.name.split('.').pop();
+const fileName = session.user.id + "." + fileExt;
+const { data, error } = await supabaseClient.storage.from("avatars").upload(fileName, file, { upsert:true });
+if(error){ alert("Avatar upload error: "+error.message); return; }
+avatarUrl = supabaseClient.storage.from("avatars").getPublicUrl(fileName).data.publicUrl;
+}
+
+const updates = { username: editUsername.value };
+if(avatarUrl) updates.avatar_url = avatarUrl;
+
+await supabaseClient.from("profiles").update(updates).eq("id", session.user.id);
+
+alert("Profile updated!");
+loadUsers();
+};
 
 });
 </script>
