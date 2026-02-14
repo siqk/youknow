@@ -173,6 +173,7 @@
 
     .rich-badge {
       color: #ffd700;
+      font-weight: bold;
       margin-left: 3px;
       font-size: 11px;
     }
@@ -403,6 +404,19 @@
       background: #333;
     }
 
+    /* GIF INDICATOR */
+    .gif-indicator {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #ffd700;
+      color: #000;
+      font-size: 10px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+
     /* EDIT FORM */
     .edit-form {
       margin-top: 15px;
@@ -457,6 +471,7 @@
       padding: 15px;
       text-align: center;
       cursor: pointer;
+      position: relative;
     }
 
     .user-card:hover {
@@ -492,6 +507,17 @@
     .user-joined {
       color: #888;
       font-size: 11px;
+    }
+
+    .gif-tag {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #ffd700;
+      color: #000;
+      font-size: 9px;
+      padding: 2px 4px;
+      border-radius: 3px;
     }
 
     /* PASTE VIEW */
@@ -711,7 +737,7 @@
     <div class="users-grid" id="usersList"></div>
   </div>
 
-  <!-- PASTE VIEW PAGE (opens in new window) -->
+  <!-- PASTE VIEW PAGE -->
   <div id="pasteViewPage" class="hidden">
     <div id="pasteViewContainer"></div>
   </div>
@@ -868,7 +894,7 @@
             <td class="views">${paste.views || 0}</td>
             <td>
               <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
-              ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+              ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
             </td>
             <td class="date">${new Date(paste.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
           </tr>
@@ -917,7 +943,7 @@
           <div style="margin-top: 15px; color: #888;">
             Created by: 
             <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
-            ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+            ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
           </div>
           <button class="back-btn" onclick="window.close()">Close Window</button>
         </div>
@@ -1005,6 +1031,11 @@
     }
   }
 
+  // Check if file is GIF
+  function isGifFile(file) {
+    return file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif');
+  }
+
   // View user profile
   async function viewUserProfile(userId) {
     showPage('profile');
@@ -1027,6 +1058,9 @@
       const isRichUser = profile.email === RICH_USER_EMAIL;
       const isOwnProfile = currentUser && currentUser.id === userId;
 
+      // Check if avatar is GIF
+      const isAvatarGif = profile.avatar_url?.toLowerCase().includes('.gif');
+
       const container = document.getElementById('profileViewContainer');
       container.innerHTML = `
         <div class="profile-view">
@@ -1036,14 +1070,18 @@
                 `<img src="${profile.avatar_url}">` : 
                 `<span>${profile.username ? profile.username.charAt(0).toUpperCase() : '👤'}</span>`
               }
+              ${isAvatarGif ? '<span class="gif-indicator">GIF</span>' : ''}
             </div>
             ${isOwnProfile ? `
               <input type="file" id="avatarUpload" class="hidden" accept="image/*" onchange="handleAvatarUpload(event)">
+              <p style="color: #888; font-size: 11px; text-align: center; margin-top: 5px;">
+                ${isRichUser ? '✨ You can upload GIFs (Rich perk)' : '📷 Images only (GIFs for Rich users)'}
+              </p>
             ` : ''}
             
             <div class="profile-username-large">
               <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(profile.username || 'Anonymous')}</span>
-              ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+              ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
             </div>
             <div class="profile-uid">UID: ${userId.substring(0, 8)}</div>
             
@@ -1108,18 +1146,35 @@
     }
   }
 
-  // Avatar upload
+  // Avatar upload with GIF restriction
   async function handleAvatarUpload(event) {
     const file = event.target.files[0];
     if (!file || !currentUser) return;
 
-    if (!file.type.startsWith('image/')) {
+    const isRichUser = currentUser.email === RICH_USER_EMAIL;
+    const isGif = isGifFile(file);
+
+    // Only Rich users can upload GIFs
+    if (isGif && !isRichUser) {
+      alert('Only [RICH] users can upload GIFs as profile pictures');
+      return;
+    }
+
+    // Validate file type for non-Rich users
+    if (!isRichUser && !file.type.startsWith('image/')) {
       alert('Please upload an image file');
       return;
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Image must be less than 2MB');
+    if (!isRichUser && isGif) {
+      alert('Only [RICH] users can upload GIFs');
+      return;
+    }
+
+    // Validate file size (max 5MB for GIFs, 2MB for images)
+    const maxSize = isGif ? 5 * 1024 * 1024 : 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert(`File too large. Max size: ${isGif ? '5MB' : '2MB'}`);
       return;
     }
 
@@ -1144,8 +1199,9 @@
 
       if (updateError) throw updateError;
 
-      alert('Avatar updated!');
+      alert(isGif ? 'GIF avatar uploaded successfully!' : 'Avatar updated!');
       viewUserProfile(currentUser.id);
+      loadUsers();
     } catch (error) {
       alert(error.message);
     }
@@ -1217,6 +1273,7 @@
 
       usersList.innerHTML = data.map(user => {
         const isRichUser = user.email === RICH_USER_EMAIL;
+        const isAvatarGif = user.avatar_url?.toLowerCase().includes('.gif');
         return `
           <div class="user-card" onclick="viewUserProfile('${user.id}')">
             <div class="user-avatar">
@@ -1227,11 +1284,12 @@
             </div>
             <div class="user-name ${isRichUser ? 'username-white' : 'username-blue'}">
               ${escapeHtml(user.username || 'Anonymous')}
-              ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+              ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
             </div>
             <div class="user-joined">
               Joined: ${new Date(user.created_at).toLocaleDateString()}
             </div>
+            ${isAvatarGif ? '<span class="gif-tag">GIF</span>' : ''}
           </div>
         `;
       }).join('');
