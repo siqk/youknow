@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>exiled · chat</title>
+  <title>exiled · discord-like chat</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -35,14 +35,14 @@
     .auth-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
       backdrop-filter: blur(10px);
     }
 
     .auth-card {
       position: relative;
       z-index: 10;
-      background: rgba(30,30,30,0.9);
+      background: rgba(30,30,30,0.95);
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 40px;
@@ -128,25 +128,21 @@
       background: #1a1a1a;
     }
 
-    /* Sidebar */
-    .sidebar {
-      width: 280px;
-      background: #1e1e1e;
-      border-right: 1px solid rgba(255,255,255,0.1);
+    .app-layout {
       display: flex;
-      flex-direction: column;
       height: 100%;
     }
 
+    /* Server List */
     .server-list {
       width: 72px;
-      background: #1a1a1a;
-      border-right: 1px solid rgba(255,255,255,0.1);
-      padding: 12px 0;
+      background: #1e1e1e;
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding: 12px 0;
       gap: 8px;
+      overflow-y: auto;
     }
 
     .server-icon {
@@ -185,50 +181,68 @@
       border-radius: 4px;
     }
 
-    /* Channel List */
-    .channel-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    .server-divider {
+      width: 32px;
+      height: 2px;
+      background: #2a2a2a;
+      margin: 4px 0;
     }
 
-    .channel-header {
+    .server-icon.dm {
+      background: #3a3a3a;
+      font-size: 1.2rem;
+    }
+
+    .server-icon.dm:hover {
+      background: #5865f2;
+    }
+
+    /* Channel Sidebar */
+    .channel-sidebar {
+      width: 240px;
+      background: #2a2a2a;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .server-header {
       padding: 20px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .channel-header i {
-      color: #aaa;
+      justify-content: space-between;
       cursor: pointer;
-      transition: 0.3s;
     }
 
-    .channel-header i:hover {
-      color: white;
-    }
-
-    .channel-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
+    .server-header:hover {
+      background: #3a3a3a;
     }
 
     .channel-category {
       color: #aaa;
       font-size: 0.8rem;
       text-transform: uppercase;
-      padding: 10px 10px 5px;
+      padding: 16px 16px 4px;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .channel-category i {
+      color: #aaa;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .channel-category i:hover {
+      color: white;
     }
 
     .channel-item {
-      padding: 8px 12px;
-      margin: 2px 0;
+      padding: 8px 16px;
+      margin: 2px 8px;
       border-radius: 8px;
       color: #aaa;
       cursor: pointer;
@@ -239,18 +253,78 @@
     }
 
     .channel-item:hover {
-      background: #2a2a2a;
+      background: #3a3a3a;
       color: white;
     }
 
     .channel-item.active {
-      background: #2a2a2a;
+      background: #3a3a3a;
       color: white;
     }
 
     .channel-item i {
-      font-size: 1rem;
       width: 20px;
+      font-size: 1rem;
+    }
+
+    .dm-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .dm-item {
+      padding: 8px 16px;
+      margin: 2px 8px;
+      border-radius: 8px;
+      color: #aaa;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.3s;
+    }
+
+    .dm-item:hover {
+      background: #3a3a3a;
+      color: white;
+    }
+
+    .dm-item.active {
+      background: #3a3a3a;
+      color: white;
+    }
+
+    .dm-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .dm-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .dm-info {
+      flex: 1;
+    }
+
+    .dm-name {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .dm-status {
+      font-size: 0.7rem;
+      color: #3ba55d;
     }
 
     /* Main Content */
@@ -258,11 +332,11 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: #2a2a2a;
+      background: #313338;
     }
 
     .chat-header {
-      padding: 20px;
+      padding: 16px 20px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
       display: flex;
       align-items: center;
@@ -281,7 +355,7 @@
 
     .chat-header-right {
       display: flex;
-      gap: 15px;
+      gap: 16px;
       color: #aaa;
     }
 
@@ -301,12 +375,12 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 16px;
     }
 
     .message-wrapper {
       display: flex;
-      gap: 15px;
+      gap: 16px;
       animation: fadeIn 0.3s;
     }
 
@@ -320,17 +394,13 @@
       height: 40px;
       border-radius: 50%;
       background: #5865f2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
       cursor: pointer;
+      overflow: hidden;
     }
 
     .message-avatar img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: cover;
     }
 
@@ -342,7 +412,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .message-author {
@@ -355,7 +425,7 @@
     }
 
     .message-time {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #aaa;
     }
 
@@ -365,25 +435,24 @@
     }
 
     .message-text img {
-      max-width: 200px;
+      max-width: 300px;
       max-height: 200px;
       border-radius: 10px;
-      margin-top: 5px;
+      margin-top: 8px;
     }
 
     /* Message Input */
     .message-input-container {
       padding: 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
     }
 
     .message-input-wrapper {
-      background: #1e1e1e;
+      background: #383a40;
       border-radius: 10px;
-      padding: 10px 15px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .message-input-wrapper i {
@@ -401,7 +470,7 @@
       background: transparent;
       border: none;
       color: white;
-      font-size: 1rem;
+      font-size: 0.95rem;
       outline: none;
     }
 
@@ -411,17 +480,17 @@
 
     /* User Panel */
     .user-panel {
-      padding: 15px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 16px;
+      background: #232428;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       transition: 0.3s;
     }
 
     .user-panel:hover {
-      background: #2a2a2a;
+      background: #2e2f34;
     }
 
     .user-avatar {
@@ -434,12 +503,12 @@
       justify-content: center;
       font-weight: 600;
       font-size: 0.9rem;
+      overflow: hidden;
     }
 
     .user-avatar img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: cover;
     }
 
@@ -453,7 +522,7 @@
     }
 
     .user-status {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       color: #aaa;
     }
 
@@ -600,6 +669,21 @@
       border-color: #5865f2;
     }
 
+    /* Create Server Modal */
+    .server-option {
+      padding: 15px;
+      background: #1e1e1e;
+      border-radius: 10px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .server-option:hover {
+      background: #3a3a3a;
+    }
+
+    /* Friends List */
     .friends-list {
       display: flex;
       flex-direction: column;
@@ -609,10 +693,10 @@
     .friend-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px;
+      gap: 12px;
+      padding: 12px;
       background: #1e1e1e;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       transition: 0.3s;
     }
@@ -626,10 +710,13 @@
       height: 40px;
       border-radius: 50%;
       background: #5865f2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
+      overflow: hidden;
+    }
+
+    .friend-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .friend-info {
@@ -659,17 +746,6 @@
       background: #4752c4;
     }
 
-    .loading-spinner {
-      text-align: center;
-      padding: 50px;
-    }
-
-    .loading-spinner i {
-      font-size: 3rem;
-      color: #5865f2;
-      margin-bottom: 20px;
-    }
-
     .notification {
       position: fixed;
       top: 20px;
@@ -685,6 +761,30 @@
     @keyframes slideIn {
       from { transform: translateX(100%); }
       to { transform: translateX(0); }
+    }
+
+    .context-menu {
+      position: fixed;
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 8px 0;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 1000;
+    }
+
+    .context-menu-item {
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .context-menu-item:hover {
+      background: #3a3a3a;
+    }
+
+    .context-menu-item.danger:hover {
+      background: #ed4245;
     }
   </style>
 </head>
@@ -717,48 +817,65 @@
 
   <!-- Main App Container -->
   <div class="app-container" id="appContainer">
-    <!-- Left Sidebar -->
-    <div style="display: flex; height: 100%;">
+    <div class="app-layout">
       <!-- Server List -->
-      <div class="server-list">
-        <div class="server-icon active">E</div>
-        <div class="server-icon">+</div>
+      <div class="server-list" id="serverList">
+        <div class="server-icon active" data-server="home" onclick="switchServer('home')">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="server-divider"></div>
+        <div class="server-icon dm" data-server="dm" onclick="switchServer('dm')">
+          <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="server-icon" onclick="showModal('createServerModal')">
+          <i class="fas fa-plus"></i>
+        </div>
       </div>
 
       <!-- Channel Sidebar -->
-      <div class="sidebar">
-        <div class="channel-container">
-          <div class="channel-header">
-            <i class="fas fa-bars"></i>
-            <span>Exiled</span>
-            <i class="fas fa-plus-circle" style="margin-left: auto;" onclick="showModal('friendsModal')"></i>
+      <div class="channel-sidebar" id="channelSidebar">
+        <div class="server-header" id="serverHeader">
+          <span id="serverName">Home</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <div class="channel-list" id="channelList">
+          <div class="channel-category">
+            TEXT CHANNELS
+            <i class="fas fa-plus-circle" onclick="showModal('createChannelModal')"></i>
+          </div>
+          <div class="channel-item active" data-channel="general" onclick="switchChannel('general')">
+            <i class="fas fa-hashtag"></i> general
+          </div>
+          <div class="channel-item" data-channel="off-topic" onclick="switchChannel('off-topic')">
+            <i class="fas fa-hashtag"></i> off-topic
+          </div>
+          <div class="channel-item" data-channel="music" onclick="switchChannel('music')">
+            <i class="fas fa-music"></i> music
+          </div>
+          <div class="channel-item" data-channel="gaming" onclick="switchChannel('gaming')">
+            <i class="fas fa-gamepad"></i> gaming
           </div>
 
-          <div class="channel-list">
-            <div class="channel-category">Text Channels</div>
-            <div class="channel-item active" onclick="switchChannel('general')">
-              <i class="fas fa-hashtag"></i> general
-            </div>
-            <div class="channel-item" onclick="switchChannel('off-topic')">
-              <i class="fas fa-hashtag"></i> off-topic
-            </div>
-            <div class="channel-item" onclick="switchChannel('music')">
-              <i class="fas fa-music"></i> music
-            </div>
-
-            <div class="channel-category" style="margin-top: 20px;">Voice Channels</div>
-            <div class="channel-item">
-              <i class="fas fa-volume-up"></i> General Voice
-            </div>
-            <div class="channel-item">
-              <i class="fas fa-volume-up"></i> Music Lounge
-            </div>
-
-            <div class="channel-category" style="margin-top: 20px;">Friends</div>
-            <div class="channel-item" onclick="showModal('friendsModal')">
-              <i class="fas fa-user-friends"></i> Online Friends
-            </div>
+          <div class="channel-category" style="margin-top: 20px;">
+            VOICE CHANNELS
+            <i class="fas fa-plus-circle"></i>
           </div>
+          <div class="channel-item">
+            <i class="fas fa-volume-up"></i> General Voice
+          </div>
+          <div class="channel-item">
+            <i class="fas fa-volume-up"></i> Music Lounge
+          </div>
+        </div>
+
+        <!-- DM List -->
+        <div class="dm-list" id="dmList" style="display: none;">
+          <div class="channel-category">
+            DIRECT MESSAGES
+            <i class="fas fa-user-plus" onclick="showModal('friendsModal')"></i>
+          </div>
+          <div id="dmItems"></div>
         </div>
 
         <!-- User Panel -->
@@ -811,6 +928,47 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Create Server Modal -->
+  <div class="modal" id="createServerModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create a Server</h2>
+        <i class="fas fa-times" onclick="hideModal('createServerModal')"></i>
+      </div>
+
+      <div class="server-option" onclick="createServer('friends')">
+        <h3>Create for me and my friends</h3>
+        <p style="color: #aaa;">A server for you and your friends to hang out.</p>
+      </div>
+
+      <div class="server-option" onclick="createServer('community')">
+        <h3>Create a community</h3>
+        <p style="color: #aaa;">A server for communities and groups.</p>
+      </div>
+
+      <input type="text" class="profile-input" id="serverNameInput" placeholder="Server Name">
+      <button class="auth-btn" onclick="createServer()">Create Server</button>
+    </div>
+  </div>
+
+  <!-- Create Channel Modal -->
+  <div class="modal" id="createChannelModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create Channel</h2>
+        <i class="fas fa-times" onclick="hideModal('createChannelModal')"></i>
+      </div>
+
+      <select class="profile-input" id="channelType">
+        <option value="text">Text Channel</option>
+        <option value="voice">Voice Channel</option>
+      </select>
+
+      <input type="text" class="profile-input" id="channelNameInput" placeholder="Channel Name">
+      <button class="auth-btn" onclick="createChannel()">Create Channel</button>
     </div>
   </div>
 
@@ -880,25 +1038,32 @@
       <div style="padding: 10px 0;">
         <div style="margin: 15px 0;">
           <label style="color: #aaa;">Theme</label>
-          <select class="profile-input">
-            <option>Dark</option>
-            <option>Light</option>
-            <option>Sync with system</option>
+          <select class="profile-input" id="themeSelect">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+            <option value="sync">Sync with system</option>
           </select>
         </div>
 
         <div style="margin: 15px 0;">
           <label style="color: #aaa;">Notifications</label>
-          <select class="profile-input">
-            <option>All messages</option>
-            <option>Mentions only</option>
-            <option>Nothing</option>
+          <select class="profile-input" id="notificationSelect">
+            <option value="all">All messages</option>
+            <option value="mentions">Mentions only</option>
+            <option value="none">Nothing</option>
           </select>
         </div>
 
         <button class="auth-btn" id="logoutBtn">Log Out</button>
       </div>
     </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div class="context-menu" id="contextMenu">
+    <div class="context-menu-item" onclick="startDM()">Message</div>
+    <div class="context-menu-item" onclick="addFriend()">Add Friend</div>
+    <div class="context-menu-item danger" onclick="blockUser()">Block</div>
   </div>
 
   <script>
@@ -944,6 +1109,12 @@
       const messageInput = document.getElementById('messageInput');
       const currentChannel = document.getElementById('currentChannel');
       
+      // Server/Channel elements
+      const serverName = document.getElementById('serverName');
+      const channelList = document.getElementById('channelList');
+      const dmList = document.getElementById('dmList');
+      const dmItems = document.getElementById('dmItems');
+      
       // Friends
       const friendsList = document.getElementById('friendsList');
       const friendUsername = document.getElementById('friendUsername');
@@ -951,10 +1122,15 @@
       // State
       let currentUser = null;
       let currentProfile = null;
+      let activeServer = 'home';
       let activeChannel = 'general';
+      let activeDM = null;
+      let servers = [];
+      let channels = [];
+      let dms = [];
       let messages = [];
       let friends = [];
-      let messageSubscription = null;
+      let messageSubscriptions = new Map();
 
       // Show notification
       function showNotification(text, isError = false) {
@@ -975,14 +1151,117 @@
         document.getElementById(modalId).classList.remove('active');
       };
 
-      // Switch channel
-      window.switchChannel = async (channel) => {
-        activeChannel = channel;
-        currentChannel.textContent = channel;
-        document.querySelectorAll('.channel-item').forEach(c => c.classList.remove('active'));
-        event.target.closest('.channel-item').classList.add('active');
-        await loadMessages();
+      // Switch server
+      window.switchServer = async (serverId) => {
+        activeServer = serverId;
+        activeDM = null;
+        
+        document.querySelectorAll('.server-icon').forEach(s => s.classList.remove('active'));
+        document.querySelector(`[data-server="${serverId}"]`).classList.add('active');
+        
+        if (serverId === 'home') {
+          serverName.textContent = 'Home';
+          channelList.style.display = 'block';
+          dmList.style.display = 'none';
+          await loadChannels();
+        } else if (serverId === 'dm') {
+          serverName.textContent = 'Direct Messages';
+          channelList.style.display = 'none';
+          dmList.style.display = 'block';
+          await loadDMs();
+        } else {
+          // Load custom server
+          const server = servers.find(s => s.id === serverId);
+          if (server) {
+            serverName.textContent = server.name;
+            await loadServerChannels(serverId);
+          }
+        }
       };
+
+      // Switch channel
+      window.switchChannel = async (channelId) => {
+        activeChannel = channelId;
+        activeDM = null;
+        
+        document.querySelectorAll('.channel-item').forEach(c => c.classList.remove('active'));
+        document.querySelector(`[data-channel="${channelId}"]`).classList.add('active');
+        
+        currentChannel.textContent = channelId;
+        await loadMessages();
+        subscribeToChannel(channelId);
+      };
+
+      // Switch DM
+      window.switchDM = async (userId, username) => {
+        activeDM = userId;
+        activeChannel = null;
+        
+        document.querySelectorAll('.dm-item').forEach(d => d.classList.remove('active'));
+        document.querySelector(`[data-dm="${userId}"]`).classList.add('active');
+        
+        currentChannel.textContent = username;
+        await loadDMMessages(userId);
+        subscribeToDM(userId);
+      };
+
+      // Load channels
+      async function loadChannels() {
+        const { data, error } = await supabase
+          .from('channels')
+          .select('*')
+          .eq('server_id', 'home')
+          .order('name');
+
+        if (data) {
+          channels = data;
+          renderChannels();
+        }
+      }
+
+      function renderChannels() {
+        const channelListHtml = channels.map(ch => `
+          <div class="channel-item ${ch.name === activeChannel ? 'active' : ''}" data-channel="${ch.name}" onclick="switchChannel('${ch.name}')">
+            <i class="fas fa-${ch.type === 'voice' ? 'volume-up' : 'hashtag'}"></i> ${ch.name}
+          </div>
+        `).join('');
+        
+        document.querySelectorAll('.channel-item:not([data-channel])').forEach(el => {
+          if (el.dataset.channel) return;
+          el.outerHTML = channelListHtml;
+        });
+      }
+
+      // Load DMs
+      async function loadDMs() {
+        const { data, error } = await supabase
+          .from('friends')
+          .select(`
+            friend_id,
+            profiles:friend_id (username, avatar_url, status)
+          `)
+          .eq('user_id', currentUser.id)
+          .eq('status', 'accepted');
+
+        if (data) {
+          dms = data.map(d => d.profiles);
+          renderDMs();
+        }
+      }
+
+      function renderDMs() {
+        dmItems.innerHTML = dms.map(dm => `
+          <div class="dm-item ${dm.id === activeDM ? 'active' : ''}" data-dm="${dm.id}" onclick="switchDM('${dm.id}', '${dm.username}')">
+            <div class="dm-avatar">
+              <img src="${dm.avatar_url || 'https://via.placeholder.com/32/5865f2/ffffff?text=' + dm.username[0]}" alt="">
+            </div>
+            <div class="dm-info">
+              <div class="dm-name">${dm.username}</div>
+              <div class="dm-status"><i class="fas fa-circle"></i> Online</div>
+            </div>
+          </div>
+        `).join('');
+      }
 
       // Load messages
       async function loadMessages() {
@@ -993,6 +1272,23 @@
             profiles:user_id (username, avatar_url)
           `)
           .eq('channel', activeChannel)
+          .eq('server_id', activeServer === 'home' ? 'home' : activeServer)
+          .order('created_at', { ascending: true });
+
+        if (data) {
+          messages = data;
+          renderMessages();
+        }
+      }
+
+      async function loadDMMessages(userId) {
+        const { data, error } = await supabase
+          .from('direct_messages')
+          .select(`
+            *,
+            profiles:sender_id (username, avatar_url)
+          `)
+          .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${userId}),and(sender_id.eq.${userId},receiver_id.eq.${currentUser.id})`)
           .order('created_at', { ascending: true });
 
         if (data) {
@@ -1004,16 +1300,22 @@
       // Render messages
       function renderMessages() {
         messagesContainer.innerHTML = '';
+        
+        if (messages.length === 0) {
+          messagesContainer.innerHTML = '<div style="text-align: center; color: #aaa; padding: 40px;">No messages yet. Start the conversation!</div>';
+          return;
+        }
+
         messages.forEach(msg => {
           const msgEl = document.createElement('div');
           msgEl.className = 'message-wrapper';
           msgEl.innerHTML = `
-            <div class="message-avatar">
-              <img src="${msg.profiles?.avatar_url || 'https://via.placeholder.com/40/5865f2/ffffff?text=' + (msg.profiles?.username?.[0] || 'U')}" alt="avatar">
+            <div class="message-avatar" onclick="showUserProfile('${msg.user_id || msg.sender_id}')">
+              <img src="${msg.profiles?.avatar_url || 'https://via.placeholder.com/40/5865f2/ffffff?text=' + (msg.profiles?.username?.[0] || 'U')}" alt="">
             </div>
             <div class="message-content">
               <div class="message-header">
-                <span class="message-author">${msg.profiles?.username || 'Unknown'}</span>
+                <span class="message-author" onclick="showUserProfile('${msg.user_id || msg.sender_id}')">${msg.profiles?.username || 'Unknown'}</span>
                 <span class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</span>
               </div>
               <div class="message-text">${msg.content}</div>
@@ -1030,35 +1332,52 @@
           const content = messageInput.value.trim();
           messageInput.value = '';
 
-          const { error } = await supabase
-            .from('messages')
-            .insert({
-              content,
-              channel: activeChannel,
-              user_id: currentUser.id
-            });
+          if (activeDM) {
+            // Send DM
+            const { error } = await supabase
+              .from('direct_messages')
+              .insert({
+                content,
+                sender_id: currentUser.id,
+                receiver_id: activeDM
+              });
 
-          if (error) {
-            showNotification('Failed to send message', true);
+            if (error) {
+              showNotification('Failed to send message', true);
+            }
+          } else {
+            // Send channel message
+            const { error } = await supabase
+              .from('messages')
+              .insert({
+                content,
+                channel: activeChannel,
+                server_id: activeServer === 'home' ? 'home' : activeServer,
+                user_id: currentUser.id
+              });
+
+            if (error) {
+              showNotification('Failed to send message', true);
+            }
           }
         }
       });
 
       // Subscribe to messages
-      function subscribeToMessages() {
-        if (messageSubscription) {
-          messageSubscription.unsubscribe();
+      function subscribeToChannel(channelId) {
+        // Unsubscribe from previous
+        if (messageSubscriptions.has('channel')) {
+          messageSubscriptions.get('channel').unsubscribe();
         }
 
-        messageSubscription = supabase
-          .channel('messages')
+        const subscription = supabase
+          .channel('channel-messages')
           .on('postgres_changes', { 
             event: 'INSERT', 
             schema: 'public', 
             table: 'messages',
-            filter: `channel=eq.${activeChannel}`
+            filter: `channel=eq.${channelId}`
           }, async (payload) => {
-            // Fetch the full message with profile
             const { data } = await supabase
               .from('messages')
               .select(`
@@ -1074,7 +1393,133 @@
             }
           })
           .subscribe();
+
+        messageSubscriptions.set('channel', subscription);
       }
+
+      function subscribeToDM(userId) {
+        // Unsubscribe from previous
+        if (messageSubscriptions.has('dm')) {
+          messageSubscriptions.get('dm').unsubscribe();
+        }
+
+        const subscription = supabase
+          .channel('dm-messages')
+          .on('postgres_changes', { 
+            event: 'INSERT', 
+            schema: 'public', 
+            table: 'direct_messages',
+            filter: `or(and(sender_id=eq.${currentUser.id},receiver_id=eq.${userId}),and(sender_id=eq.${userId},receiver_id=eq.${currentUser.id}))`
+          }, async (payload) => {
+            const { data } = await supabase
+              .from('direct_messages')
+              .select(`
+                *,
+                profiles:sender_id (username, avatar_url)
+              `)
+              .eq('id', payload.new.id)
+              .single();
+
+            if (data) {
+              messages.push(data);
+              renderMessages();
+            }
+          })
+          .subscribe();
+
+        messageSubscriptions.set('dm', subscription);
+      }
+
+      // Create server
+      window.createServer = async (type) => {
+        const serverName = document.getElementById('serverNameInput').value.trim() || 'New Server';
+        
+        const { data, error } = await supabase
+          .from('servers')
+          .insert({
+            name: serverName,
+            owner_id: currentUser.id,
+            type: type || 'custom'
+          })
+          .select()
+          .single();
+
+        if (data) {
+          servers.push(data);
+          // Add server icon
+          const serverIcon = document.createElement('div');
+          serverIcon.className = 'server-icon';
+          serverIcon.dataset.server = data.id;
+          serverIcon.onclick = () => switchServer(data.id);
+          serverIcon.textContent = data.name[0].toUpperCase();
+          document.getElementById('serverList').insertBefore(serverIcon, document.getElementById('serverList').lastElementChild);
+          
+          hideModal('createServerModal');
+          showNotification('Server created!');
+        }
+      };
+
+      // Create channel
+      window.createChannel = async () => {
+        const channelName = document.getElementById('channelNameInput').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+        const channelType = document.getElementById('channelType').value;
+
+        if (!channelName) return;
+
+        const { data, error } = await supabase
+          .from('channels')
+          .insert({
+            name: channelName,
+            type: channelType,
+            server_id: activeServer
+          });
+
+        if (data) {
+          await loadChannels();
+          hideModal('createChannelModal');
+          showNotification('Channel created!');
+        }
+      };
+
+      // Add friend
+      window.addFriend = async () => {
+        const username = friendUsername.value.trim();
+        if (!username) return;
+
+        const { data: user } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', username)
+          .single();
+
+        if (!user) {
+          showNotification('User not found', true);
+          return;
+        }
+
+        const { error } = await supabase
+          .from('friends')
+          .insert({
+            user_id: currentUser.id,
+            friend_id: user.id,
+            status: 'accepted' // Auto accept for simplicity
+          });
+
+        if (error) {
+          showNotification('Failed to add friend', true);
+        } else {
+          showNotification('Friend added!');
+          friendUsername.value = '';
+          await loadDMs();
+          await loadFriends();
+        }
+      };
+
+      // Start DM
+      window.startDM = (userId) => {
+        switchDM(userId, 'User');
+        hideModal('friendsModal');
+      };
 
       // Load friends
       async function loadFriends() {
@@ -1093,7 +1538,6 @@
         }
       }
 
-      // Render friends
       function renderFriends() {
         if (!friendsList) return;
         
@@ -1103,9 +1547,9 @@
         }
 
         friendsList.innerHTML = friends.map(friend => `
-          <div class="friend-item" onclick="startDM('${friend.username}')">
+          <div class="friend-item" onclick="startDM('${friend.id}')">
             <div class="friend-avatar">
-              <img src="${friend.avatar_url || 'https://via.placeholder.com/40/5865f2/ffffff?text=' + (friend.username?.[0] || 'U')}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+              <img src="${friend.avatar_url || 'https://via.placeholder.com/40/5865f2/ffffff?text=' + (friend.username?.[0] || 'U')}" alt="">
             </div>
             <div class="friend-info">
               <div class="friend-name">${friend.username}</div>
@@ -1116,40 +1560,6 @@
           </div>
         `).join('');
       }
-
-      // Add friend
-      window.addFriend = async () => {
-        const username = friendUsername.value.trim();
-        if (!username) return;
-
-        // Find user by username
-        const { data: user } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('username', username)
-          .single();
-
-        if (!user) {
-          showNotification('User not found', true);
-          return;
-        }
-
-        // Send friend request
-        const { error } = await supabase
-          .from('friends')
-          .insert({
-            user_id: currentUser.id,
-            friend_id: user.id,
-            status: 'pending'
-          });
-
-        if (error) {
-          showNotification('Failed to add friend', true);
-        } else {
-          showNotification('Friend request sent!');
-          friendUsername.value = '';
-        }
-      };
 
       // Avatar upload
       document.getElementById('avatarUpload').addEventListener('click', () => {
@@ -1284,11 +1694,6 @@
         
         if (profile.avatar_url) {
           profileAvatar.src = profile.avatar_url;
-          document.querySelectorAll('.user-avatar img, .message-avatar img').forEach(img => {
-            if (img.closest('.user-avatar') || img.closest('.message-avatar[data-user="' + currentUser.id + '"]')) {
-              img.src = profile.avatar_url;
-            }
-          });
         }
 
         if (profile.banner_url) {
@@ -1302,9 +1707,11 @@
         authContainer.style.display = 'none';
         appContainer.style.display = 'block';
 
-        await loadMessages();
+        await loadChannels();
+        await loadDMs();
         await loadFriends();
-        subscribeToMessages();
+        await loadMessages();
+        subscribeToChannel(activeChannel);
       }
 
       // Logout
@@ -1314,9 +1721,10 @@
         currentProfile = null;
         appContainer.style.display = 'none';
         authContainer.style.display = 'flex';
-        if (messageSubscription) {
-          messageSubscription.unsubscribe();
-        }
+        
+        // Unsubscribe from all
+        messageSubscriptions.forEach(sub => sub.unsubscribe());
+        messageSubscriptions.clear();
       });
 
       // Navigation
@@ -1328,6 +1736,15 @@
       showLogin.addEventListener('click', () => {
         signupCard.style.display = 'none';
         loginCard.style.display = 'block';
+      });
+
+      // Theme settings
+      document.getElementById('themeSelect').addEventListener('change', (e) => {
+        if (e.target.value === 'light') {
+          document.body.style.background = '#f0f0f0';
+        } else {
+          document.body.style.background = '#1a1a1a';
+        }
       });
 
       // Check session on load
