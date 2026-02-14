@@ -43,6 +43,16 @@
     .nav-right {
       font-size: 13px;
       color: #0f0;
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-right span {
+      cursor: pointer;
+    }
+
+    .nav-right span:hover {
+      color: #fff;
     }
 
     /* HERO SECTION */
@@ -200,6 +210,50 @@
     .pagination a:hover {
       background: #222;
       color: #fff;
+    }
+
+    /* CREATE PASTE */
+    .create-paste {
+      background: #111;
+      border: 1px solid #222;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .create-paste input,
+    .create-paste textarea {
+      width: 100%;
+      background: #000;
+      border: 1px solid #333;
+      padding: 10px;
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    .create-paste textarea {
+      min-height: 200px;
+      font-family: monospace;
+      resize: vertical;
+    }
+
+    .create-paste button {
+      background: #222;
+      border: 1px solid #444;
+      padding: 10px 20px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .create-paste button:hover {
+      background: #333;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #888;
+      margin: 10px 0;
     }
 
     /* PROFILE PAGE */
@@ -488,6 +542,15 @@
       background: #333;
     }
 
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+      border: 1px solid #222;
+      background: #111;
+    }
+
     /* HIDDEN */
     .hidden {
       display: none !important;
@@ -560,12 +623,14 @@
     <a onclick="showPage('pastes')" id="nav-pastes">Pastes</a>
     <a onclick="showPage('users')" id="nav-users">Users</a>
   </div>
-  <div class="nav-right" id="onlineCount">
-    ● <span id="onlineUsers">569</span>
+  <div class="nav-right">
+    <span>● <span id="onlineUsers">0</span></span>
+    <span onclick="showLogin()" id="loginBtn">Login</span>
+    <span onclick="handleLogout()" id="logoutBtn" class="hidden">Logout</span>
   </div>
 </div>
 
-<!-- HERO SECTION (only on home) -->
+<!-- HERO SECTION -->
 <div id="heroSection" class="hero">
   <div class="logo">exiled</div>
   <p>anonymous pastebin</p>
@@ -583,10 +648,10 @@
 
 <!-- MAIN CONTENT -->
 <div class="container">
-  <!-- HOME PAGE (Pinned Pastes) -->
+  <!-- HOME PAGE -->
   <div id="homePage">
-    <h2>Pinned Pastes</h2>
-    <table>
+    <h2>Recent Pastes</h2>
+    <table id="recentPastesTable">
       <thead>
         <tr>
           <th>Title</th>
@@ -596,59 +661,12 @@
           <th>Added</th>
         </tr>
       </thead>
-      <tbody id="pinnedPastes">
+      <tbody id="recentPastesList">
         <tr>
-          <td class="title" onclick="viewPaste('Can Blabcity Owner')">Can Blabcity Owner</td>
-          <td class="comment-count">851</td>
-          <td class="views">—</td>
-          <td><span class="username-white">vvsivsvs</span><span class="rich-badge">[Rich]</span></td>
-          <td class="date">Feb 12, 2026</td>
-        </tr>
-        <tr>
-          <td class="title" onclick="viewPaste('Revenge Jack Butterfield')">Revenge Jack Butterfield</td>
-          <td class="comment-count">2028</td>
-          <td class="views">—</td>
-          <td><span class="username-blue">Anonymous</span></td>
-          <td class="date">Feb 8, 2026</td>
-        </tr>
-        <tr>
-          <td class="title" onclick="viewPaste('JOIN LICK ON TELEGRAM')">JOIN LICK ON TELEGRAM</td>
-          <td class="comment-count">2418</td>
-          <td class="views">—</td>
-          <td><span class="username-blue">Anonymous</span></td>
-          <td class="date">Feb 7, 2026</td>
-        </tr>
-        <tr>
-          <td class="title" onclick="viewPaste('NCSC UK undercover agents')">NCSC UK undercover agents</td>
-          <td class="comment-count">174</td>
-          <td class="views">12556</td>
-          <td><span class="username-blue">Anonymous</span></td>
-          <td class="date">Jan 8, 2026</td>
-        </tr>
-        <tr>
-          <td class="title" onclick="viewPaste('How to Ensure Your Paste Stays Up')">How to Ensure Your Paste Stays Up</td>
-          <td class="comment-count">260266</td>
-          <td class="views">—</td>
-          <td><span class="username-blue">Admin</span><span class="admin-badge">[Admin]</span></td>
-          <td class="date">Nov 20, 2020</td>
-        </tr>
-        <tr>
-          <td class="title" onclick="viewPaste('Transparency Report')">Transparency Report</td>
-          <td class="comment-count">156673</td>
-          <td class="views">—</td>
-          <td><span class="username-blue">hardline</span><span class="admin-badge">[Manager]</span></td>
-          <td class="date">Jun 20, 2020</td>
+          <td colspan="5" class="empty-state">No pastes yet. Be the first to upload!</td>
         </tr>
       </tbody>
     </table>
-
-    <div class="pagination">
-      <a href="#"><</a>
-      <a href="#">1</a>
-      <a href="#">2</a>
-      <a href="#">3</a>
-      <a href="#">></a>
-    </div>
   </div>
 
   <!-- PROFILE PAGE -->
@@ -656,44 +674,35 @@
     <div id="profileViewContainer"></div>
   </div>
 
-  <!-- PASTES PAGE (All Pastes) -->
+  <!-- PASTES PAGE -->
   <div id="pastesPage" class="hidden">
-    <h2>All Pastes</h2>
-    <table>
+    <h2>Create New Paste</h2>
+    <div class="create-paste">
+      <input type="text" id="pasteTitle" placeholder="Title">
+      <textarea id="pasteContent" placeholder="Paste content..."></textarea>
+      <label class="checkbox-label">
+        <input type="checkbox" id="privatePaste"> Private paste
+      </label>
+      <button onclick="uploadPaste()" id="uploadBtn">Upload Paste</button>
+      <div id="uploadMessage" class="message hidden"></div>
+    </div>
+
+    <h2 style="margin-top: 30px;">Your Pastes</h2>
+    <table id="userPastesTable">
       <thead>
         <tr>
           <th>Title</th>
-          <th>Comments</th>
           <th>Views</th>
-          <th>Created By</th>
-          <th>Added</th>
+          <th>Created</th>
+          <th>Status</th>
         </tr>
       </thead>
-      <tbody id="allPastes">
-        <!-- Will be populated with real data -->
+      <tbody id="userPastesList">
         <tr>
-          <td class="title" onclick="viewPaste('Example Paste 1')">Example Paste 1</td>
-          <td class="comment-count">12</td>
-          <td class="views">855</td>
-          <td><span class="username-blue">User1</span></td>
-          <td class="date">Feb 14, 2026</td>
-        </tr>
-        <tr>
-          <td class="title" onclick="viewPaste('Example Paste 2')">Example Paste 2</td>
-          <td class="comment-count">5</td>
-          <td class="views">2030</td>
-          <td><span class="username-blue">User2</span></td>
-          <td class="date">Feb 13, 2026</td>
+          <td colspan="4" class="empty-state">You haven't created any pastes yet.</td>
         </tr>
       </tbody>
     </table>
-    <div class="pagination">
-      <a href="#"><</a>
-      <a href="#">1</a>
-      <a href="#">2</a>
-      <a href="#">3</a>
-      <a href="#">></a>
-    </div>
   </div>
 
   <!-- USERS PAGE -->
@@ -702,7 +711,7 @@
     <div class="users-grid" id="usersList"></div>
   </div>
 
-  <!-- PASTE VIEW PAGE -->
+  <!-- PASTE VIEW PAGE (opens in new window) -->
   <div id="pasteViewPage" class="hidden">
     <div id="pasteViewContainer"></div>
   </div>
@@ -757,6 +766,8 @@
   };
 
   const heroSection = document.getElementById('heroSection');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
 
   // Initialize
   (async function init() {
@@ -764,6 +775,7 @@
     currentUser = session?.user || null;
     updateUI();
     loadUsers();
+    loadRecentPastes();
     updateStats();
     checkURLHash();
     window.addEventListener('hashchange', checkURLHash);
@@ -783,10 +795,13 @@
         showPage('login');
       }
     } else if (hash.startsWith('paste/')) {
-      const pasteTitle = decodeURIComponent(hash.replace('paste/', ''));
-      viewPaste(pasteTitle);
+      const pasteId = hash.replace('paste/', '');
+      viewPaste(pasteId);
     } else if (hash === 'pastes') {
       showPage('pastes');
+      if (currentUser) {
+        loadUserPastes();
+      }
     } else if (hash === 'users') {
       showPage('users');
     } else {
@@ -796,26 +811,21 @@
 
   // Page navigation
   function showPage(page) {
-    // Hide all pages
     Object.values(pages).forEach(p => {
       if (p) p.classList.add('hidden');
     });
     
-    // Remove active class from nav links
     Object.values(navLinks).forEach(link => {
       if (link) link.classList.remove('active');
     });
     
-    // Show selected page
     if (pages[page]) {
       pages[page].classList.remove('hidden');
       
-      // Add active class to nav link
       if (navLinks[page]) {
         navLinks[page].classList.add('active');
       }
       
-      // Update hash
       if (page === 'home') {
         window.location.hash = '';
         heroSection.style.display = 'block';
@@ -830,44 +840,169 @@
     }
   }
 
-  // Show login
-  function showLogin() {
-    showPage('login');
+  // Load recent pastes
+  async function loadRecentPastes() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('pastes')
+        .select('*, profiles(username, email)')
+        .eq('is_private', false)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      const tbody = document.getElementById('recentPastesList');
+      
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No pastes yet. Be the first to upload!</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(paste => {
+        const isRichUser = paste.profiles?.email === RICH_USER_EMAIL;
+        return `
+          <tr>
+            <td class="title" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</td>
+            <td class="comment-count">0</td>
+            <td class="views">${paste.views || 0}</td>
+            <td>
+              <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
+              ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+            </td>
+            <td class="date">${new Date(paste.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch (error) {
+      console.error('Error loading pastes:', error);
+    }
   }
 
-  // Show my profile
-  function showMyProfile() {
-    if (!currentUser) {
-      showLogin();
-      return;
-    }
-    window.location.hash = 'profile';
-    viewUserProfile(currentUser.id);
+  // Open paste in new window
+  function openPasteInNewWindow(pasteId) {
+    window.open(`/#paste/${pasteId}`, '_blank');
   }
 
   // View paste
-  function viewPaste(title) {
-    window.location.hash = 'paste/' + encodeURIComponent(title);
-    
-    const container = document.getElementById('pasteViewContainer');
-    container.innerHTML = `
-      <div class="paste-view">
-        <div class="paste-header">
-          <h1 class="paste-title">${title}</h1>
-          <div class="paste-meta">
-            <span>👁️ 0 views</span>
-            <span>💬 0 comments</span>
-            <span>📅 ${new Date().toLocaleDateString()}</span>
+  async function viewPaste(pasteId) {
+    try {
+      // Increment views
+      await supabaseClient.rpc('increment_paste_views', { paste_id: pasteId });
+
+      const { data: paste, error } = await supabaseClient
+        .from('pastes')
+        .select('*, profiles(username, email, avatar_url)')
+        .eq('id', pasteId)
+        .single();
+
+      if (error) throw error;
+
+      const isRichUser = paste.profiles?.email === RICH_USER_EMAIL;
+
+      const container = document.getElementById('pasteViewContainer');
+      container.innerHTML = `
+        <div class="paste-view">
+          <div class="paste-header">
+            <h1 class="paste-title">${escapeHtml(paste.title)}</h1>
+            <div class="paste-meta">
+              <span>👁️ ${paste.views || 0}</span>
+              <span>💬 0</span>
+              <span>📅 ${new Date(paste.created_at).toLocaleDateString()}</span>
+            </div>
           </div>
+          <div class="paste-content">
+            ${escapeHtml(paste.content)}
+          </div>
+          <div style="margin-top: 15px; color: #888;">
+            Created by: 
+            <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
+            ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+          </div>
+          <button class="back-btn" onclick="window.close()">Close Window</button>
         </div>
-        <div class="paste-content">
-          Paste content would appear here...
-        </div>
-        <button class="back-btn" onclick="showPage('home')">← Back</button>
-      </div>
-    `;
-    
-    showPage('paste');
+      `;
+
+      showPage('paste');
+    } catch (error) {
+      console.error('Error loading paste:', error);
+    }
+  }
+
+  // Upload paste
+  async function uploadPaste() {
+    if (!currentUser) {
+      alert('Please login to upload pastes');
+      showLogin();
+      return;
+    }
+
+    const title = document.getElementById('pasteTitle').value.trim();
+    const content = document.getElementById('pasteContent').value.trim();
+    const isPrivate = document.getElementById('privatePaste').checked;
+
+    if (!title || !content) {
+      showMessage('uploadMessage', 'Title and content required', 'error');
+      return;
+    }
+
+    try {
+      const { error } = await supabaseClient
+        .from('pastes')
+        .insert([{
+          title,
+          content,
+          is_private: isPrivate,
+          user_id: currentUser.id,
+          views: 0,
+          created_at: new Date().toISOString()
+        }]);
+
+      if (error) throw error;
+
+      showMessage('uploadMessage', 'Paste uploaded successfully!', 'success');
+      document.getElementById('pasteTitle').value = '';
+      document.getElementById('pasteContent').value = '';
+      document.getElementById('privatePaste').checked = false;
+      
+      loadUserPastes();
+      loadRecentPastes();
+    } catch (error) {
+      showMessage('uploadMessage', error.message, 'error');
+    }
+  }
+
+  // Load user's pastes
+  async function loadUserPastes() {
+    if (!currentUser) return;
+
+    try {
+      const { data, error } = await supabaseClient
+        .from('pastes')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const tbody = document.getElementById('userPastesList');
+      
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">You haven\'t created any pastes yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(paste => `
+        <tr>
+          <td class="title" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</td>
+          <td>${paste.views || 0}</td>
+          <td class="date">${new Date(paste.created_at).toLocaleDateString()}</td>
+          <td>${paste.is_private ? '🔒 Private' : '🌍 Public'}</td>
+        </tr>
+      `).join('');
+    } catch (error) {
+      console.error('Error loading user pastes:', error);
+    }
   }
 
   // View user profile
@@ -956,7 +1091,7 @@
               ${pastes && pastes.length > 0 ? 
                 pastes.slice(0, 5).map(paste => `
                   <div style="padding: 10px; border-bottom: 1px solid #222;">
-                    <div style="color: #fff; cursor: pointer;" onclick="viewPaste('${escapeHtml(paste.title)}')">${escapeHtml(paste.title)}</div>
+                    <div style="color: #fff; cursor: pointer;" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</div>
                     <div style="color: #888; font-size: 11px; margin-top: 4px;">
                       ${new Date(paste.created_at).toLocaleDateString()} · ${paste.views || 0} views
                     </div>
@@ -1011,7 +1146,6 @@
 
       alert('Avatar updated!');
       viewUserProfile(currentUser.id);
-      loadSidebarProfile();
     } catch (error) {
       alert(error.message);
     }
@@ -1050,6 +1184,7 @@
       alert('Profile updated!');
       toggleEditProfile();
       viewUserProfile(currentUser.id);
+      loadUsers();
     } catch (error) {
       alert(error.message);
     }
@@ -1069,35 +1204,37 @@
       const { data, error } = await supabaseClient
         .from('profiles')
         .select('*')
-        .limit(20);
+        .limit(50);
 
       if (error) throw error;
 
       const usersList = document.getElementById('usersList');
-      usersList.innerHTML = '';
-
-      if (data && data.length > 0) {
-        data.forEach(user => {
-          const isRichUser = user.email === RICH_USER_EMAIL;
-          usersList.innerHTML += `
-            <div class="user-card" onclick="viewUserProfile('${user.id}')">
-              <div class="user-avatar">
-                ${user.avatar_url ? 
-                  `<img src="${user.avatar_url}">` : 
-                  '👤'
-                }
-              </div>
-              <div class="user-name ${isRichUser ? 'username-white' : 'username-blue'}">
-                ${escapeHtml(user.username || 'Anonymous')}
-                ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
-              </div>
-              <div class="user-joined">
-                Joined: ${new Date(user.created_at).toLocaleDateString()}
-              </div>
-            </div>
-          `;
-        });
+      
+      if (!data || data.length === 0) {
+        usersList.innerHTML = '<div class="empty-state">No users found.</div>';
+        return;
       }
+
+      usersList.innerHTML = data.map(user => {
+        const isRichUser = user.email === RICH_USER_EMAIL;
+        return `
+          <div class="user-card" onclick="viewUserProfile('${user.id}')">
+            <div class="user-avatar">
+              ${user.avatar_url ? 
+                `<img src="${user.avatar_url}">` : 
+                '👤'
+              }
+            </div>
+            <div class="user-name ${isRichUser ? 'username-white' : 'username-blue'}">
+              ${escapeHtml(user.username || 'Anonymous')}
+              ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+            </div>
+            <div class="user-joined">
+              Joined: ${new Date(user.created_at).toLocaleDateString()}
+            </div>
+          </div>
+        `;
+      }).join('');
     } catch (error) {
       console.error('Error loading users:', error);
     }
@@ -1106,18 +1243,30 @@
   // Search pastes
   function searchPastes() {
     const query = document.getElementById('searchInput').value;
-    alert(`Searching for: ${query || 'all pastes'}`);
+    const searchTitle = document.getElementById('searchTitle').checked;
+    
+    if (!query) {
+      loadRecentPastes();
+      return;
+    }
+
+    alert(`Search functionality coming soon! Searching for: ${query}`);
   }
 
   // Update UI based on auth
   function updateUI() {
-    const profileLink = document.getElementById('nav-profile');
-    
     if (currentUser) {
-      profileLink.style.display = 'inline-block';
+      loginBtn.classList.add('hidden');
+      logoutBtn.classList.remove('hidden');
     } else {
-      profileLink.style.display = 'inline-block'; // Always show, but redirects to login
+      loginBtn.classList.remove('hidden');
+      logoutBtn.classList.add('hidden');
     }
+  }
+
+  // Show login
+  function showLogin() {
+    showPage('login');
   }
 
   // Auth
@@ -1126,7 +1275,12 @@
     const password = document.getElementById('password')?.value;
 
     if (!email || !password) {
-      alert('Email and password required');
+      showMessage('authMessage', 'Email and password required', 'error');
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage('authMessage', 'Password must be at least 6 characters', 'error');
       return;
     }
 
@@ -1138,9 +1292,9 @@
 
       if (error) throw error;
 
-      alert('Signup successful! Check email for confirmation.');
+      showMessage('authMessage', 'Signup successful! Check email for confirmation.', 'success');
     } catch (error) {
-      alert(error.message);
+      showMessage('authMessage', error.message, 'error');
     }
   }
 
@@ -1156,27 +1310,51 @@
 
       if (error) throw error;
       
-      alert('Login successful!');
-      window.location.hash = '';
-      showPage('home');
+      showMessage('authMessage', 'Login successful!', 'success');
+      setTimeout(() => {
+        window.location.hash = '';
+        showPage('home');
+      }, 1000);
     } catch (error) {
-      alert(error.message);
+      showMessage('authMessage', error.message, 'error');
     }
   }
 
   async function handleLogout() {
     await supabaseClient.auth.signOut();
     currentUser = null;
+    currentProfile = null;
+    updateUI();
     window.location.hash = '';
     showPage('home');
+    loadRecentPastes();
   }
 
   // Update stats
-  function updateStats() {
-    document.getElementById('onlineUsers').textContent = Math.floor(Math.random() * 100) + 500;
+  async function updateStats() {
+    try {
+      const { count } = await supabaseClient
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+
+      const online = Math.floor(Math.random() * 100) + 500;
+      document.getElementById('onlineUsers').textContent = online;
+    } catch (error) {
+      console.error('Error updating stats:', error);
+    }
   }
 
-  // Utility
+  // Utility functions
+  function showMessage(elementId, message, type) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.textContent = message;
+      element.className = `message ${type}`;
+      element.classList.remove('hidden');
+      setTimeout(() => element.classList.add('hidden'), 5000);
+    }
+  }
+
   function escapeHtml(unsafe) {
     if (!unsafe) return '';
     return unsafe
@@ -1193,6 +1371,9 @@
     updateUI();
     if (currentUser) {
       loadUsers();
+      if (window.location.hash === '#pastes') {
+        loadUserPastes();
+      }
     }
   });
 </script>
