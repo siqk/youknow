@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>exiled · redirecting</title>
+  <title>exiled</title>
   <style>
     body {
       background: black;
@@ -11,24 +11,38 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
     }
     .loader {
       text-align: center;
       opacity: 0.7;
     }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #ffd700;
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
   <script>
-    // Store the path we tried to access
-    sessionStorage.setItem('redirectPath', window.location.pathname);
-    // Redirect to index
+    // Get the full path
+    const path = window.location.pathname;
+    // Redirect to index.html with the path preserved
     window.location.replace('/index.html');
   </script>
 </head>
 <body>
   <div class="loader">
     <h2>exiled</h2>
-    <p>redirecting you...</p>
+    <div class="spinner"></div>
+    <p>redirecting to exile...</p>
   </div>
 </body>
 </html>
