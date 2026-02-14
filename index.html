@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>exiled - anonymous pastebin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navbar Component -->
+  <div id="navbar"></div>
+
+  <!-- Online Ticker Component -->
+  <div id="ticker"></div>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="logo">exiled</div>
+    <p>anonymous pastebin</p>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search for a paste...">
+      <button onclick="searchPastes()">Search</button>
+      <div class="radio-options">
+        <label><input type="radio" name="search" id="searchTitle" checked> Search in title</label>
+        <label><input type="radio" name="search" id="searchPaste"> Search in paste</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h2>All Public Pastes</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Comments</th>
+            <th>Views</th>
+            <th>Created By</th>
+            <th>Added</th>
+          </tr>
+        </thead>
+        <tbody id="allPastesList">
+          <tr>
+            <td colspan="5" class="empty-state">Loading pastes...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer Component -->
+  <div id="footer"></div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h2>Login to exiled</h2>
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button class="primary" onclick="handleLogin()">Login</button>
+      <button onclick="handleSignup()">Sign Up</button>
+      <div id="modalAuthMessage" class="message hidden"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/config/supabase.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/pastes.js"></script>
+  <script src="/js/comments.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
