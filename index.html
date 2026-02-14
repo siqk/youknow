@@ -20,7 +20,6 @@
       line-height: 1.5;
     }
 
-    /* Container */
     .container {
       max-width: 1400px;
       margin: 0 auto;
@@ -74,6 +73,12 @@
 
     .nav-link:hover {
       border-color: #ff4444;
+    }
+
+    .nav-link.active {
+      border-color: #ff4444;
+      background: #ff4444;
+      color: #0a0c10;
     }
 
     .user-stats {
@@ -206,97 +211,184 @@
       border: 1px solid #282d38;
       border-radius: 6px;
       padding: 20px;
+      min-height: 500px;
     }
 
-    .pastes-header {
+    .content-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
-    .pastes-header h2 {
-      font-size: 16px;
+    .content-header h2 {
+      font-size: 18px;
       color: #ff4444;
     }
 
-    .total-pastes {
+    /* Page content */
+    .page-content {
+      color: #d4d7de;
+      line-height: 1.6;
+    }
+
+    /* Users grid */
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .user-card {
+      background: #1a1e26;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .user-card:hover {
+      border-color: #ff4444;
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #282d38;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #ff4444;
+    }
+
+    .user-name {
+      color: #ff4444;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .user-stats-small {
+      color: #8f96a3;
+      font-size: 11px;
+    }
+
+    /* Upgrades grid */
+    .upgrades-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .upgrade-card {
+      background: #1a1e26;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .upgrade-title {
+      color: #ff4444;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .upgrade-price {
+      font-size: 24px;
+      color: #ffffff;
+      margin-bottom: 15px;
+    }
+
+    .upgrade-price span {
+      font-size: 14px;
+      color: #8f96a3;
+    }
+
+    .upgrade-features {
+      list-style: none;
+      margin: 15px 0;
+    }
+
+    .upgrade-features li {
+      padding: 5px 0;
       color: #8f96a3;
       font-size: 12px;
     }
 
-    .total-pastes span {
-      color: #ff4444;
-      font-weight: bold;
-    }
-
-    /* Table styles */
-    table {
+    .buy-btn {
       width: 100%;
-      border-collapse: collapse;
+      padding: 10px;
+      background: #ff4444;
+      border: none;
+      border-radius: 4px;
+      color: #0a0c10;
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    th {
-      text-align: left;
-      padding: 10px 8px;
-      border-bottom: 2px solid #282d38;
-      color: #8f96a3;
-      font-weight: normal;
-      font-size: 11px;
+    /* Hall of Fame */
+    .hall-list {
+      margin-top: 20px;
     }
 
-    td {
-      padding: 10px 8px;
-      border-bottom: 1px solid #282d38;
-    }
-
-    tr:hover td {
+    .hall-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
       background: #1a1e26;
+      border: 1px solid #282d38;
+      border-radius: 6px;
+      margin-bottom: 10px;
     }
 
-    .paste-title {
-      color: #ff4444;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .pin-icon {
-      color: #ffd700;
-      margin-right: 5px;
-    }
-
-    .comment-count, .view-count {
-      color: #8f96a3;
-    }
-
-    /* Username with moving gradient */
-    .username-gradient {
-      background: linear-gradient(90deg, #000000, #ffffff, #000000);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradient 3s linear infinite;
-      font-weight: 500;
-    }
-
-    .username-normal {
-      color: #d4d7de;
-    }
-
-    .rich-badge {
-      color: #ffd700;
+    .hall-rank {
+      font-size: 24px;
       font-weight: bold;
-      margin-left: 3px;
+      color: #ffd700;
+      min-width: 50px;
     }
 
-    .admin-badge {
+    .hall-info {
+      flex: 1;
+    }
+
+    .hall-name {
       color: #ff4444;
       font-weight: bold;
-      margin-left: 3px;
+      margin-bottom: 5px;
     }
 
-    .date {
+    .hall-achievement {
       color: #8f96a3;
+      font-size: 12px;
+    }
+
+    /* Help section */
+    .help-section {
+      margin-top: 20px;
+    }
+
+    .help-item {
+      margin-bottom: 25px;
+    }
+
+    .help-question {
+      color: #ff4444;
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .help-answer {
+      color: #8f96a3;
+      padding-left: 20px;
     }
 
     /* Right sidebar */
@@ -329,11 +421,6 @@
     .profile-name {
       font-size: 16px;
       font-weight: bold;
-      background: linear-gradient(90deg, #000000, #ffffff, #000000);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradient 3s linear infinite;
     }
 
     .profile-uid {
@@ -367,33 +454,19 @@
       text-transform: uppercase;
     }
 
-    .following-list {
-      margin-top: 15px;
+    .username-gradient {
+      background: linear-gradient(90deg, #000000, #ffffff, #000000);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient 3s linear infinite;
+      font-weight: 500;
     }
 
-    .following-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px;
-      background: #1a1e26;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-
-    .following-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: #282d38;
-    }
-
-    .following-name {
-      flex: 1;
-    }
-
-    .following-name .username-gradient {
-      font-size: 12px;
+    .rich-badge {
+      color: #ffd700;
+      font-weight: bold;
+      margin-left: 3px;
     }
 
     .hidden {
@@ -459,12 +532,12 @@
     <div class="header">
       <div class="logo">exiled</div>
       <div class="nav-links">
-        <a class="nav-link" onclick="showHome()">Home</a>
-        <a class="nav-link" onclick="showAddPaste()">Add Paste</a>
-        <a class="nav-link" onclick="showUsers()">Users</a>
-        <a class="nav-link" onclick="showUpgrades()">Upgrades</a>
-        <a class="nav-link" onclick="showHallOfAutism()">Hall of Autism</a>
-        <a class="nav-link" onclick="showHelp()">Help</a>
+        <a class="nav-link" onclick="showPage('home')" id="nav-home">Home</a>
+        <a class="nav-link" onclick="showPage('addPaste')" id="nav-addPaste">Add Paste</a>
+        <a class="nav-link" onclick="showPage('users')" id="nav-users">Users</a>
+        <a class="nav-link" onclick="showPage('upgrades')" id="nav-upgrades">Upgrades</a>
+        <a class="nav-link" onclick="showPage('hall')" id="nav-hall">Hall of Autism</a>
+        <a class="nav-link" onclick="showPage('help')" id="nav-help">Help</a>
         <span class="nav-link" id="totalUsersDisplay">0ct</span>
         <span class="nav-link" id="onlineUsersDisplay">0ct</span>
         <a class="nav-link" onclick="showProfile()" id="profileLink">Profile</a>
@@ -514,44 +587,131 @@
 
       <!-- Main Content -->
       <div class="main-content">
-        <!-- Home Section -->
-        <div id="homeSection">
-          <div class="pastes-header">
-            <h2>Pinned Pastes</h2>
-            <div class="total-pastes">Showing <span id="visiblePastes">100</span> (of <span id="totalPastesCount">173435</span> total) pastes</div>
+        <!-- Home Page -->
+        <div id="homePage" class="page-content">
+          <div class="content-header">
+            <h2>Welcome to exiled</h2>
           </div>
+          <p>Welcome to the most secure pastebin platform. Share text anonymously with the community.</p>
+          <p style="margin-top: 20px; color: #8f96a3;">Use the navigation above to get started.</p>
+        </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Comments</th>
-                <th>Views</th>
-                <th>Created by</th>
-                <th>Added</th>
-              </tr>
-            </thead>
-            <tbody id="pinnedPastes">
-              <!-- Pinned pastes will be inserted here -->
-            </tbody>
-          </table>
+        <!-- Add Paste Page -->
+        <div id="addPastePage" class="page-content hidden">
+          <div class="content-header">
+            <h2>Create New Paste</h2>
+          </div>
+          <input type="text" id="pasteTitle" placeholder="Title" style="width: 100%; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; padding: 10px; color: #d4d7de; margin-bottom: 10px;">
+          <textarea id="pasteContent" placeholder="Paste content..." rows="15" style="width: 100%; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; padding: 10px; color: #d4d7de; margin-bottom: 10px;"></textarea>
+          <div style="margin-bottom: 10px;">
+            <label style="color: #8f96a3;"><input type="checkbox" id="privatePaste"> Private</label>
+          </div>
+          <button onclick="uploadPaste()" style="padding: 10px 20px; background: #ff4444; border: none; border-radius: 4px; color: #0a0c10; font-weight: bold;">Upload Paste</button>
+          <div id="uploadMessage" class="message hidden"></div>
+        </div>
 
-          <div style="margin: 20px 0 10px; border-bottom: 2px solid #282d38;"></div>
+        <!-- Users Page -->
+        <div id="usersPage" class="page-content hidden">
+          <div class="content-header">
+            <h2>Users</h2>
+          </div>
+          <div class="users-grid" id="usersList"></div>
+        </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Comments</th>
-                <th>Views</th>
-                <th>Created by</th>
-                <th>Added</th>
-              </tr>
-            </thead>
-            <tbody id="allPastes">
-              <!-- All pastes will be inserted here -->
-            </tbody>
-          </table>
+        <!-- Upgrades Page -->
+        <div id="upgradesPage" class="page-content hidden">
+          <div class="content-header">
+            <h2>Upgrades</h2>
+          </div>
+          <div class="upgrades-grid">
+            <div class="upgrade-card">
+              <div class="upgrade-title">Basic</div>
+              <div class="upgrade-price">$5 <span>/month</span></div>
+              <ul class="upgrade-features">
+                <li>✓ 100 pastes per day</li>
+                <li>✓ Basic support</li>
+                <li>✓ No ads</li>
+              </ul>
+              <button class="buy-btn" onclick="alert('Upgrade feature coming soon')">Upgrade</button>
+            </div>
+            <div class="upgrade-card">
+              <div class="upgrade-title">Premium</div>
+              <div class="upgrade-price">$15 <span>/month</span></div>
+              <ul class="upgrade-features">
+                <li>✓ Unlimited pastes</li>
+                <li>✓ Priority support</li>
+                <li>✓ No ads</li>
+                <li>✓ Custom branding</li>
+              </ul>
+              <button class="buy-btn" onclick="alert('Upgrade feature coming soon')">Upgrade</button>
+            </div>
+            <div class="upgrade-card">
+              <div class="upgrade-title">Enterprise</div>
+              <div class="upgrade-price">$50 <span>/month</span></div>
+              <ul class="upgrade-features">
+                <li>✓ Everything in Premium</li>
+                <li>✓ API access</li>
+                <li>✓ Dedicated support</li>
+                <li>✓ Custom features</li>
+              </ul>
+              <button class="buy-btn" onclick="alert('Upgrade feature coming soon')">Upgrade</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hall of Autism Page -->
+        <div id="hallPage" class="page-content hidden">
+          <div class="content-header">
+            <h2>Hall of Autism</h2>
+          </div>
+          <div class="hall-list">
+            <div class="hall-item">
+              <div class="hall-rank">#1</div>
+              <div class="hall-info">
+                <div class="hall-name">Anonymous</div>
+                <div class="hall-achievement">Most pastes uploaded - 15,234 pastes</div>
+              </div>
+            </div>
+            <div class="hall-item">
+              <div class="hall-rank">#2</div>
+              <div class="hall-info">
+                <div class="hall-name">vvsivsvs</div>
+                <div class="hall-achievement">Most viewed content - 1.2M views</div>
+              </div>
+            </div>
+            <div class="hall-item">
+              <div class="hall-rank">#3</div>
+              <div class="hall-info">
+                <div class="hall-name">handline</div>
+                <div class="hall-achievement">Longest membership - 5 years</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Help Page -->
+        <div id="helpPage" class="page-content hidden">
+          <div class="content-header">
+            <h2>Help & Support</h2>
+          </div>
+          <div class="help-section">
+            <div class="help-item">
+              <div class="help-question">How do I create a paste?</div>
+              <div class="help-answer">Click on "Add Paste" in the navigation bar, fill in the title and content, then click upload. You can choose to make it private if you want.</div>
+            </div>
+            <div class="help-item">
+              <div class="help-question">How do I upgrade my account?</div>
+              <div class="help-answer">Go to the "Upgrades" page and choose a plan that suits your needs. You can pay with crypto or credit card.</div>
+            </div>
+            <div class="help-item">
+              <div class="help-question">Is my data secure?</div>
+              <div class="help-answer">All pastes are encrypted and stored securely. We never share your data with third parties.</div>
+            </div>
+            <div class="help-item">
+              <div class="help-question">How do I report content?</div>
+              <div class="help-answer">Contact us through Telegram or email support@exiled.cc with the paste URL and reason for reporting.</div>
+            </div>
+          </div>
         </div>
 
         <!-- Auth Section -->
@@ -565,7 +725,7 @@
         </div>
 
         <!-- Profile Section -->
-        <div id="profileSection" class="hidden">
+        <div id="profileSection" class="page-content hidden">
           <div style="display: grid; grid-template-columns: 300px 1fr; gap: 20px;">
             <div style="background: #1a1e26; border: 1px solid #282d38; border-radius: 6px; padding: 20px;">
               <div style="text-align: center;">
@@ -609,10 +769,9 @@
 
             <div style="background: #1a1e26; border: 1px solid #282d38; border-radius: 6px; padding: 20px;">
               <div style="display: flex; gap: 10px; border-bottom: 1px solid #282d38; padding-bottom: 10px; margin-bottom: 20px;">
-                <div style="color: #ff4444; font-weight: bold;">Pastes</div>
-                <div style="color: #8f96a3;">Comments</div>
+                <div style="color: #ff4444; font-weight: bold;">Your Pastes</div>
               </div>
-              <div id="userPastes"></div>
+              <div id="userPastes">No pastes yet.</div>
             </div>
           </div>
         </div>
@@ -646,11 +805,6 @@
 
             <button onclick="showProfile()" style="width: 100%; padding: 6px; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; color: #d4d7de; cursor: pointer;">View Profile</button>
           </div>
-
-          <div class="following-list">
-            <div class="sidebar-title">FOLLOWING · FOLLOWERS</div>
-            <div id="followingList"></div>
-          </div>
         </div>
 
         <!-- Login Prompt (logged out) -->
@@ -677,13 +831,28 @@
     // Global state
     let currentUser = null;
     let currentProfile = null;
+    let currentPage = 'home';
     const RICH_USER_EMAIL = "ikiikikikijujijij@gmail.com";
 
     // DOM Elements
-    const sections = {
-      home: document.getElementById('homeSection'),
+    const pages = {
+      home: document.getElementById('homePage'),
+      addPaste: document.getElementById('addPastePage'),
+      users: document.getElementById('usersPage'),
+      upgrades: document.getElementById('upgradesPage'),
+      hall: document.getElementById('hallPage'),
+      help: document.getElementById('helpPage'),
       auth: document.getElementById('authSection'),
       profile: document.getElementById('profileSection')
+    };
+
+    const navLinks = {
+      home: document.getElementById('nav-home'),
+      addPaste: document.getElementById('nav-addPaste'),
+      users: document.getElementById('nav-users'),
+      upgrades: document.getElementById('nav-upgrades'),
+      hall: document.getElementById('nav-hall'),
+      help: document.getElementById('nav-help')
     };
 
     // Initialize
@@ -691,20 +860,37 @@
       const { data: { session } } = await supabaseClient.auth.getSession();
       currentUser = session?.user || null;
       updateUI();
-      loadPastes();
+      loadUsers();
       updateStats();
+      showPage('home');
     })();
 
-    // Navigation
-    function showHome() {
-      hideAllSections();
-      sections.home.classList.remove('hidden');
-      loadPastes();
+    // Page navigation
+    function showPage(page) {
+      // Hide all pages
+      Object.values(pages).forEach(p => {
+        if (p) p.classList.add('hidden');
+      });
+      
+      // Remove active class from all nav links
+      Object.values(navLinks).forEach(link => {
+        if (link) link.classList.remove('active');
+      });
+      
+      // Show selected page
+      if (pages[page]) {
+        pages[page].classList.remove('hidden');
+        currentPage = page;
+        
+        // Add active class to selected nav link
+        if (navLinks[page]) {
+          navLinks[page].classList.add('active');
+        }
+      }
     }
 
     function showLogin() {
-      hideAllSections();
-      sections.auth.classList.remove('hidden');
+      showPage('auth');
     }
 
     function showProfile() {
@@ -712,19 +898,139 @@
         showLogin();
         return;
       }
-      hideAllSections();
-      sections.profile.classList.remove('hidden');
+      showPage('profile');
       loadUserProfile();
     }
 
-    function showAddPaste() { alert('Add Paste feature coming soon'); }
-    function showUsers() { alert('Users page coming soon'); }
-    function showUpgrades() { alert('Upgrades page coming soon'); }
-    function showHallOfAutism() { alert('Hall of Autism coming soon'); }
-    function showHelp() { alert('Help page coming soon'); }
+    // Load users
+    async function loadUsers() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .limit(20);
 
-    function hideAllSections() {
-      Object.values(sections).forEach(s => s.classList.add('hidden'));
+        if (error) throw error;
+
+        const usersList = document.getElementById('usersList');
+        usersList.innerHTML = '';
+
+        if (data && data.length > 0) {
+          data.forEach(user => {
+            const isRichUser = user.email === RICH_USER_EMAIL;
+            usersList.innerHTML += `
+              <div class="user-card">
+                <div class="user-avatar">👤</div>
+                <div class="user-name ${isRichUser ? 'username-gradient' : ''}">${escapeHtml(user.username || 'Anonymous')}${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}</div>
+                <div class="user-stats-small">Joined: ${new Date(user.created_at).toLocaleDateString()}</div>
+              </div>
+            `;
+          });
+        } else {
+          usersList.innerHTML = '<p style="color: #8f96a3;">No users found.</p>';
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+      }
+    }
+
+    // Upload paste
+    function uploadPaste() {
+      const title = document.getElementById('pasteTitle')?.value.trim();
+      const content = document.getElementById('pasteContent')?.value.trim();
+
+      if (!title || !content) {
+        showMessage('uploadMessage', 'Title and content required', 'error');
+        return;
+      }
+
+      showMessage('uploadMessage', 'Paste uploaded successfully!', 'success');
+      document.getElementById('pasteTitle').value = '';
+      document.getElementById('pasteContent').value = '';
+    }
+
+    // Search pastes
+    function searchPastes() {
+      const query = document.getElementById('searchInput').value;
+      alert(`Searching for: ${query || 'all pastes'}`);
+    }
+
+    // Load user profile
+    async function loadUserProfile() {
+      if (!currentUser) return;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+
+        if (error && error.code === 'PGRST116') {
+          const { error: insertError } = await supabaseClient
+            .from('profiles')
+            .insert([{
+              id: currentUser.id,
+              email: currentUser.email,
+              username: currentUser.email.split('@')[0],
+              created_at: new Date().toISOString()
+            }]);
+          
+          if (!insertError) {
+            setTimeout(loadUserProfile, 500);
+          }
+          return;
+        }
+
+        if (error) throw error;
+
+        currentProfile = data;
+        const isRichUser = currentUser.email === RICH_USER_EMAIL;
+
+        document.getElementById('profileUsername').innerHTML = `
+          <span class="${isRichUser ? 'username-gradient' : ''}">${escapeHtml(data.username || 'Anonymous')}</span>
+          ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+        `;
+        document.getElementById('profileUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
+        document.getElementById('profileJoined').textContent = new Date(data.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        document.getElementById('profileBio').textContent = data.bio || 'No bio yet.';
+        
+        document.getElementById('editUsername').value = data.username || '';
+        document.getElementById('editBio').value = data.bio || '';
+
+        document.getElementById('profilePastes').textContent = data.paste_count || '0';
+        document.getElementById('profileLikes').textContent = data.likes || '0';
+        document.getElementById('profileFollowers').textContent = data.followers || '0';
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    }
+
+    // Load sidebar profile
+    async function loadSidebarProfile() {
+      if (!currentUser) return;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+
+        if (error) throw error;
+
+        const isRichUser = currentUser.email === RICH_USER_EMAIL;
+
+        document.getElementById('sidebarUsername').innerHTML = `
+          <span class="${isRichUser ? 'username-gradient' : ''}">${escapeHtml(data.username || 'Anonymous')}</span>
+        `;
+        document.getElementById('sidebarUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
+        document.getElementById('sidebarPastes').textContent = data.paste_count || '0';
+        document.getElementById('sidebarLikes').textContent = data.likes || '0';
+        document.getElementById('sidebarFollowers').textContent = data.followers || '0';
+      } catch (error) {
+        console.error('Error loading sidebar profile:', error);
+      }
     }
 
     // Update UI based on auth state
@@ -749,253 +1055,6 @@
         profileCard.classList.add('hidden');
         loginPrompt.classList.remove('hidden');
       }
-    }
-
-    // Load pastes
-    async function loadPastes() {
-      try {
-        const { data, error } = await supabaseClient
-          .from('pastes')
-          .select('*')
-          .eq('is_private', false)
-          .order('created_at', { ascending: false })
-          .limit(100);
-
-        if (error) throw error;
-
-        // Pinned pastes (matching the image)
-        const pinnedPastes = document.getElementById('pinnedPastes');
-        pinnedPastes.innerHTML = `
-          <tr>
-            <td><span class="pin-icon">📌</span><a class="paste-title">Can Blabcity Owner</a></td>
-            <td class="comment-count">842</td>
-            <td class="view-count">0</td>
-            <td><span class="username-gradient">vvsivsvs</span><span class="rich-badge">[Rich]</span></td>
-            <td class="date">Feb 12, 2026</td>
-          </tr>
-          <tr>
-            <td><span class="pin-icon">📌</span><a class="paste-title">Revenge Jack Butterfield</a></td>
-            <td class="comment-count">2026</td>
-            <td class="view-count">0</td>
-            <td><span class="username-normal">Anonymous</span></td>
-            <td class="date">Feb 8, 2026</td>
-          </tr>
-          <tr>
-            <td><span class="pin-icon">📌</span><a class="paste-title">JOIN LICK ON TELEGRAM</a></td>
-            <td class="comment-count">2415</td>
-            <td class="view-count">0</td>
-            <td><span class="username-normal">Anonymous</span></td>
-            <td class="date">Feb 7, 2026</td>
-          </tr>
-          <tr>
-            <td><span class="pin-icon">📌</span><a class="paste-title">NCSC UK undercover agents</a></td>
-            <td class="comment-count">174</td>
-            <td class="view-count">12551</td>
-            <td><span class="username-normal">Anonymous</span></td>
-            <td class="date">Jan 8, 2026</td>
-          </tr>
-          <tr>
-            <td><span class="pin-icon">📌</span><a class="paste-title">How to Ensure Your Paste Stays Up</a></td>
-            <td class="comment-count">260259</td>
-            <td class="view-count">0</td>
-            <td><span class="username-normal">Admin</span><span class="admin-badge">[Admin]</span></td>
-            <td class="date">Nov 20, 2020</td>
-          </tr>
-          <tr>
-            <td><span class="pin-icon">📌</span><a class="paste-title">Transparency Report</a></td>
-            <td class="comment-count">156672</td>
-            <td class="view-count">0</td>
-            <td><span class="username-gradient">handline</span><span class="admin-badge">[Manager]</span></td>
-            <td class="date">Jun 20, 2020</td>
-          </tr>
-        `;
-
-        // All pastes
-        const allPastes = document.getElementById('allPastes');
-        allPastes.innerHTML = '';
-        
-        if (data && data.length > 0) {
-          data.forEach(paste => {
-            const isRichUser = paste.email === RICH_USER_EMAIL;
-            allPastes.innerHTML += `
-              <tr>
-                <td><a class="paste-title" onclick="viewPaste('${paste.id}')">${escapeHtml(paste.title)}</a></td>
-                <td class="comment-count">0</td>
-                <td class="view-count">${paste.views || 0}</td>
-                <td>
-                  <span class="${isRichUser ? 'username-gradient' : 'username-normal'}">${escapeHtml(paste.username || 'Anonymous')}</span>
-                  ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
-                </td>
-                <td class="date">${new Date(paste.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-              </tr>
-            `;
-          });
-        }
-
-        document.getElementById('totalPastesCount').textContent = '173435';
-        document.getElementById('visiblePastes').textContent = data?.length || 0;
-      } catch (error) {
-        console.error('Error loading pastes:', error);
-      }
-    }
-
-    // Load user profile
-    async function loadUserProfile() {
-      if (!currentUser) return;
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-
-        if (error) throw error;
-
-        currentProfile = data;
-        const isRichUser = currentUser.email === RICH_USER_EMAIL;
-
-        // Update profile display
-        document.getElementById('profileUsername').innerHTML = `
-          <span class="${isRichUser ? 'username-gradient' : 'username-normal'}">${escapeHtml(data.username || 'Anonymous')}</span>
-          ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
-        `;
-        document.getElementById('profileUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
-        document.getElementById('profileJoined').textContent = new Date(data.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        document.getElementById('profileBio').textContent = data.bio || 'No bio yet.';
-        
-        // Edit form
-        document.getElementById('editUsername').value = data.username || '';
-        document.getElementById('editBio').value = data.bio || '';
-
-        // Load user's pastes
-        loadUserPastes();
-      } catch (error) {
-        console.error('Error loading profile:', error);
-      }
-    }
-
-    // Load sidebar profile
-    async function loadSidebarProfile() {
-      if (!currentUser) return;
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-
-        if (error) throw error;
-
-        const isRichUser = currentUser.email === RICH_USER_EMAIL;
-
-        document.getElementById('sidebarUsername').innerHTML = `
-          <span class="${isRichUser ? 'username-gradient' : 'username-normal'}">${escapeHtml(data.username || 'Anonymous')}</span>
-        `;
-        document.getElementById('sidebarUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
-        document.getElementById('sidebarPastes').textContent = data.paste_count || 0;
-        document.getElementById('sidebarLikes').textContent = data.likes || 0;
-        document.getElementById('sidebarFollowers').textContent = data.followers || 0;
-      } catch (error) {
-        console.error('Error loading sidebar profile:', error);
-      }
-    }
-
-    // Load user pastes
-    async function loadUserPastes() {
-      try {
-        const { data, error } = await supabaseClient
-          .from('pastes')
-          .select('*')
-          .eq('user_id', currentUser.id)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        const container = document.getElementById('userPastes');
-        container.innerHTML = '';
-
-        if (!data || data.length === 0) {
-          container.innerHTML = '<p style="color: #8f96a3; text-align: center;">No pastes yet.</p>';
-          return;
-        }
-
-        data.forEach(paste => {
-          container.innerHTML += `
-            <div style="padding: 10px; border-bottom: 1px solid #282d38;">
-              <div style="color: #ff4444; cursor: pointer;" onclick="viewPaste('${paste.id}')">${escapeHtml(paste.title)}</div>
-              <div style="color: #8f96a3; font-size: 11px;">${new Date(paste.created_at).toLocaleDateString()} · ${paste.views || 0} views</div>
-            </div>
-          `;
-        });
-
-        document.getElementById('profilePastes').textContent = data.length;
-      } catch (error) {
-        console.error('Error loading user pastes:', error);
-      }
-    }
-
-    // Authentication
-    async function handleSignup() {
-      const email = document.getElementById('email')?.value.trim();
-      const password = document.getElementById('password')?.value;
-
-      if (!email || !password) {
-        showMessage('authMessage', 'Email and password required', 'error');
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient.auth.signUp({ 
-          email, 
-          password 
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-          await supabaseClient
-            .from('profiles')
-            .upsert({
-              id: data.user.id,
-              email: email,
-              username: email.split('@')[0],
-              created_at: new Date().toISOString()
-            });
-        }
-
-        showMessage('authMessage', 'Signup successful! Check email for confirmation.', 'success');
-      } catch (error) {
-        showMessage('authMessage', error.message, 'error');
-      }
-    }
-
-    async function handleLogin() {
-      const email = document.getElementById('email')?.value.trim();
-      const password = document.getElementById('password')?.value;
-
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ 
-          email, 
-          password 
-        });
-
-        if (error) throw error;
-        
-        showMessage('authMessage', 'Login successful!', 'success');
-        setTimeout(() => showHome(), 1000);
-      } catch (error) {
-        showMessage('authMessage', error.message, 'error');
-      }
-    }
-
-    async function handleLogout() {
-      await supabaseClient.auth.signOut();
-      currentUser = null;
-      currentProfile = null;
-      updateUI();
-      showHome();
     }
 
     // Profile editing
@@ -1036,6 +1095,57 @@
       }
     }
 
+    // Authentication
+    async function handleSignup() {
+      const email = document.getElementById('email')?.value.trim();
+      const password = document.getElementById('password')?.value;
+
+      if (!email || !password) {
+        showMessage('authMessage', 'Email and password required', 'error');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({ 
+          email, 
+          password 
+        });
+
+        if (error) throw error;
+
+        showMessage('authMessage', 'Signup successful! Check email for confirmation.', 'success');
+      } catch (error) {
+        showMessage('authMessage', error.message, 'error');
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('email')?.value.trim();
+      const password = document.getElementById('password')?.value;
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+          email, 
+          password 
+        });
+
+        if (error) throw error;
+        
+        showMessage('authMessage', 'Login successful!', 'success');
+        setTimeout(() => showPage('home'), 1000);
+      } catch (error) {
+        showMessage('authMessage', error.message, 'error');
+      }
+    }
+
+    async function handleLogout() {
+      await supabaseClient.auth.signOut();
+      currentUser = null;
+      currentProfile = null;
+      updateUI();
+      showPage('home');
+    }
+
     // Update stats
     async function updateStats() {
       try {
@@ -1057,10 +1167,12 @@
     // Utility functions
     function showMessage(elementId, message, type) {
       const element = document.getElementById(elementId);
-      element.textContent = message;
-      element.className = `message ${type}`;
-      element.classList.remove('hidden');
-      setTimeout(() => element.classList.add('hidden'), 5000);
+      if (element) {
+        element.textContent = message;
+        element.className = `message ${type}`;
+        element.classList.remove('hidden');
+        setTimeout(() => element.classList.add('hidden'), 5000);
+      }
     }
 
     function escapeHtml(unsafe) {
@@ -1073,20 +1185,13 @@
         .replace(/'/g, "&#039;");
     }
 
-    function searchPastes() {
-      alert('Search functionality coming soon');
-    }
-
-    function viewPaste(id) {
-      alert(`View paste: ${id}`);
-    }
-
     // Auth state change listener
     supabaseClient.auth.onAuthStateChange((event, session) => {
       currentUser = session?.user || null;
       updateUI();
       if (currentUser) {
         loadSidebarProfile();
+        loadUsers();
       }
     });
   </script>
