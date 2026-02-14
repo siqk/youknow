@@ -505,8 +505,6 @@
     .loading {
       text-align: center;
       padding: 50px;
-      font-size: 1.2rem;
-      color: #aaa;
     }
 
     .notification {
@@ -547,11 +545,27 @@
       background: rgba(255,0,0,0.3);
       border-color: rgba(255,0,0,0.5);
     }
+
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #0f0;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
   </style>
 </head>
 <body>
 <div class="overlay"></div>
 <div class="container">
+
+  <!-- DEBUG INFO (hidden by default) -->
+  <div id="debugInfo" class="debug-info"></div>
 
   <!-- LOADING STATE -->
   <div id="loadingState" class="loading" style="display: none;">
@@ -566,6 +580,7 @@
         <i class="fas fa-user-slash"></i>
         <h2>exile not found</h2>
         <p style="color: #aaa; margin: 20px 0;">the username you're looking for doesn't exist</p>
+        <p style="color: #666; font-size: 0.9rem;" id="notFoundUsername"></p>
         <button class="btn" id="backToHomeFromNotFound">← back to home</button>
       </div>
     </div>
@@ -762,6 +777,8 @@
     const profileView = document.getElementById('profileView');
     const notFoundView = document.getElementById('notFoundView');
     const loadingState = document.getElementById('loadingState');
+    const debugInfo = document.getElementById('debugInfo');
+    const notFoundUsername = document.getElementById('notFoundUsername');
     
     const loginEmail = document.getElementById('loginEmail');
     const loginPassword = document.getElementById('loginPassword');
@@ -815,9 +832,17 @@
     let currentUser = null;
     let currentProfile = null;
     let allUsers = [];
-    let authChecked = false;
 
     // Helper Functions
+    function debugLog(message, data = null) {
+      const timestamp = new Date().toLocaleTimeString();
+      const logMessage = `[${timestamp}] ${message} ${data ? JSON.stringify(data) : ''}`;
+      console.log(logMessage);
+      debugInfo.style.display = 'block';
+      debugInfo.innerHTML = logMessage;
+      setTimeout(() => { debugInfo.style.display = 'none'; }, 5000);
+    }
+
     function hideAllViews() {
       loginCard.style.display = 'none';
       signupCard.style.display = 'none';
@@ -1058,6 +1083,7 @@
 
     // Show public user profile
     async function showUserProfile(username) {
+      debugLog('Showing profile for:', username);
       showLoading(true);
       hideAllViews();
       
@@ -1067,6 +1093,7 @@
         .eq('username', username)
         .maybeSingle();
       
+      debugLog('Supabase response:', { data, error });
       showLoading(false);
       
       if (data && !error) {
@@ -1091,6 +1118,7 @@
         
         profileView.style.display = 'block';
       } else {
+        notFoundUsername.textContent = `username: "${username}"`;
         notFoundView.style.display = 'block';
       }
     }
@@ -1098,53 +1126,26 @@
     // Handle public profile routes
     async function handlePublicProfile() {
       const path = window.location.pathname;
-      const username = path.substring(1); // Remove leading '/'
+      debugLog('Current path:', path);
       
       // If it's the root path or index.html
       if (path === '/' || path === '/index.html' || path === '') {
+        debugLog('Root path, showing normal flow');
         return false;
       }
       
+      // Get username from path (remove leading /)
+      const username = path.substring(1);
+      debugLog('Extracted username:', username);
+      
       // Check if it's a valid username (no slashes, dots, etc.)
       if (username && !username.includes('/') && !username.includes('.') && username.length > 0) {
-        showLoading(true);
-        hideAllViews();
-        
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('username', username)
-          .maybeSingle();
-        
-        showLoading(false);
-        
-        if (data && !error) {
-          viewAvatar.src = data.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-          viewUsername.textContent = `@${data.username}`;
-          viewBio.textContent = data.bio || 'no bio yet';
-          viewSlug.textContent = data.username;
-          
-          viewSocials.innerHTML = '';
-          if (data.socials) {
-            const platforms = ['github', 'twitter', 'instagram', 'linkedin', 'website'];
-            platforms.forEach(platform => {
-              if (data.socials[platform]) {
-                const icon = document.createElement('a');
-                icon.href = platform === 'website' ? data.socials[platform] : `https://${platform}.com/${data.socials[platform]}`;
-                icon.target = '_blank';
-                icon.innerHTML = `<i class="fab fa-${platform === 'website' ? 'globe' : platform}"></i>`;
-                viewSocials.appendChild(icon);
-              }
-            });
-          }
-          
-          profileView.style.display = 'block';
-          return true;
-        } else {
-          notFoundView.style.display = 'block';
-          return true;
-        }
+        debugLog('Valid username format, showing profile for:', username);
+        await showUserProfile(username);
+        return true;
       }
+      
+      debugLog('Invalid username format');
       return false;
     }
 
@@ -1312,17 +1313,21 @@
 
     // Initialize
     async function init() {
+      debugLog('Initializing app...');
       showLoading(true);
       
       // First check if it's a public profile URL
       const publicProfileHandled = await handlePublicProfile();
       if (publicProfileHandled) {
+        debugLog('Public profile handled, stopping init');
         showLoading(false);
         return;
       }
       
       // Check auth session
+      debugLog('Checking auth session...');
       const { data } = await supabase.auth.getSession();
+      debugLog('Auth session:', data.session ? 'logged in' : 'not logged in');
       
       if (data.session) {
         currentUser = data.session.user;
@@ -1331,9 +1336,11 @@
         currentUserBadge.textContent = `@${currentProfile?.username || 'user'}`;
         hideAllViews();
         dashboard.style.display = 'block';
+        debugLog('Dashboard shown');
       } else {
         hideAllViews();
         loginCard.style.display = 'flex';
+        debugLog('Login shown');
       }
       
       showLoading(false);
