@@ -1,929 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>exiled.lat · simple profiles</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
-    body {
-      background: #0a0a0a;
-      color: #e0e0e0;
-      min-height: 100vh;
-    }
-
-    /* Navigation */
-    .navbar {
-      background: #111;
-      border-bottom: 1px solid #2a2a2a;
-      padding: 12px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #ff4444;
-      text-decoration: none;
-      letter-spacing: -0.5px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 16px;
-    }
-
-    .nav-link {
-      color: #aaa;
-      text-decoration: none;
-      font-size: 1rem;
-      padding: 8px 16px;
-      border-radius: 6px;
-      transition: 0.3s;
-      cursor: pointer;
-    }
-
-    .nav-link:hover {
-      color: white;
-      background: #2a2a2a;
-    }
-
-    .nav-link.active {
-      color: white;
-      background: #ff4444;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .auth-btn {
-      background: #ff4444;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: 0.3s;
-    }
-
-    .auth-btn:hover {
-      background: #ff6666;
-    }
-
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 6px;
-      transition: 0.3s;
-    }
-
-    .user-menu:hover {
-      background: #2a2a2a;
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #ff4444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-    }
-
-    /* Main Container */
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
-    /* Home View */
-    .welcome-section {
-      background: #111;
-      border-radius: 12px;
-      padding: 40px;
-      text-align: center;
-      border: 1px solid #2a2a2a;
-      margin-bottom: 24px;
-    }
-
-    .welcome-section h1 {
-      font-size: 2.5rem;
-      color: white;
-      margin-bottom: 16px;
-    }
-
-    .welcome-section p {
-      color: #aaa;
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto 24px;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 40px;
-    }
-
-    .stat-card {
-      background: #1a1a1a;
-      border-radius: 10px;
-      padding: 24px;
-      border: 1px solid #2a2a2a;
-    }
-
-    .stat-card i {
-      font-size: 2rem;
-      color: #ff4444;
-      margin-bottom: 12px;
-    }
-
-    .stat-card .value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: white;
-    }
-
-    .stat-card .label {
-      color: #aaa;
-      font-size: 0.9rem;
-    }
-
-    .recent-users {
-      background: #111;
-      border-radius: 12px;
-      padding: 24px;
-      border: 1px solid #2a2a2a;
-    }
-
-    .recent-users h2 {
-      margin-bottom: 20px;
-      color: white;
-    }
-
-    .users-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
-    }
-
-    .user-card {
-      background: #1a1a1a;
-      border-radius: 10px;
-      padding: 16px;
-      text-align: center;
-      border: 1px solid #2a2a2a;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .user-card:hover {
-      border-color: #ff4444;
-      transform: translateY(-2px);
-    }
-
-    .user-card-avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #ff4444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin: 0 auto 12px;
-    }
-
-    .user-card-name {
-      font-weight: 600;
-      color: white;
-      margin-bottom: 4px;
-    }
-
-    .user-card-joined {
-      font-size: 0.8rem;
-      color: #aaa;
-    }
-
-    /* Profile View */
-    .profile-view {
-      display: none;
-    }
-
-    .profile-header {
-      background: #111;
-      border-radius: 12px;
-      border: 1px solid #2a2a2a;
-      padding: 40px;
-      margin-bottom: 24px;
-      display: flex;
-      gap: 40px;
-      align-items: center;
-    }
-
-    .profile-avatar-large {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: #ff4444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      font-weight: 600;
-      border: 3px solid #ff4444;
-    }
-
-    .profile-info {
-      flex: 1;
-    }
-
-    .profile-info h1 {
-      font-size: 2.5rem;
-      color: white;
-      margin-bottom: 8px;
-    }
-
-    .profile-bio {
-      color: #aaa;
-      font-size: 1.1rem;
-      margin: 16px 0;
-      max-width: 600px;
-    }
-
-    .profile-meta {
-      display: flex;
-      gap: 32px;
-      margin-top: 20px;
-    }
-
-    .profile-meta-item {
-      text-align: center;
-    }
-
-    .profile-meta-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: white;
-    }
-
-    .profile-meta-label {
-      color: #aaa;
-      font-size: 0.9rem;
-    }
-
-    .profile-actions {
-      margin-left: auto;
-    }
-
-    .follow-btn {
-      background: #ff4444;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .follow-btn:hover {
-      background: #ff6666;
-    }
-
-    .edit-profile-btn {
-      background: #2a2a2a;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .edit-profile-btn:hover {
-      background: #3a3a3a;
-    }
-
-    /* Auth Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.95);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #111;
-      border-radius: 12px;
-      padding: 40px;
-      width: 400px;
-      border: 1px solid #2a2a2a;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .modal-header h2 {
-      color: white;
-    }
-
-    .modal-header i {
-      color: #888;
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-
-    .modal-input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 6px;
-      color: white;
-    }
-
-    .modal-input:focus {
-      outline: none;
-      border-color: #ff4444;
-    }
-
-    .modal-btn {
-      width: 100%;
-      padding: 12px;
-      background: #ff4444;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      margin: 20px 0;
-    }
-
-    .modal-link {
-      color: #888;
-      text-align: center;
-      display: block;
-      cursor: pointer;
-    }
-
-    .modal-link:hover {
-      color: white;
-    }
-
-    .message {
-      color: #ff4444;
-      text-align: center;
-      margin: 10px 0;
-    }
-
-    /* Edit Profile Modal */
-    .edit-modal {
-      width: 500px;
-    }
-
-    .edit-textarea {
-      width: 100%;
-      height: 100px;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 6px;
-      color: white;
-      padding: 12px;
-      margin: 10px 0;
-    }
-
-    /* Loading */
-    .loading {
-      text-align: center;
-      padding: 60px;
-    }
-
-    .loading i {
-      font-size: 3rem;
-      color: #ff4444;
-      margin-bottom: 16px;
-    }
-
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #ff4444;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 6px;
-      animation: slideIn 0.3s;
-      z-index: 2000;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); }
-      to { transform: translateX(0); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXILED</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; margin:0; padding:0; font-family:'Inter',sans-serif;}
+body{height:100vh;background:url('https://i.pinimg.com/originals/3f/7a/f8/3f7af8b97413964df82f69bfea89a19c.gif') center/cover no-repeat fixed;display:flex;justify-content:center;align-items:center;color:white;}
+.card{background:rgba(0,0,0,0.85);border:1px solid rgba(255,255,255,0.1);border-radius:25px;padding:50px 40px;width:400px;max-width:95%;backdrop-filter:blur(4px);animation:fadeIn .6s ease;}
+.logo{text-align:center;font-size:2.3rem;font-weight:800;letter-spacing:6px;margin-bottom:35px;}
+input{width:100%;padding:14px;margin-bottom:20px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.4);color:white;font-size:1rem;outline:none;}
+button{width:100%;padding:14px;border:1px solid white;border-radius:30px;background:transparent;color:white;font-weight:600;cursor:pointer;transition:.3s;}
+button:hover{background:white;color:black;}
+.link{text-align:center;margin-top:20px;font-size:.85rem;color:rgba(255,255,255,0.6);cursor:pointer;}
+.link:hover{color:white;}
+.dashboard{display:none;text-align:center;width:100%;max-width:600px;}
+.nav{display:flex;justify-content:center;margin-bottom:20px;}
+.nav button{flex:1;margin:0 5px;}
+.page{display:none;}
+.page.active{display:block;}
+.profile-pic{width:100px;height:100px;border-radius:50%;border:2px solid white;margin:0 auto 20px;object-fit:cover;}
+.status{text-align:center;font-size:.85rem;margin-top:10px;color:#ccc;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+</style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="navbar">
-    <div class="nav-left">
-      <a href="/" class="logo">exiled.lat</a>
-      <div class="nav-links">
-        <span class="nav-link active" onclick="showHome()">Home</span>
-        <span class="nav-link" onclick="showProfile()" id="profileNavLink">Profile</span>
-      </div>
+
+<!-- LOGIN -->
+<div class="card" id="loginCard">
+    <div class="logo">EXILED</div>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="login()">ENTER</button>
+    <div class="link" onclick="toggleForm()">Create Account</div>
+    <div class="status" id="loginStatus"></div>
+</div>
+
+<!-- SIGNUP -->
+<div class="card" id="signupCard" style="display:none;">
+    <div class="logo">EXILED</div>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Password">
+    <input type="text" id="signupUsername" placeholder="Choose a username">
+    <button onclick="signup()">CREATE</button>
+    <div class="link" onclick="toggleForm()">Back to Login</div>
+    <div class="status" id="signupStatus"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard card" id="dashboard">
+    <div class="logo">EXILED</div>
+    <div class="profile-pic-wrapper">
+        <img src="" class="profile-pic" id="profileImage">
     </div>
-    <div class="nav-right">
-      <div id="authButtons">
-        <button class="auth-btn" onclick="showModal('loginModal')">Log In</button>
-      </div>
-      <div id="userMenu" style="display: none;">
-        <div class="user-menu" onclick="showProfile()">
-          <div class="user-avatar" id="navAvatar">U</div>
-          <span id="navUsername">Loading...</span>
-        </div>
-      </div>
+    <div class="nav">
+        <button onclick="showPage('home')">Home</button>
+        <button onclick="showPage('profile')">Profile</button>
     </div>
-  </nav>
-
-  <!-- Main Container -->
-  <div class="container" id="mainContainer">
-    <!-- Home View -->
-    <div id="homeView">
-      <div class="welcome-section">
-        <h1>Welcome to exiled.lat</h1>
-        <p>A simple place for profiles. Sign up to claim your username and create your own page at exiled.lat/yourname</p>
-        <button class="auth-btn" onclick="showModal('signupModal')">Create Your Profile</button>
-        
-        <div class="stats-grid">
-          <div class="stat-card">
-            <i class="fas fa-users"></i>
-            <div class="value" id="totalUsers">0</div>
-            <div class="label">Total Users</div>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-calendar"></i>
-            <div class="value" id="todayUsers">0</div>
-            <div class="label">Joined Today</div>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-eye"></i>
-            <div class="value" id="totalViews">0</div>
-            <div class="label">Profile Views</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="recent-users">
-        <h2>Recent Users</h2>
-        <div class="users-grid" id="recentUsersGrid"></div>
-      </div>
+    <div class="page" id="home">
+        <h2>Welcome, <span id="displayUsername"></span>!</h2>
+        <p>Your vanity URL: <span id="vanityURL"></span></p>
     </div>
-
-    <!-- Profile View -->
-    <div id="profileView" class="profile-view">
-      <div class="profile-header">
-        <div class="profile-avatar-large" id="profileAvatar">U</div>
-        <div class="profile-info">
-          <h1 id="profileUsername">@username</h1>
-          <div class="profile-bio" id="profileBio">No bio yet. Edit your profile to add one!</div>
-          <div class="profile-meta">
-            <div class="profile-meta-item">
-              <div class="profile-meta-value" id="profileJoined">Feb 14, 2026</div>
-              <div class="profile-meta-label">Joined</div>
-            </div>
-            <div class="profile-meta-item">
-              <div class="profile-meta-value" id="profileViews">0</div>
-              <div class="profile-meta-label">Views</div>
-            </div>
-            <div class="profile-meta-item">
-              <div class="profile-meta-value" id="profileFollowers">0</div>
-              <div class="profile-meta-label">Followers</div>
-            </div>
-          </div>
-        </div>
-        <div class="profile-actions">
-          <button class="follow-btn" id="followBtn" onclick="followUser()">Follow</button>
-          <button class="edit-profile-btn" id="editProfileBtn" onclick="showModal('editProfileModal')" style="display: none;">Edit Profile</button>
-        </div>
-      </div>
+    <div class="page" id="profile">
+        <h3>Edit Profile</h3>
+        <input type="text" id="newUsername" placeholder="Change username">
+        <input type="text" id="newAvatar" placeholder="Avatar image URL">
+        <button onclick="updateProfile()">Update Profile</button>
+        <div class="status" id="profileStatus"></div>
     </div>
-  </div>
+    <button onclick="logout()">LOGOUT</button>
+</div>
 
-  <!-- Login Modal -->
-  <div class="modal" id="loginModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Log In</h2>
-        <i class="fas fa-times" onclick="hideModal('loginModal')"></i>
-      </div>
-      <input type="text" class="modal-input" id="loginUsername" placeholder="Username">
-      <input type="password" class="modal-input" id="loginPassword" placeholder="Password">
-      <div class="message" id="loginMessage"></div>
-      <button class="modal-btn" id="loginBtn">Log In</button>
-      <span class="modal-link" onclick="switchToSignup()">Don't have an account? Sign Up</span>
-    </div>
-  </div>
+<script>
+// Supabase setup
+const supabase = window.supabase.createClient(
+    "https://opixidygpndbfuisjkrk.supabase.co",
+    "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI"
+);
 
-  <!-- Signup Modal -->
-  <div class="modal" id="signupModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Sign Up</h2>
-        <i class="fas fa-times" onclick="hideModal('signupModal')"></i>
-      </div>
-      <input type="text" class="modal-input" id="signupUsername" placeholder="Username">
-      <input type="password" class="modal-input" id="signupPassword" placeholder="Password">
-      <input type="password" class="modal-input" id="signupConfirm" placeholder="Confirm Password">
-      <div class="message" id="signupMessage"></div>
-      <button class="modal-btn" id="signupBtn">Sign Up</button>
-      <span class="modal-link" onclick="switchToLogin()">Already have an account? Log In</span>
-    </div>
-  </div>
+// Toggle login/signup
+function toggleForm(){
+    loginCard.style.display = loginCard.style.display==="none"?"block":"none";
+    signupCard.style.display = signupCard.style.display==="none"?"block":"none";
+}
 
-  <!-- Edit Profile Modal -->
-  <div class="modal" id="editProfileModal">
-    <div class="modal-content edit-modal">
-      <div class="modal-header">
-        <h2>Edit Profile</h2>
-        <i class="fas fa-times" onclick="hideModal('editProfileModal')"></i>
-      </div>
-      <input type="text" class="modal-input" id="editDisplayName" placeholder="Display Name">
-      <textarea class="edit-textarea" id="editBio" placeholder="Bio"></textarea>
-      <button class="modal-btn" id="saveProfileBtn">Save Changes</button>
-    </div>
-  </div>
+// Pages
+function showPage(page){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(page).classList.add('active');}
 
-  <script>
-    (function() {
-      // Supabase setup
-      const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
-      const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        auth: { persistSession: true, autoRefreshToken: true }
-      });
+// Signup
+async function signup(){
+    signupStatus.innerText="Creating account...";
+    const email = signupEmail.value;
+    const password = signupPassword.value;
+    const username = signupUsername.value.trim().toLowerCase();
 
-      // DOM Elements
-      const authButtons = document.getElementById('authButtons');
-      const userMenu = document.getElementById('userMenu');
-      const navUsername = document.getElementById('navUsername');
-      const navAvatar = document.getElementById('navAvatar');
-      const homeView = document.getElementById('homeView');
-      const profileView = document.getElementById('profileView');
-      const profileNavLink = document.getElementById('profileNavLink');
-      
-      // Modal elements
-      const loginModal = document.getElementById('loginModal');
-      const signupModal = document.getElementById('signupModal');
-      const editProfileModal = document.getElementById('editProfileModal');
-      
-      // Auth inputs
-      const loginUsername = document.getElementById('loginUsername');
-      const loginPassword = document.getElementById('loginPassword');
-      const loginBtn = document.getElementById('loginBtn');
-      const loginMessage = document.getElementById('loginMessage');
-      
-      const signupUsername = document.getElementById('signupUsername');
-      const signupPassword = document.getElementById('signupPassword');
-      const signupConfirm = document.getElementById('signupConfirm');
-      const signupBtn = document.getElementById('signupBtn');
-      const signupMessage = document.getElementById('signupMessage');
-      
-      // Profile elements
-      const profileUsername = document.getElementById('profileUsername');
-      const profileAvatar = document.getElementById('profileAvatar');
-      const profileBio = document.getElementById('profileBio');
-      const profileJoined = document.getElementById('profileJoined');
-      const profileViews = document.getElementById('profileViews');
-      const profileFollowers = document.getElementById('profileFollowers');
-      const followBtn = document.getElementById('followBtn');
-      const editProfileBtn = document.getElementById('editProfileBtn');
-      
-      // Edit profile
-      const editDisplayName = document.getElementById('editDisplayName');
-      const editBio = document.getElementById('editBio');
-      const saveProfileBtn = document.getElementById('saveProfileBtn');
+    if(!username) {signupStatus.innerText="Enter a username";return;}
 
-      // State
-      let currentUser = null;
-      let currentProfile = null;
-      let users = [];
+    // Check username exists
+    let { data: existing } = await supabase.from('profiles').select('username').eq('username', username).single();
+    if(existing) {signupStatus.innerText="Username taken!"; return;}
 
-      // Mock data for demonstration
-      const mockUsers = [
-        { id: 1, username: 'mev', displayName: 'mev', bio: 'Just a test user', joined: 'Feb 14, 2026', views: 42, followers: 3 },
-        { id: 2, username: 'chicken', displayName: 'chicken', bio: '🐔', joined: 'Feb 13, 2026', views: 27, followers: 1 },
-        { id: 3, username: 'admin', displayName: 'admin', bio: 'Site admin', joined: 'Feb 12, 2026', views: 156, followers: 12 },
-        { id: 4, username: 'test', displayName: 'test', bio: 'Testing', joined: 'Feb 11, 2026', views: 8, followers: 0 },
-        { id: 5, username: 'demo', displayName: 'demo', bio: 'Demo account', joined: 'Feb 10, 2026', views: 19, followers: 2 }
-      ];
+    // Create auth
+    const { error, data } = await supabase.auth.signUp({ email, password });
+    if(error){signupStatus.innerText = error.message; return;}
 
-      // Show notification
-      function showNotification(text, isError = false) {
-        const notif = document.createElement('div');
-        notif.className = 'notification';
-        notif.textContent = text;
-        notif.style.background = isError ? '#ff4444' : '#4caf50';
-        document.body.appendChild(notif);
-        setTimeout(() => notif.remove(), 3000);
-      }
+    // Insert profile
+    await supabase.from('profiles').insert([{id:data.user.id, username:username, avatar_url:""}]);
+    signupStatus.innerText="Account created! Login now.";
+}
 
-      // Modal functions
-      window.showModal = (modalId) => {
-        document.getElementById(modalId).classList.add('active');
-      };
+// Login
+async function login(){
+    loginStatus.innerText="Logging in...";
+    const email = loginEmail.value;
+    const password = loginPassword.value;
 
-      window.hideModal = (modalId) => {
-        document.getElementById(modalId).classList.remove('active');
-      };
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if(error){loginStatus.innerText = error.message; return;}
+    loadDashboard(data.user);
+}
 
-      // View functions
-      window.showHome = () => {
-        homeView.style.display = 'block';
-        profileView.style.display = 'none';
-        
-        // Update active nav
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        document.querySelectorAll('.nav-link')[0].classList.add('active');
-        
-        // Update URL
-        window.history.pushState({}, '', '/');
-      };
+// Load dashboard
+async function loadDashboard(user){
+    loginCard.style.display = "none";
+    signupCard.style.display = "none";
+    dashboard.style.display = "block";
+    showPage('home');
 
-      window.showProfile = () => {
-        if (!currentUser) {
-          showModal('loginModal');
-          return;
-        }
-        
-        homeView.style.display = 'none';
-        profileView.style.display = 'block';
-        
-        // Update active nav
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        document.querySelectorAll('.nav-link')[1].classList.add('active');
-        
-        // Load current user's profile
-        loadUserProfile(currentUser.username);
-      };
+    // Fetch profile
+    let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 
-      // Switch between login/signup
-      window.switchToSignup = () => {
-        hideModal('loginModal');
-        showModal('signupModal');
-      };
+    displayUsername.innerText = profile.username;
+    vanityURL.innerText = `exiled.lat/${profile.username}`;
+    profileImage.src = profile.avatar_url || "https://i.imgur.com/3GvwNBf.png";
+    newUsername.value = profile.username;
+    newAvatar.value = profile.avatar_url || "";
+}
 
-      window.switchToLogin = () => {
-        hideModal('signupModal');
-        showModal('loginModal');
-      };
+// Update profile
+async function updateProfile(){
+    profileStatus.innerText="Updating...";
+    let username = newUsername.value.trim().toLowerCase();
+    let avatar = newAvatar.value;
 
-      // Follow user
-      window.followUser = () => {
-        if (!currentUser) {
-          showModal('loginModal');
-          return;
-        }
-        showNotification(`You're now following @${currentProfile.username}!`);
-      };
+    // Check if username taken
+    let { data: existing } = await supabase.from('profiles').select('username').eq('username', username).single();
+    const user = (await supabase.auth.getUser()).data.user;
 
-      // Handle routing based on URL
-      async function handleRoute() {
-        const path = window.location.pathname;
-        
-        // If it's root, show home
-        if (path === '/' || path === '/index.html') {
-          showHome();
-          renderHomePage();
-          return;
-        }
+    if(existing && existing.id !== user.id){profileStatus.innerText="Username taken!"; return;}
 
-        // Check if it's a username (remove leading /)
-        const username = path.substring(1);
-        if (username && !username.includes('/') && !username.includes('.')) {
-          await loadUserProfile(username, false);
-        }
-      }
+    await supabase.from('profiles').update({username:username, avatar_url:avatar}).eq('id', user.id);
 
-      // Load user profile
-      async function loadUserProfile(username, isOwnProfile = false) {
-        // Find user in mock data
-        const user = mockUsers.find(u => u.username === username);
-        
-        if (!user) {
-          // User not found, redirect to home
-          window.history.pushState({}, '', '/');
-          showHome();
-          showNotification('User not found', true);
-          return;
-        }
+    profileStatus.innerText="Updated!";
+    loadDashboard(user);
+}
 
-        currentProfile = user;
-        
-        // Update profile view
-        profileUsername.textContent = `@${user.username}`;
-        profileAvatar.textContent = user.username[0].toUpperCase();
-        profileBio.textContent = user.bio || 'No bio yet.';
-        profileJoined.textContent = user.joined;
-        profileViews.textContent = user.views;
-        profileFollowers.textContent = user.followers;
+// Logout
+async function logout(){
+    await supabase.auth.signOut();
+    dashboard.style.display="none";
+    loginCard.style.display="block";
+}
 
-        // Show/hide edit button based on ownership
-        if (currentUser && currentUser.username === username) {
-          editProfileBtn.style.display = 'inline-block';
-          followBtn.style.display = 'none';
-        } else {
-          editProfileBtn.style.display = 'none';
-          followBtn.style.display = 'inline-block';
-        }
+// Auto session
+supabase.auth.getSession().then(({ data })=>{
+    if(data.session){loadDashboard(data.session.user);}
+});
+</script>
 
-        // Show profile view
-        homeView.style.display = 'none';
-        profileView.style.display = 'block';
-
-        // Update URL
-        window.history.pushState({}, '', `/${username}`);
-      }
-
-      // Render home page
-      function renderHomePage() {
-        // Update stats
-        document.getElementById('totalUsers').textContent = mockUsers.length;
-        document.getElementById('todayUsers').textContent = '2';
-        document.getElementById('totalViews').textContent = mockUsers.reduce((sum, u) => sum + u.views, 0);
-
-        // Render recent users
-        const grid = document.getElementById('recentUsersGrid');
-        grid.innerHTML = mockUsers.slice(0, 8).map(user => `
-          <div class="user-card" onclick="window.location.href='/${user.username}'">
-            <div class="user-card-avatar">${user.username[0].toUpperCase()}</div>
-            <div class="user-card-name">@${user.username}</div>
-            <div class="user-card-joined">Joined ${user.joined}</div>
-          </div>
-        `).join('');
-      }
-
-      // Login
-      loginBtn.addEventListener('click', async () => {
-        const username = loginUsername.value.trim();
-        const password = loginPassword.value;
-
-        if (!username || !password) {
-          loginMessage.textContent = 'Fill all fields';
-          return;
-        }
-
-        // Find user in mock data
-        const user = mockUsers.find(u => u.username === username);
-        
-        if (!user) {
-          loginMessage.textContent = 'User not found';
-          return;
-        }
-
-        // Mock login success
-        currentUser = user;
-        
-        // Update UI
-        authButtons.style.display = 'none';
-        userMenu.style.display = 'block';
-        navUsername.textContent = username;
-        navAvatar.textContent = username[0].toUpperCase();
-        
-        hideModal('loginModal');
-        showNotification(`Welcome back, @${username}!`);
-        
-        // Show profile
-        showProfile();
-      });
-
-      // Signup
-      signupBtn.addEventListener('click', async () => {
-        const username = signupUsername.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-        const password = signupPassword.value;
-        const confirm = signupConfirm.value;
-
-        if (!username || !password || !confirm) {
-          signupMessage.textContent = 'Fill all fields';
-          return;
-        }
-
-        if (password !== confirm) {
-          signupMessage.textContent = 'Passwords do not match';
-          return;
-        }
-
-        if (username.length < 3) {
-          signupMessage.textContent = 'Username must be at least 3 characters';
-          return;
-        }
-
-        // Check if username exists
-        if (mockUsers.some(u => u.username === username)) {
-          signupMessage.textContent = 'Username already taken';
-          return;
-        }
-
-        // Create new user
-        const newUser = {
-          id: mockUsers.length + 1,
-          username: username,
-          displayName: username,
-          bio: '',
-          joined: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-          views: 0,
-          followers: 0
-        };
-
-        mockUsers.push(newUser);
-        currentUser = newUser;
-        
-        // Update UI
-        authButtons.style.display = 'none';
-        userMenu.style.display = 'block';
-        navUsername.textContent = username;
-        navAvatar.textContent = username[0].toUpperCase();
-        
-        hideModal('signupModal');
-        showNotification(`Welcome to exiled.lat, @${username}!`);
-        
-        // Show profile
-        showProfile();
-      });
-
-      // Save profile
-      saveProfileBtn.addEventListener('click', () => {
-        const displayName = editDisplayName.value.trim() || currentUser.username;
-        const bio = editBio.value.trim();
-
-        if (currentUser) {
-          currentUser.displayName = displayName;
-          currentUser.bio = bio;
-          
-          // Update display
-          profileBio.textContent = bio || 'No bio yet.';
-          
-          showNotification('Profile updated!');
-          hideModal('editProfileModal');
-        }
-      });
-
-      // Handle browser back/forward
-      window.addEventListener('popstate', handleRoute);
-
-      // Initialize
-      async function init() {
-        renderHomePage();
-        await handleRoute();
-      }
-
-      init();
-    })();
-  </script>
 </body>
 </html>
