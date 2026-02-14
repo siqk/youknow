@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>exiled</title>
+  <title>exiled - anonymous pastebin</title>
   <style>
     * {
       margin: 0;
@@ -770,6 +770,51 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* ONLINE USERS TICKER */
+    .online-ticker {
+      background: #111;
+      border: 1px solid #222;
+      padding: 8px 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .online-ticker span {
+      color: #0f0;
+      font-weight: bold;
+    }
+
+    .ticker-items {
+      display: flex;
+      gap: 20px;
+      color: #888;
+    }
+
+    .ticker-items div {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .green-dot {
+      width: 8px;
+      height: 8px;
+      background: #0f0;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -782,10 +827,21 @@
     <a onclick="showPage('users')" id="nav-users">Users</a>
   </div>
   <div class="nav-right">
-    <span>● <span id="onlineUsers">0</span></span>
+    <span>● <span id="onlineUsers">0</span> online</span>
     <span onclick="showLogin()" id="loginBtn">Login</span>
     <span onclick="handleLogout()" id="logoutBtn" class="hidden">Logout</span>
   </div>
+</div>
+
+<!-- ONLINE USERS TICKER -->
+<div class="online-ticker">
+  <div class="ticker-items">
+    <div><span class="green-dot"></span> <span id="onlineNow">0</span> online now</div>
+    <div>📊 <span id="totalUsers">0</span> total users</div>
+    <div>📝 <span id="totalPastes">0</span> total pastes</div>
+    <div>👁️ <span id="totalViews">0</span> total views</div>
+  </div>
+  <div>🔴 JOIN @EXILED</div>
 </div>
 
 <!-- HERO SECTION -->
@@ -869,7 +925,7 @@
 
   <!-- USERS PAGE -->
   <div id="usersPage" class="hidden">
-    <h2>Users</h2>
+    <h2>All Users</h2>
     <div class="users-grid" id="usersList">
       <div class="empty-state">Loading users...</div>
     </div>
@@ -913,6 +969,7 @@
   let currentUser = null;
   let currentProfile = null;
   const RICH_USER_EMAIL = "ikiikikikijujijij@gmail.com";
+  let onlineUsers = [];
 
   // DOM Elements
   const pages = {
@@ -949,9 +1006,13 @@
       await Promise.all([
         loadUsers(),
         loadRecentPastes(),
-        updateStats()
+        updateStats(),
+        updateOnlineUsers()
       ]);
       checkURLHash();
+      
+      // Update online users every 30 seconds
+      setInterval(updateOnlineUsers, 30000);
     } catch (error) {
       console.error('Init error:', error);
     }
@@ -1100,6 +1161,9 @@
           </tr>
         `;
       }).join('');
+      
+      // Update total pastes count
+      document.getElementById('totalPastes').textContent = data.length;
     } catch (error) {
       console.error('Error loading pastes:', error);
       document.getElementById('recentPastesList').innerHTML = '<tr><td colspan="5" class="empty-state">Error loading pastes</td></tr>';
@@ -1205,7 +1269,8 @@
       
       await Promise.all([
         loadUserPastes(),
-        loadRecentPastes()
+        loadRecentPastes(),
+        updateStats()
       ]);
     } catch (error) {
       showMessage('uploadMessage', error.message, 'error');
@@ -1280,6 +1345,7 @@
       const isRichUser = profile.email === RICH_USER_EMAIL;
       const isOwnProfile = currentUser && currentUser.id === userId;
       const isAvatarGif = profile.avatar_url?.toLowerCase().includes('.gif');
+      const isOnline = onlineUsers.includes(userId);
 
       const container = document.getElementById('profileViewContainer');
       container.innerHTML = `
@@ -1302,6 +1368,7 @@
             <div class="profile-username-large">
               <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(profile.username || 'Anonymous')}</span>
               ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
+              ${isOnline ? '<span style="color: #0f0; margin-left: 5px;">●</span>' : ''}
             </div>
             <div class="profile-uid">UID: ${userId.substring(0, 8)}</div>
             
@@ -1498,6 +1565,7 @@
       usersList.innerHTML = data.map(user => {
         const isRichUser = user.email === RICH_USER_EMAIL;
         const isAvatarGif = user.avatar_url?.toLowerCase().includes('.gif');
+        const isOnline = onlineUsers.includes(user.id);
         return `
           <div class="user-card" onclick="viewUserProfile('${user.id}')">
             <div class="user-avatar">
@@ -1509,6 +1577,7 @@
             <div class="user-name ${isRichUser ? 'username-white' : 'username-blue'}">
               ${escapeHtml(user.username || 'Anonymous')}
               ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
+              ${isOnline ? '<span style="color: #0f0; margin-left: 3px;">●</span>' : ''}
             </div>
             <div class="user-joined">
               Joined: ${new Date(user.created_at).toLocaleDateString()}
@@ -1517,22 +1586,104 @@
           </div>
         `;
       }).join('');
+      
+      // Update total users count
+      document.getElementById('totalUsers').textContent = data.length;
     } catch (error) {
       console.error('Error loading users:', error);
       document.getElementById('usersList').innerHTML = '<div class="empty-state">Error loading users</div>';
     }
   }
 
+  // Update online users
+  async function updateOnlineUsers() {
+    try {
+      // This is a simulation - in production you'd use a real-time presence system
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('id')
+        .limit(20);
+        
+      if (error) throw error;
+      
+      // Simulate online users (random subset)
+      onlineUsers = data
+        .map(u => u.id)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, Math.floor(Math.random() * 10) + 5);
+      
+      const onlineCount = onlineUsers.length;
+      document.getElementById('onlineUsers').textContent = onlineCount;
+      document.getElementById('onlineNow').textContent = onlineCount;
+      
+      // Refresh users list to show online indicators
+      if (!pages.users.classList.contains('hidden')) {
+        loadUsers();
+      }
+    } catch (error) {
+      console.error('Error updating online users:', error);
+    }
+  }
+
   // Search pastes
-  function searchPastes() {
+  async function searchPastes() {
     const query = document.getElementById('searchInput').value.trim();
+    const searchTitle = document.getElementById('searchTitle').checked;
     
     if (!query) {
       loadRecentPastes();
       return;
     }
 
-    alert(`Search feature coming soon! Looking for: ${query}`);
+    try {
+      let data, error;
+      
+      if (searchTitle) {
+        ({ data, error } = await supabaseClient
+          .from('pastes')
+          .select('*, profiles!inner(username, email, avatar_url)')
+          .eq('is_private', false)
+          .ilike('title', `%${query}%`)
+          .order('created_at', { ascending: false })
+          .limit(50));
+      } else {
+        ({ data, error } = await supabaseClient
+          .from('pastes')
+          .select('*, profiles!inner(username, email, avatar_url)')
+          .eq('is_private', false)
+          .ilike('content', `%${query}%`)
+          .order('created_at', { ascending: false })
+          .limit(50));
+      }
+
+      if (error) throw error;
+
+      const tbody = document.getElementById('recentPastesList');
+      
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No pastes found matching "' + escapeHtml(query) + '"</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(paste => {
+        const isRichUser = paste.profiles?.email === RICH_USER_EMAIL;
+        return `
+          <tr>
+            <td class="title" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</td>
+            <td class="comment-count">0</td>
+            <td class="views">${paste.views || 0}</td>
+            <td>
+              <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
+              ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
+            </td>
+            <td class="date">${new Date(paste.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+          </tr>
+        `;
+      }).join('');
+    } catch (error) {
+      console.error('Error searching pastes:', error);
+      alert('Error searching pastes');
+    }
   }
 
   // Update UI based on auth
@@ -1656,12 +1807,24 @@
   // Update stats
   async function updateStats() {
     try {
-      const { count } = await supabaseClient
+      const { count: userCount } = await supabaseClient
         .from('profiles')
         .select('*', { count: 'exact', head: true });
 
-      const online = Math.floor(Math.random() * 100) + 500;
-      document.getElementById('onlineUsers').textContent = online;
+      const { count: pasteCount } = await supabaseClient
+        .from('pastes')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_private', false);
+
+      const { data: viewsData } = await supabaseClient
+        .from('pastes')
+        .select('views');
+
+      const totalViews = viewsData?.reduce((sum, p) => sum + (p.views || 0), 0) || 0;
+
+      document.getElementById('totalUsers').textContent = userCount || 0;
+      document.getElementById('totalPastes').textContent = pasteCount || 0;
+      document.getElementById('totalViews').textContent = totalViews.toLocaleString();
     } catch (error) {
       console.error('Error updating stats:', error);
     }
@@ -1696,6 +1859,7 @@
       updateUI();
       await loadRecentPastes();
       await loadUsers();
+      await updateStats();
     } else if (event === 'SIGNED_OUT') {
       currentUser = null;
       currentProfile = null;
