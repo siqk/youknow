@@ -208,13 +208,11 @@
       font-size: 11px;
     }
 
-    .admin-badge {
-      color: #ff4444;
-      margin-left: 3px;
-      font-size: 11px;
+    .comment-count {
+      color: #888;
     }
 
-    .comment-count, .date {
+    .date {
       color: #888;
     }
 
@@ -654,6 +652,64 @@
       border-color: #0f0;
     }
 
+    /* COMMENTS SECTION */
+    .comments-section {
+      margin-top: 30px;
+    }
+
+    .comment {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .comment-author {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .comment-content {
+      color: #ccc;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .comment-input {
+      width: 100%;
+      background: #000;
+      border: 1px solid #333;
+      padding: 12px;
+      color: #fff;
+      margin: 10px 0;
+      border-radius: 4px;
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .comment-btn {
+      background: #222;
+      border: 1px solid #444;
+      padding: 8px 15px;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .comment-btn:hover {
+      background: #333;
+      border-color: #0f0;
+    }
+
     /* EMPTY STATE */
     .empty-state {
       text-align: center;
@@ -862,9 +918,9 @@
 
 <!-- MAIN CONTENT -->
 <div class="container">
-  <!-- HOME PAGE -->
+  <!-- HOME PAGE - ALL PUBLIC PASTES -->
   <div id="homePage">
-    <h2>Recent Pastes</h2>
+    <h2>All Public Pastes</h2>
     <div class="table-responsive">
       <table>
         <thead>
@@ -876,7 +932,7 @@
             <th>Added</th>
           </tr>
         </thead>
-        <tbody id="recentPastesList">
+        <tbody id="allPastesList">
           <tr>
             <td colspan="5" class="empty-state">Loading pastes...</td>
           </tr>
@@ -910,13 +966,14 @@
           <tr>
             <th>Title</th>
             <th>Views</th>
+            <th>Comments</th>
             <th>Created</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody id="userPastesList">
           <tr>
-            <td colspan="4" class="empty-state">You haven't created any pastes yet.</td>
+            <td colspan="5" class="empty-state">You haven't created any pastes yet.</td>
           </tr>
         </tbody>
       </table>
@@ -931,7 +988,7 @@
     </div>
   </div>
 
-  <!-- PASTE VIEW PAGE -->
+  <!-- PASTE VIEW PAGE (with comments) -->
   <div id="pasteViewPage" class="hidden">
     <div id="pasteViewContainer"></div>
   </div>
@@ -1005,11 +1062,11 @@
       updateUI();
       await Promise.all([
         loadUsers(),
-        loadRecentPastes(),
+        loadAllPastes(),
         updateStats(),
         updateOnlineUsers()
       ]);
-      checkURLHash();
+      checkURLPath();
       
       // Update online users every 30 seconds
       setInterval(updateOnlineUsers, 30000);
@@ -1017,8 +1074,68 @@
       console.error('Init error:', error);
     }
     
-    window.addEventListener('hashchange', checkURLHash);
+    window.addEventListener('popstate', checkURLPath);
   })();
+
+  // URL routing with clean paths
+  function checkURLPath() {
+    const path = window.location.pathname.substring(1); // Remove leading /
+    
+    if (path.startsWith('user/')) {
+      const userId = path.replace('user/', '');
+      viewUserProfile(userId);
+    } else if (path === 'profile') {
+      if (currentUser) {
+        viewUserProfile(currentUser.id);
+      } else {
+        showLogin();
+      }
+    } else if (path && !path.startsWith('user/') && !path.includes('/')) {
+      // This is a paste URL (exiled.lat/pastename)
+      viewPasteByTitle(path);
+    } else if (path === 'pastes') {
+      showPage('pastes');
+      if (currentUser) {
+        loadUserPastes();
+      }
+    } else if (path === 'users') {
+      showPage('users');
+    } else {
+      showPage('home');
+    }
+  }
+
+  // Update URL without reload
+  function updateURL(path) {
+    window.history.pushState({}, '', `/${path}`);
+  }
+
+  // Page navigation
+  function showPage(page) {
+    Object.values(pages).forEach(p => {
+      if (p) p.classList.add('hidden');
+    });
+    
+    Object.values(navLinks).forEach(link => {
+      if (link) link.classList.remove('active');
+    });
+    
+    if (pages[page]) {
+      pages[page].classList.remove('hidden');
+      
+      if (navLinks[page]) {
+        navLinks[page].classList.add('active');
+      }
+      
+      if (page === 'home') {
+        updateURL('');
+        heroSection.style.display = 'block';
+      } else {
+        updateURL(page);
+        heroSection.style.display = 'none';
+      }
+    }
+  }
 
   // Load user profile
   async function loadUserProfile() {
@@ -1060,86 +1177,18 @@
     }
   }
 
-  // URL routing
-  function checkURLHash() {
-    const hash = window.location.hash.substring(1);
-    
-    if (hash.startsWith('user/')) {
-      const userId = hash.replace('user/', '');
-      viewUserProfile(userId);
-    } else if (hash === 'profile') {
-      if (currentUser) {
-        viewUserProfile(currentUser.id);
-      } else {
-        showLogin();
-      }
-    } else if (hash.startsWith('paste/')) {
-      const pasteId = hash.replace('paste/', '');
-      viewPaste(pasteId);
-    } else if (hash === 'pastes') {
-      showPage('pastes');
-      if (currentUser) {
-        loadUserPastes();
-      }
-    } else if (hash === 'users') {
-      showPage('users');
-    } else {
-      showPage('home');
-    }
-  }
-
-  // Page navigation
-  function showPage(page) {
-    Object.values(pages).forEach(p => {
-      if (p) p.classList.add('hidden');
-    });
-    
-    Object.values(navLinks).forEach(link => {
-      if (link) link.classList.remove('active');
-    });
-    
-    if (pages[page]) {
-      pages[page].classList.remove('hidden');
-      
-      if (navLinks[page]) {
-        navLinks[page].classList.add('active');
-      }
-      
-      if (page === 'home') {
-        window.location.hash = '';
-        heroSection.style.display = 'block';
-      } else {
-        window.location.hash = page;
-        heroSection.style.display = 'none';
-      }
-    }
-  }
-
-  // Show login modal
-  function showLogin() {
-    loginModal.classList.remove('hidden');
-    document.getElementById('loginEmail').value = '';
-    document.getElementById('loginPassword').value = '';
-  }
-
-  // Close login modal
-  function closeLoginModal() {
-    loginModal.classList.add('hidden');
-  }
-
-  // Load recent pastes
-  async function loadRecentPastes() {
+  // Load ALL public pastes
+  async function loadAllPastes() {
     try {
       const { data, error } = await supabaseClient
         .from('pastes')
-        .select('*, profiles!inner(username, email, avatar_url)')
+        .select('*, profiles!inner(username, email, avatar_url), comments(count)')
         .eq('is_private', false)
-        .order('created_at', { ascending: false })
-        .limit(50);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      const tbody = document.getElementById('recentPastesList');
+      const tbody = document.getElementById('allPastesList');
       
       if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No pastes yet. Be the first to upload!</td></tr>';
@@ -1148,10 +1197,13 @@
 
       tbody.innerHTML = data.map(paste => {
         const isRichUser = paste.profiles?.email === RICH_USER_EMAIL;
+        const commentCount = paste.comments?.[0]?.count || 0;
+        // Create URL-friendly title
+        const urlTitle = encodeURIComponent(paste.title.toLowerCase().replace(/[^a-z0-9]/g, '-'));
         return `
           <tr>
-            <td class="title" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</td>
-            <td class="comment-count">0</td>
+            <td class="title" onclick="viewPasteByTitle('${urlTitle}', '${paste.id}')">${escapeHtml(paste.title)}</td>
+            <td class="comment-count">${commentCount}</td>
             <td class="views">${paste.views || 0}</td>
             <td>
               <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
@@ -1166,33 +1218,57 @@
       document.getElementById('totalPastes').textContent = data.length;
     } catch (error) {
       console.error('Error loading pastes:', error);
-      document.getElementById('recentPastesList').innerHTML = '<tr><td colspan="5" class="empty-state">Error loading pastes</td></tr>';
+      document.getElementById('allPastesList').innerHTML = '<tr><td colspan="5" class="empty-state">Error loading pastes</td></tr>';
     }
   }
 
-  // Open paste in new window
-  function openPasteInNewWindow(pasteId) {
-    const url = `${window.location.origin}/#paste/${pasteId}`;
-    window.open(url, '_blank');
-  }
-
-  // View paste
-  async function viewPaste(pasteId) {
+  // View paste by title (clean URL)
+  async function viewPasteByTitle(urlTitle, pasteId = null) {
     try {
+      let paste;
+      
+      if (pasteId) {
+        // If we have the ID, use it directly
+        const { data, error } = await supabaseClient
+          .from('pastes')
+          .select('*, profiles!inner(username, email, avatar_url)')
+          .eq('id', pasteId)
+          .single();
+          
+        if (error) throw error;
+        paste = data;
+      } else {
+        // Otherwise find by title (decode URL title back to original)
+        const decodedTitle = decodeURIComponent(urlTitle).replace(/-/g, ' ');
+        const { data, error } = await supabaseClient
+          .from('pastes')
+          .select('*, profiles!inner(username, email, avatar_url)')
+          .eq('title', decodedTitle)
+          .eq('is_private', false)
+          .single();
+          
+        if (error) throw error;
+        paste = data;
+      }
+
+      // Update URL
+      const cleanTitle = paste.title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      updateURL(cleanTitle);
+      heroSection.style.display = 'none';
+      
       // Increment views
       try {
-        await supabaseClient.rpc('increment_paste_views', { paste_id: pasteId });
+        await supabaseClient.rpc('increment_paste_views', { paste_id: paste.id });
       } catch (e) {
         console.warn('Could not increment views:', e);
       }
 
-      const { data: paste, error } = await supabaseClient
-        .from('pastes')
-        .select('*, profiles!inner(username, email, avatar_url)')
-        .eq('id', pasteId)
-        .single();
-
-      if (error) throw error;
+      // Load comments for this paste
+      const { data: comments, error: commentsError } = await supabaseClient
+        .from('comments')
+        .select('*, profiles(username, email)')
+        .eq('paste_id', paste.id)
+        .order('created_at', { ascending: true });
 
       const isRichUser = paste.profiles?.email === RICH_USER_EMAIL;
 
@@ -1203,7 +1279,7 @@
             <h1 class="paste-title">${escapeHtml(paste.title)}</h1>
             <div class="paste-meta">
               <span>👁️ ${paste.views || 0}</span>
-              <span>💬 0</span>
+              <span>💬 ${comments?.length || 0}</span>
               <span>📅 ${new Date(paste.created_at).toLocaleDateString()}</span>
             </div>
           </div>
@@ -1215,14 +1291,79 @@
             <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
             ${isRichUser ? '<span class="rich-badge">[RICH]</span>' : ''}
           </div>
-          <button class="back-btn" onclick="window.close()">Close Window</button>
+
+          <!-- COMMENTS SECTION -->
+          <div class="comments-section">
+            <h3 style="color: #fff; margin-bottom: 15px;">Comments (${comments?.length || 0})</h3>
+            
+            ${currentUser ? `
+              <div>
+                <textarea id="newComment" class="comment-input" placeholder="Add a comment..."></textarea>
+                <button class="comment-btn" onclick="addComment('${paste.id}')">Post Comment</button>
+              </div>
+            ` : `
+              <p style="color: #888; margin: 10px 0;">Login to add comments</p>
+            `}
+
+            <div id="commentsList" style="margin-top: 20px;">
+              ${comments && comments.length > 0 ? comments.map(comment => {
+                const isCommentRich = comment.profiles?.email === RICH_USER_EMAIL;
+                return `
+                  <div class="comment">
+                    <div class="comment-header">
+                      <span class="comment-author ${isCommentRich ? 'username-white' : 'username-blue'}">
+                        ${escapeHtml(comment.profiles?.username || 'Anonymous')}
+                        ${isCommentRich ? '<span class="rich-badge">[RICH]</span>' : ''}
+                      </span>
+                      <span>${new Date(comment.created_at).toLocaleString()}</span>
+                    </div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                  </div>
+                `;
+              }).join('') : '<p style="color: #888;">No comments yet.</p>'}
+            </div>
+          </div>
+
+          <button class="back-btn" onclick="window.history.back()" style="margin-top: 20px;">← Back</button>
         </div>
       `;
 
       showPage('paste');
     } catch (error) {
       console.error('Error loading paste:', error);
-      alert('Error loading paste');
+      alert('Paste not found');
+      showPage('home');
+    }
+  }
+
+  // Add comment
+  async function addComment(pasteId) {
+    if (!currentUser) {
+      showLogin();
+      return;
+    }
+
+    const content = document.getElementById('newComment').value.trim();
+    if (!content) return;
+
+    try {
+      const { error } = await supabaseClient
+        .from('comments')
+        .insert([{
+          paste_id: pasteId,
+          user_id: currentUser.id,
+          author: currentProfile?.username || 'Anonymous',
+          content: content,
+          created_at: new Date().toISOString()
+        }]);
+
+      if (error) throw error;
+
+      // Refresh the paste view
+      viewPasteByTitle(null, pasteId);
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      alert('Error adding comment');
     }
   }
 
@@ -1248,7 +1389,7 @@
     }
 
     try {
-      const { error } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from('pastes')
         .insert([{
           title,
@@ -1258,7 +1399,8 @@
           username: currentProfile?.username || 'Anonymous',
           views: 0,
           created_at: new Date().toISOString()
-        }]);
+        }])
+        .select();
 
       if (error) throw error;
 
@@ -1269,9 +1411,17 @@
       
       await Promise.all([
         loadUserPastes(),
-        loadRecentPastes(),
+        loadAllPastes(),
         updateStats()
       ]);
+
+      // Redirect to the new paste
+      if (data && data[0]) {
+        const cleanTitle = data[0].title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        setTimeout(() => {
+          viewPasteByTitle(cleanTitle, data[0].id);
+        }, 1000);
+      }
     } catch (error) {
       showMessage('uploadMessage', error.message, 'error');
     }
@@ -1284,7 +1434,7 @@
     try {
       const { data, error } = await supabaseClient
         .from('pastes')
-        .select('*')
+        .select('*, comments(count)')
         .eq('user_id', currentUser.id)
         .order('created_at', { ascending: false });
 
@@ -1293,18 +1443,23 @@
       const tbody = document.getElementById('userPastesList');
       
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">You haven\'t created any pastes yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">You haven\'t created any pastes yet.</td></tr>';
         return;
       }
 
-      tbody.innerHTML = data.map(paste => `
-        <tr>
-          <td class="title" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</td>
-          <td>${paste.views || 0}</td>
-          <td class="date">${new Date(paste.created_at).toLocaleDateString()}</td>
-          <td>${paste.is_private ? '🔒 Private' : '🌍 Public'}</td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = data.map(paste => {
+        const commentCount = paste.comments?.[0]?.count || 0;
+        const cleanTitle = paste.title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        return `
+          <tr>
+            <td class="title" onclick="viewPasteByTitle('${cleanTitle}', '${paste.id}')">${escapeHtml(paste.title)}</td>
+            <td>${paste.views || 0}</td>
+            <td>${commentCount}</td>
+            <td class="date">${new Date(paste.created_at).toLocaleDateString()}</td>
+            <td>${paste.is_private ? '🔒 Private' : '🌍 Public'}</td>
+          </tr>
+        `;
+      }).join('');
     } catch (error) {
       console.error('Error loading user pastes:', error);
     }
@@ -1336,7 +1491,7 @@
 
       const { data: pastes } = await supabaseClient
         .from('pastes')
-        .select('*')
+        .select('*, comments(count)')
         .eq('user_id', userId)
         .eq('is_private', false)
         .order('created_at', { ascending: false })
@@ -1403,7 +1558,7 @@
             ` : ''}
 
             <div class="share-url">
-              <input type="text" id="profileShareUrl" value="${window.location.origin}/#user/${userId}" readonly>
+              <input type="text" id="profileShareUrl" value="${window.location.origin}/user/${userId}" readonly>
               <button onclick="copyProfileUrl()">Copy</button>
             </div>
           </div>
@@ -1414,14 +1569,18 @@
             </div>
             <div id="userPastesContainer">
               ${pastes && pastes.length > 0 ? 
-                pastes.slice(0, 5).map(paste => `
-                  <div style="padding: 10px; border-bottom: 1px solid #222;">
-                    <div style="color: #fff; cursor: pointer; margin-bottom: 4px;" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</div>
-                    <div style="color: #888; font-size: 11px;">
-                      ${new Date(paste.created_at).toLocaleDateString()} · ${paste.views || 0} views
+                pastes.slice(0, 5).map(paste => {
+                  const commentCount = paste.comments?.[0]?.count || 0;
+                  const cleanTitle = paste.title.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                  return `
+                    <div style="padding: 10px; border-bottom: 1px solid #222;">
+                      <div style="color: #fff; cursor: pointer; margin-bottom: 4px;" onclick="viewPasteByTitle('${cleanTitle}', '${paste.id}')">${escapeHtml(paste.title)}</div>
+                      <div style="color: #888; font-size: 11px;">
+                        ${new Date(paste.created_at).toLocaleDateString()} · ${paste.views || 0} views · ${commentCount} comments
+                      </div>
                     </div>
-                  </div>
-                `).join('') : 
+                  `;
+                }).join('') : 
                 '<p style="color: #888;">No public pastes yet.</p>'
               }
             </div>
@@ -1631,7 +1790,7 @@
     const searchTitle = document.getElementById('searchTitle').checked;
     
     if (!query) {
-      loadRecentPastes();
+      loadAllPastes();
       return;
     }
 
@@ -1641,24 +1800,22 @@
       if (searchTitle) {
         ({ data, error } = await supabaseClient
           .from('pastes')
-          .select('*, profiles!inner(username, email, avatar_url)')
+          .select('*, profiles!inner(username, email, avatar_url), comments(count)')
           .eq('is_private', false)
           .ilike('title', `%${query}%`)
-          .order('created_at', { ascending: false })
-          .limit(50));
+          .order('created_at', { ascending: false }));
       } else {
         ({ data, error } = await supabaseClient
           .from('pastes')
-          .select('*, profiles!inner(username, email, avatar_url)')
+          .select('*, profiles!inner(username, email, avatar_url), comments(count)')
           .eq('is_private', false)
           .ilike('content', `%${query}%`)
-          .order('created_at', { ascending: false })
-          .limit(50));
+          .order('created_at', { ascending: false }));
       }
 
       if (error) throw error;
 
-      const tbody = document.getElementById('recentPastesList');
+      const tbody = document.getElementById('allPastesList');
       
       if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No pastes found matching "' + escapeHtml(query) + '"</td></tr>';
@@ -1667,10 +1824,12 @@
 
       tbody.innerHTML = data.map(paste => {
         const isRichUser = paste.profiles?.email === RICH_USER_EMAIL;
+        const commentCount = paste.comments?.[0]?.count || 0;
+        const cleanTitle = paste.title.toLowerCase().replace(/[^a-z0-9]/g, '-');
         return `
           <tr>
-            <td class="title" onclick="openPasteInNewWindow('${paste.id}')">${escapeHtml(paste.title)}</td>
-            <td class="comment-count">0</td>
+            <td class="title" onclick="viewPasteByTitle('${cleanTitle}', '${paste.id}')">${escapeHtml(paste.title)}</td>
+            <td class="comment-count">${commentCount}</td>
             <td class="views">${paste.views || 0}</td>
             <td>
               <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(paste.profiles?.username || 'Anonymous')}</span>
@@ -1695,6 +1854,18 @@
       loginBtn.classList.remove('hidden');
       logoutBtn.classList.add('hidden');
     }
+  }
+
+  // Show login modal
+  function showLogin() {
+    loginModal.classList.remove('hidden');
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+  }
+
+  // Close login modal
+  function closeLoginModal() {
+    loginModal.classList.add('hidden');
   }
 
   // Auth
@@ -1771,9 +1942,9 @@
         currentUser = data.user;
         await loadUserProfile();
         updateUI();
-        window.location.hash = '';
+        window.location.pathname = '/';
         showPage('home');
-        await loadRecentPastes();
+        await loadAllPastes();
       }, 1000);
     } catch (error) {
       showModalMessage(error.message, 'error');
@@ -1786,9 +1957,9 @@
       currentUser = null;
       currentProfile = null;
       updateUI();
-      window.location.hash = '';
+      window.location.pathname = '/';
       showPage('home');
-      await loadRecentPastes();
+      await loadAllPastes();
       await loadUsers();
     } catch (error) {
       console.error('Logout error:', error);
@@ -1857,7 +2028,7 @@
       currentUser = session.user;
       await loadUserProfile();
       updateUI();
-      await loadRecentPastes();
+      await loadAllPastes();
       await loadUsers();
       await updateStats();
     } else if (event === 'SIGNED_OUT') {
