@@ -441,6 +441,7 @@
       border-radius: 50%;
       margin: 0 auto 10px;
       border: 2px solid rgba(255,255,255,0.2);
+      object-fit: cover;
     }
 
     /* Profile View */
@@ -466,6 +467,7 @@
       max-width: 500px;
       margin: 20px auto;
       color: #aaa;
+      line-height: 1.6;
     }
 
     .profile-socials {
@@ -494,9 +496,17 @@
       margin: 20px 0;
     }
 
+    .back-btn {
+      width: auto;
+      padding: 15px 40px;
+      margin-top: 20px;
+    }
+
     .loading {
       text-align: center;
       padding: 50px;
+      font-size: 1.2rem;
+      color: #aaa;
     }
 
     .notification {
@@ -516,11 +526,50 @@
       from { transform: translateX(100%); }
       to { transform: translateX(0); }
     }
+
+    .not-found {
+      text-align: center;
+      padding: 60px;
+    }
+
+    .not-found i {
+      font-size: 4rem;
+      color: #ffd700;
+      margin-bottom: 20px;
+    }
+
+    .logout-btn {
+      background: rgba(255,0,0,0.2);
+      border-color: rgba(255,0,0,0.3);
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,0,0,0.3);
+      border-color: rgba(255,0,0,0.5);
+    }
   </style>
 </head>
 <body>
 <div class="overlay"></div>
 <div class="container">
+
+  <!-- LOADING STATE -->
+  <div id="loadingState" class="loading" style="display: none;">
+    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 20px;"></i>
+    <h2>loading exile...</h2>
+  </div>
+
+  <!-- NOT FOUND STATE -->
+  <div id="notFoundView" class="profile-view">
+    <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
+      <div class="not-found">
+        <i class="fas fa-user-slash"></i>
+        <h2>exile not found</h2>
+        <p style="color: #aaa; margin: 20px 0;">the username you're looking for doesn't exist</p>
+        <button class="btn" id="backToHomeFromNotFound">← back to home</button>
+      </div>
+    </div>
+  </div>
 
   <!-- LOGIN -->
   <div id="loginCard" class="auth-wrapper">
@@ -602,6 +651,8 @@
           <div class="profile-socials" id="sidebarSocials">
             <!-- Social icons will be added here -->
           </div>
+
+          <button class="btn logout-btn" id="logoutBtn" style="margin-top: 20px;">logout</button>
         </div>
 
         <!-- Main Content -->
@@ -612,7 +663,7 @@
             <div style="text-align: center; padding: 40px;">
               <i class="fas fa-user-circle" style="font-size: 5rem; color: #ffd700; margin-bottom: 20px;"></i>
               <p style="color: #aaa; margin-bottom: 20px;">this is how others see you</p>
-              <div class="profile-url" id="profileUrlDisplay">
+              <div class="profile-url" id="profileUrlDisplay" style="cursor: pointer;" onclick="copyProfileUrl()">
                 <i class="fas fa-link"></i> exiled.lat/<span id="profileSlug">username</span>
               </div>
             </div>
@@ -670,11 +721,11 @@
     </div>
   </div>
 
-  <!-- PROFILE VIEW -->
+  <!-- PROFILE VIEW (Public) -->
   <div id="profileView" class="profile-view">
     <div class="glass-card" style="max-width: 800px; margin: 0 auto;">
       <img id="viewAvatar" class="profile-avatar-large" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="avatar">
-      <h1 id="viewUsername" class="big-username">@username</h1>
+      <h1 id="viewUsername" class="big-username" style="font-size: 4rem;">@username</h1>
       <p id="viewBio" class="profile-bio">no bio yet</p>
       
       <div class="profile-socials" id="viewSocials">
@@ -693,15 +744,24 @@
 
 <script>
   (function() {
+    // Supabase setup
     const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
 
     // DOM elements
     const loginCard = document.getElementById('loginCard');
     const signupCard = document.getElementById('signupCard');
     const dashboard = document.getElementById('dashboard');
     const profileView = document.getElementById('profileView');
+    const notFoundView = document.getElementById('notFoundView');
+    const loadingState = document.getElementById('loadingState');
     
     const loginEmail = document.getElementById('loginEmail');
     const loginPassword = document.getElementById('loginPassword');
@@ -716,9 +776,11 @@
     
     const switchToSignup = document.getElementById('switchToSignup');
     const switchToLogin = document.getElementById('switchToLogin');
+    const backToHomeFromNotFound = document.getElementById('backToHomeFromNotFound');
     
     const currentUserBadge = document.getElementById('currentUserBadge');
     const usernameList = document.getElementById('usernameList');
+    const logoutBtn = document.getElementById('logoutBtn');
     
     // Profile elements
     const profileAvatar = document.getElementById('profileAvatar');
@@ -753,6 +815,55 @@
     let currentUser = null;
     let currentProfile = null;
     let allUsers = [];
+    let authChecked = false;
+
+    // Helper Functions
+    function hideAllViews() {
+      loginCard.style.display = 'none';
+      signupCard.style.display = 'none';
+      dashboard.style.display = 'none';
+      profileView.style.display = 'none';
+      notFoundView.style.display = 'none';
+      loadingState.style.display = 'none';
+    }
+
+    function showLoading(show) {
+      loadingState.style.display = show ? 'block' : 'none';
+    }
+
+    function showMessage(element, text, isError = false) {
+      element.textContent = text;
+      element.style.color = isError ? '#ff9999' : '#ffd966';
+      setTimeout(() => { element.textContent = ''; }, 3000);
+    }
+
+    function showNotification(text, isError = false) {
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.textContent = text;
+      notif.style.background = isError ? 'rgba(255,0,0,0.8)' : 'rgba(0,0,0,0.9)';
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        if (m === '"') return '&quot;';
+        return m;
+      });
+    }
+
+    // Copy profile URL
+    window.copyProfileUrl = function() {
+      if (currentProfile) {
+        const text = `exiled.lat/${currentProfile.username}`;
+        navigator.clipboard.writeText(text);
+        showNotification('✨ url copied!');
+      }
+    };
 
     // Navigation
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -774,18 +885,17 @@
       const file = e.target.files[0];
       if (!file) return;
 
-      // Convert to base64 for demo (in production, upload to storage)
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64 = reader.result;
         profileAvatar.src = base64;
         
-        // Save avatar to profile
         if (currentUser) {
           await supabase
             .from('profiles')
             .update({ avatar_url: base64 })
             .eq('id', currentUser.id);
+          showNotification('avatar updated!');
         }
       };
       reader.readAsDataURL(file);
@@ -793,10 +903,15 @@
 
     // Save profile
     saveProfileBtn.addEventListener('click', async () => {
-      const newUsername = editUsername.value.trim();
+      const newUsername = editUsername.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
       const newBio = editBio.value.trim();
       
-      if (newUsername && currentUser) {
+      if (!newUsername) {
+        showNotification('username cannot be empty', true);
+        return;
+      }
+      
+      if (currentUser) {
         // Check if username is taken
         const { data: existing } = await supabase
           .from('profiles')
@@ -818,13 +933,13 @@
           })
           .eq('id', currentUser.id);
         
-        currentUser.username = newUsername;
+        currentProfile.username = newUsername;
         sidebarUsername.textContent = `@${newUsername}`;
         currentUserBadge.textContent = `@${newUsername}`;
         profileSlug.textContent = newUsername;
         
         showNotification('profile updated!');
-        await loadUserData(currentUser);
+        await fetchAllUsers();
       }
     });
 
@@ -843,30 +958,29 @@
         .update({ socials })
         .eq('id', currentUser.id);
       
+      currentProfile.socials = socials;
       updateSocialIcons(socials);
       showNotification('social links updated!');
     });
 
     function updateSocialIcons(socials) {
       sidebarSocials.innerHTML = '';
-      viewSocials.innerHTML = '';
       
       const platforms = ['github', 'twitter', 'instagram', 'linkedin', 'website'];
       platforms.forEach(platform => {
-        if (socials[platform]) {
+        if (socials && socials[platform]) {
           const icon = document.createElement('a');
           icon.href = platform === 'website' ? socials[platform] : `https://${platform}.com/${socials[platform]}`;
           icon.target = '_blank';
           icon.innerHTML = `<i class="fab fa-${platform === 'website' ? 'globe' : platform}"></i>`;
-          sidebarSocials.appendChild(icon.cloneNode(true));
-          viewSocials.appendChild(icon.cloneNode(true));
+          sidebarSocials.appendChild(icon);
         }
       });
     }
 
     // Load user data
     async function loadUserData(user) {
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
@@ -893,9 +1007,10 @@
           updateSocialIcons(profile.socials);
         }
       }
+      return profile;
     }
 
-    // Fetch all users
+    // Fetch all users for explore
     async function fetchAllUsers() {
       const { data, error } = await supabase
         .from('profiles')
@@ -922,7 +1037,7 @@
       allUsers.forEach(user => {
         const isYou = currentUser && user.id === currentUser.id;
         html += `<div class="user-card ${isYou ? 'highlight' : ''}" data-username="${escapeHtml(user.username)}">
-          <img src="${user.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}" class="user-avatar-small" style="width: 50px; height: 50px; border-radius: 50%; margin-bottom: 10px;">
+          <img src="${user.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}" class="user-avatar-small">
           <div>@${escapeHtml(user.username)}</div>
           <small style="color: #aaa;">${user.bio ? user.bio.substring(0, 30) + '...' : ''}</small>
         </div>`;
@@ -933,26 +1048,35 @@
       document.querySelectorAll('.user-card').forEach(card => {
         card.addEventListener('click', () => {
           const username = card.dataset.username;
-          if (username) showUserProfile(username);
+          if (username) {
+            window.history.pushState({}, '', `/${username}`);
+            showUserProfile(username);
+          }
         });
       });
     }
 
+    // Show public user profile
     async function showUserProfile(username) {
-      const { data } = await supabase
+      showLoading(true);
+      hideAllViews();
+      
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('username', username)
-        .single();
+        .maybeSingle();
       
-      if (data) {
+      showLoading(false);
+      
+      if (data && !error) {
         viewAvatar.src = data.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
         viewUsername.textContent = `@${data.username}`;
         viewBio.textContent = data.bio || 'no bio yet';
         viewSlug.textContent = data.username;
         
+        viewSocials.innerHTML = '';
         if (data.socials) {
-          viewSocials.innerHTML = '';
           const platforms = ['github', 'twitter', 'instagram', 'linkedin', 'website'];
           platforms.forEach(platform => {
             if (data.socials[platform]) {
@@ -965,9 +1089,63 @@
           });
         }
         
-        dashboard.style.display = 'none';
         profileView.style.display = 'block';
+      } else {
+        notFoundView.style.display = 'block';
       }
+    }
+
+    // Handle public profile routes
+    async function handlePublicProfile() {
+      const path = window.location.pathname;
+      const username = path.substring(1); // Remove leading '/'
+      
+      // If it's the root path or index.html
+      if (path === '/' || path === '/index.html' || path === '') {
+        return false;
+      }
+      
+      // Check if it's a valid username (no slashes, dots, etc.)
+      if (username && !username.includes('/') && !username.includes('.') && username.length > 0) {
+        showLoading(true);
+        hideAllViews();
+        
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('username', username)
+          .maybeSingle();
+        
+        showLoading(false);
+        
+        if (data && !error) {
+          viewAvatar.src = data.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+          viewUsername.textContent = `@${data.username}`;
+          viewBio.textContent = data.bio || 'no bio yet';
+          viewSlug.textContent = data.username;
+          
+          viewSocials.innerHTML = '';
+          if (data.socials) {
+            const platforms = ['github', 'twitter', 'instagram', 'linkedin', 'website'];
+            platforms.forEach(platform => {
+              if (data.socials[platform]) {
+                const icon = document.createElement('a');
+                icon.href = platform === 'website' ? data.socials[platform] : `https://${platform}.com/${data.socials[platform]}`;
+                icon.target = '_blank';
+                icon.innerHTML = `<i class="fab fa-${platform === 'website' ? 'globe' : platform}"></i>`;
+                viewSocials.appendChild(icon);
+              }
+            });
+          }
+          
+          profileView.style.display = 'block';
+          return true;
+        } else {
+          notFoundView.style.display = 'block';
+          return true;
+        }
+      }
+      return false;
     }
 
     // Login
@@ -975,8 +1153,19 @@
       const email = loginEmail.value.trim();
       const password = loginPassword.value.trim();
       
+      if (!email || !password) {
+        showMessage(loginMessage, 'fill all fields', true);
+        return;
+      }
+      
+      showLoading(true);
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return showMessage(loginMessage, error.message, true);
+      showLoading(false);
+      
+      if (error) {
+        showMessage(loginMessage, error.message, true);
+        return;
+      }
       
       currentUser = data.user;
       await loadUserData(currentUser);
@@ -984,7 +1173,7 @@
       
       currentUserBadge.textContent = `@${currentProfile.username}`;
       
-      loginCard.style.display = 'none';
+      hideAllViews();
       dashboard.style.display = 'block';
       showNotification(`welcome back, @${currentProfile.username}!`);
     });
@@ -995,34 +1184,83 @@
       const email = signupEmail.value.trim();
       const password = signupPassword.value.trim();
       
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) return showMessage(signupMessage, error.message, true);
+      if (!username || !email || !password) {
+        showMessage(signupMessage, 'all fields required', true);
+        return;
+      }
+      
+      if (username.length < 3) {
+        showMessage(signupMessage, 'username must be at least 3 characters', true);
+        return;
+      }
+      
+      showLoading(true);
+      
+      // Check if username exists
+      const { data: existing } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username)
+        .maybeSingle();
+      
+      if (existing) {
+        showLoading(false);
+        showMessage(signupMessage, 'username taken', true);
+        return;
+      }
+      
+      const { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          data: { username }
+        }
+      });
+      
+      if (error) {
+        showLoading(false);
+        showMessage(signupMessage, error.message, true);
+        return;
+      }
       
       if (data.user) {
+        // Create profile
         await supabase
           .from('profiles')
-          .insert({ id: data.user.id, username, bio: '', socials: {} });
+          .insert({ 
+            id: data.user.id, 
+            username, 
+            bio: '', 
+            socials: {},
+            avatar_url: null
+          });
         
-        showMessage(signupMessage, 'signup successful! logging in...');
-        
+        // Auto login
         const { data: loginData } = await supabase.auth.signInWithPassword({ email, password });
-        currentUser = loginData.user;
-        await loadUserData(currentUser);
-        await fetchAllUsers();
+        showLoading(false);
         
-        currentUserBadge.textContent = `@${username}`;
-        signupCard.style.display = 'none';
-        dashboard.style.display = 'block';
-        showNotification(`welcome to exile, @${username}!`);
+        if (loginData.user) {
+          currentUser = loginData.user;
+          await loadUserData(currentUser);
+          await fetchAllUsers();
+          
+          currentUserBadge.textContent = `@${username}`;
+          hideAllViews();
+          dashboard.style.display = 'block';
+          showNotification(`welcome to exile, @${username}!`);
+        }
       }
     });
 
     // Logout
-    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut();
       currentUser = null;
-      dashboard.style.display = 'none';
+      currentProfile = null;
+      hideAllViews();
       loginCard.style.display = 'flex';
+      window.history.pushState({}, '', '/');
+      showNotification('logged out');
     });
 
     // Navigation
@@ -1036,49 +1274,69 @@
       loginCard.style.display = 'flex';
     });
 
-    backFromProfile.addEventListener('click', () => {
-      profileView.style.display = 'none';
-      dashboard.style.display = 'block';
-    });
-
-    // Helper functions
-    function showMessage(element, text, isError = false) {
-      element.textContent = text;
-      element.style.color = isError ? '#ff9999' : '#ffd966';
-      setTimeout(() => { element.textContent = ''; }, 3000);
-    }
-
-    function showNotification(text, isError = false) {
-      const notif = document.createElement('div');
-      notif.className = 'notification';
-      notif.textContent = text;
-      notif.style.background = isError ? 'rgba(255,0,0,0.8)' : 'rgba(0,0,0,0.9)';
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '"') return '&quot;';
-        return m;
-      });
-    }
-
-    // Initialize
-    async function init() {
+    backFromProfile.addEventListener('click', async () => {
+      window.history.pushState({}, '', '/');
       const { data } = await supabase.auth.getSession();
+      hideAllViews();
       if (data.session) {
-        currentUser = data.session.user;
-        await loadUserData(currentUser);
-        await fetchAllUsers();
-        currentUserBadge.textContent = `@${currentProfile.username}`;
         dashboard.style.display = 'block';
       } else {
         loginCard.style.display = 'flex';
       }
+    });
+
+    backToHomeFromNotFound.addEventListener('click', async () => {
+      window.history.pushState({}, '', '/');
+      const { data } = await supabase.auth.getSession();
+      hideAllViews();
+      if (data.session) {
+        dashboard.style.display = 'block';
+      } else {
+        loginCard.style.display = 'flex';
+      }
+    });
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', async () => {
+      const handled = await handlePublicProfile();
+      if (!handled) {
+        const { data } = await supabase.auth.getSession();
+        hideAllViews();
+        if (data.session) {
+          dashboard.style.display = 'block';
+        } else {
+          loginCard.style.display = 'flex';
+        }
+      }
+    });
+
+    // Initialize
+    async function init() {
+      showLoading(true);
+      
+      // First check if it's a public profile URL
+      const publicProfileHandled = await handlePublicProfile();
+      if (publicProfileHandled) {
+        showLoading(false);
+        return;
+      }
+      
+      // Check auth session
+      const { data } = await supabase.auth.getSession();
+      
+      if (data.session) {
+        currentUser = data.session.user;
+        await loadUserData(currentUser);
+        await fetchAllUsers();
+        currentUserBadge.textContent = `@${currentProfile?.username || 'user'}`;
+        hideAllViews();
+        dashboard.style.display = 'block';
+      } else {
+        hideAllViews();
+        loginCard.style.display = 'flex';
+      }
+      
+      showLoading(false);
     }
 
     init();
