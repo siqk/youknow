@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Supabase Auth + Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    h2 {
+      margin-bottom: 24px;
+      font-size: 28px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      margin: 8px 0 16px 0;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 12px;
+      background: #3b82f6;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .button-secondary {
+      background: transparent;
+      border: 2px solid #3b82f6;
+      color: #3b82f6;
+    }
+
+    .button-secondary:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+
+    .message {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+      animation: slideIn 0.3s ease;
+    }
+
+    .message.success {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .message.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #dashboard p {
+      margin: 16px 0;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      word-break: break-word;
+    }
+
+    #dashboard strong {
+      color: #60a5fa;
+    }
+
+    .profile-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(59, 130, 246, 0.2);
+      border-radius: 20px;
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 16px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .button-group button {
+      flex: 1;
+      margin: 0;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- AUTH SECTION -->
+  <div id="authSection">
+    <h2>Welcome Back</h2>
+    <input type="email" id="email" placeholder="Email address" autocomplete="email">
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    <div class="button-group">
+      <button onclick="handleLogin()" id="loginBtn">Log In</button>
+      <button onclick="handleSignup()" id="signupBtn" class="button-secondary">Sign Up</button>
+    </div>
+    <div id="authMessage" class="message hidden"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+    <h2>Dashboard</h2>
+    <div class="profile-badge" id="userBadge">✨ Active Session</div>
+    <p>
+      <strong>Email:</strong><br>
+      <span id="userEmail"></span>
+    </p>
+    <p>
+      <strong>User ID:</strong><br>
+      <span id="userId" style="font-size: 12px; opacity: 0.7;"></span>
+    </p>
+    <p>
+      <strong>Profile Info:</strong><br>
+      <span id="profileInfo"></span>
+    </p>
+    <p>
+      <strong>Last Sign In:</strong><br>
+      <span id="lastSignIn"></span>
+    </p>
+    <button onclick="handleLogout()" id="logoutBtn">Logout</button>
+    <div id="dashboardMessage" class="message hidden"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // --- Supabase Project Info ---
+  const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
+  
+  // Initialize Supabase client
+  const { createClient } = supabase;
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // --- DOM Elements ---
+  const authSection = document.getElementById("authSection");
+  const dashboard = document.getElementById("dashboard");
+  const authMessage = document.getElementById("authMessage");
+  const dashboardMessage = document.getElementById("dashboardMessage");
+  const userEmail = document.getElementById("userEmail");
+  const userId = document.getElementById("userId");
+  const profileInfo = document.getElementById("profileInfo");
+  const lastSignIn = document.getElementById("lastSignIn");
+  const userBadge = document.getElementById("userBadge");
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // --- Utility Functions ---
+  function showMessage(element, message, type = 'error') {
+    element.textContent = message;
+    element.className = `message ${type}`;
+    element.classList.remove('hidden');
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      element.classList.add('hidden');
+    }, 5000);
+  }
+
+  function setLoading(button, isLoading) {
+    if (isLoading) {
+      button.disabled = true;
+      button.innerHTML = '<span class="loading"></span> Loading...';
+    } else {
+      button.disabled = false;
+      button.innerHTML = button.id === 'loginBtn' ? 'Log In' : button.id === 'signupBtn' ? 'Sign Up' : 'Logout';
+    }
+  }
+
+  // --- Show / Hide UI ---
+  function showAuth() {
+    dashboard.classList.add("hidden");
+    authSection.classList.remove("hidden");
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    authMessage.classList.add("hidden");
+  }
+
+  function showDashboard(user) {
+    authSection.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+    userEmail.innerText = user.email;
+    userId.innerText = user.id;
+    
+    if (user.last_sign_in_at) {
+      lastSignIn.innerText = new Date(user.last_sign_in_at).toLocaleString();
+    } else {
+      lastSignIn.innerText = "First login";
+    }
+    
+    userBadge.innerText = `✨ Logged in as ${user.email}`;
+    loadProfile(user.id);
+  }
+
+  // --- SIGN UP ---
+  async function handleSignup() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      showMessage(authMessage, "Please enter both email and password", "error");
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage(authMessage, "Password must be at least 6 characters", "error");
+      return;
+    }
+
+    setLoading(signupBtn, true);
+
+    try {
+      const { data, error } = await supabaseClient.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        // Insert user into profiles table
+        const { error: profileError } = await supabaseClient
+          .from("profiles")
+          .upsert([{ 
+            id: data.user.id, 
+            email: email,
+            created_at: new Date().toISOString()
+          }], { onConflict: 'id' });
+
+        if (profileError) {
+          console.error("Profile creation error:", profileError);
+          // Don't throw - user can still log in
+        }
+
+        showMessage(authMessage, "Signup successful! Please check your email for confirmation.", "success");
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+      }
+    } catch (error) {
+      showMessage(authMessage, error.message, "error");
+    } finally {
+      setLoading(signupBtn, false);
+    }
+  }
+
+  // --- LOGIN ---
+  async function handleLogin() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      showMessage(authMessage, "Please enter both email and password", "error");
+      return;
+    }
+
+    setLoading(loginBtn, true);
+
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
+
+      if (error) throw error;
+
+      showMessage(authMessage, "Login successful! Redirecting...", "success");
+      
+      // Clear form
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      
+      // Dashboard will show via onAuthStateChange
+    } catch (error) {
+      showMessage(authMessage, error.message, "error");
+    } finally {
+      setLoading(loginBtn, false);
+    }
+  }
+
+  // --- LOAD PROFILE ---
+  async function loadProfile(userId) {
+    try {
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        const createdDate = new Date(data.created_at).toLocaleDateString();
+        profileInfo.innerText = `Member since: ${createdDate}`;
+      } else {
+        profileInfo.innerText = "Profile not found - will be created on next update";
+      }
+    } catch (error) {
+      profileInfo.innerText = "Could not load profile";
+      console.error("Profile load error:", error);
+    }
+  }
+
+  // --- LOGOUT ---
+  async function handleLogout() {
+    setLoading(logoutBtn, true);
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) throw error;
+      showAuth();
+    } catch (error) {
+      showMessage(dashboardMessage, error.message, "error");
+    } finally {
+      setLoading(logoutBtn, false);
+    }
+  }
+
+  // --- AUTH STATE CHANGE ---
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    console.log("Auth event:", event);
+    
+    if (event === 'SIGNED_IN' && session?.user) {
+      showDashboard(session.user);
+    } else if (event === 'SIGNED_OUT') {
+      showAuth();
+    } else if (event === 'USER_UPDATED') {
+      if (session?.user) {
+        showDashboard(session.user);
+      }
+    }
+  });
+
+  // --- CHECK SESSION ON PAGE LOAD ---
+  async function checkSession() {
+    try {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      
+      if (session?.user) {
+        showDashboard(session.user);
+      } else {
+        showAuth();
+      }
+    } catch (error) {
+      console.error("Session check error:", error);
+      showAuth();
+    }
+  }
+
+  // Initialize
+  checkSession();
+
+  // Add enter key support
+  document.getElementById("password").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  });
+
+  document.getElementById("email").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      document.getElementById("password").focus();
+    }
+  });
+</script>
+
+</body>
+</html>
