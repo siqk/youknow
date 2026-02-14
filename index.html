@@ -24,7 +24,6 @@
       color: white;
     }
 
-    /* animated backdrop */
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -53,7 +52,6 @@
       100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* glass card effect */
     .glass-card {
       background: rgba(10, 10, 10, 0.8);
       backdrop-filter: blur(12px);
@@ -70,7 +68,6 @@
       box-shadow: 0 40px 80px rgba(0,0,0,0.95);
     }
 
-    /* auth cards */
     .auth-wrapper {
       display: flex;
       justify-content: center;
@@ -232,7 +229,6 @@
       20%, 40%, 60%, 80% { transform: translateX(3px); }
     }
 
-    /* DASHBOARD */
     .dashboard {
       display: none;
     }
@@ -361,7 +357,6 @@
       border-style: solid;
     }
 
-    /* PROFILE PAGE */
     .profile-view {
       display: none;
       text-align: center;
@@ -438,11 +433,23 @@
       from { transform: translateX(100%); }
       to { transform: translateX(0); }
     }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 1.2rem;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
 <div class="overlay"></div>
 <div class="container">
+
+  <!-- LOADING STATE -->
+  <div id="loadingState" class="loading" style="display: none;">
+    <h2>loading exile...</h2>
+  </div>
 
   <!-- LOGIN -->
   <div id="loginCard" class="auth-wrapper">
@@ -540,6 +547,7 @@
     const signupCard = document.getElementById('signupCard');
     const dashboard = document.getElementById('dashboard');
     const profileView = document.getElementById('profileView');
+    const loadingState = document.getElementById('loadingState');
     
     const loginEmail = document.getElementById('loginEmail');
     const loginPassword = document.getElementById('loginPassword');
@@ -569,6 +577,7 @@
     // State
     let currentUser = null;
     let allUsers = [];
+    let isInitialized = false;
 
     // Helper functions
     function showMessage(element, text, isError = false) {
@@ -596,27 +605,35 @@
       });
     }
 
+    function hideAllViews() {
+      loginCard.style.display = 'none';
+      signupCard.style.display = 'none';
+      dashboard.style.display = 'none';
+      profileView.style.display = 'none';
+      loadingState.style.display = 'none';
+    }
+
     // Router - handle URL paths
     async function handleRoute() {
       const path = window.location.pathname;
       
-      // If it's the root path, show appropriate view
+      // Show loading
+      hideAllViews();
+      loadingState.style.display = 'block';
+      
+      // If it's the root path
       if (path === '/' || path === '/index.html') {
         const { data } = await supabase.auth.getSession();
+        loadingState.style.display = 'none';
         if (data.session) {
           dashboard.style.display = 'block';
-          loginCard.style.display = 'none';
-          signupCard.style.display = 'none';
-          profileView.style.display = 'none';
         } else {
           loginCard.style.display = 'flex';
-          dashboard.style.display = 'none';
-          profileView.style.display = 'none';
         }
         return;
       }
       
-      // Check if path is a username (e.g., /username)
+      // Check if path is a username
       const username = path.substring(1); // Remove leading /
       if (username && !username.includes('/') && !username.includes('.')) {
         // Try to find this username
@@ -626,11 +643,13 @@
           .eq('username', username)
           .maybeSingle();
         
+        loadingState.style.display = 'none';
+        
         if (data) {
           // Show profile page
           showProfilePage(username);
         } else {
-          // Username not found, redirect to home with message
+          // Username not found, redirect to home
           window.history.pushState({}, '', '/');
           showNotification('username not found', true);
           const { data: sessionData } = await supabase.auth.getSession();
@@ -645,9 +664,7 @@
 
     // Profile page
     function showProfilePage(username) {
-      loginCard.style.display = 'none';
-      signupCard.style.display = 'none';
-      dashboard.style.display = 'none';
+      hideAllViews();
       profileView.style.display = 'block';
       
       profileUsername.textContent = `@${username}`;
@@ -757,9 +774,8 @@
       
       await fetchAllUsers();
       
-      loginCard.style.display = 'none';
+      hideAllViews();
       dashboard.style.display = 'block';
-      profileView.style.display = 'none';
       
       window.history.pushState({}, '', '/');
       showNotification(`welcome back, @${username}!`);
@@ -824,9 +840,8 @@
         
         await fetchAllUsers();
         
+        hideAllViews();
         dashboard.style.display = 'block';
-        signupCard.style.display = 'none';
-        profileView.style.display = 'none';
         
         window.history.pushState({}, '', '/');
         showNotification(`welcome to exile, @${username}!`);
@@ -837,8 +852,7 @@
     logoutBtn.addEventListener('click', async () => {
       await supabase.auth.signOut();
       currentUser = null;
-      dashboard.style.display = 'none';
-      profileView.style.display = 'none';
+      hideAllViews();
       loginCard.style.display = 'flex';
       window.history.pushState({}, '', '/');
       showNotification('logged out');
@@ -849,24 +863,23 @@
 
     // Navigation
     switchToSignup.addEventListener('click', () => {
-      loginCard.style.display = 'none';
+      hideAllViews();
       signupCard.style.display = 'flex';
     });
 
     switchToLogin.addEventListener('click', () => {
-      signupCard.style.display = 'none';
+      hideAllViews();
       loginCard.style.display = 'flex';
     });
 
     backToDashboard.addEventListener('click', async () => {
       window.history.pushState({}, '', '/');
       const { data } = await supabase.auth.getSession();
+      hideAllViews();
       if (data.session) {
         dashboard.style.display = 'block';
-        profileView.style.display = 'none';
       } else {
         loginCard.style.display = 'flex';
-        profileView.style.display = 'none';
       }
     });
 
@@ -907,6 +920,8 @@
         
         await fetchAllUsers();
       }
+      
+      isInitialized = true;
     }
 
     init();
