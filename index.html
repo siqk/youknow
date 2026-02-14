@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-* { box-sizing: border-box; margin:0; padding:0; font-family:'Inter',sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
 body{height:100vh;background:url('https://i.pinimg.com/originals/3f/7a/f8/3f7af8b97413964df82f69bfea89a19c.gif') center/cover no-repeat fixed;display:flex;justify-content:center;align-items:center;color:white;}
 .card{background:rgba(0,0,0,0.85);border:1px solid rgba(255,255,255,0.1);border-radius:25px;padding:50px 40px;width:400px;max-width:95%;backdrop-filter:blur(4px);animation:fadeIn .6s ease;}
 .logo{text-align:center;font-size:2.3rem;font-weight:800;letter-spacing:6px;margin-bottom:35px;}
@@ -25,6 +25,8 @@ button:hover{background:white;color:black;}
 .page.active{display:block;}
 .profile-pic{width:100px;height:100px;border-radius:50%;border:2px solid white;margin:0 auto 20px;object-fit:cover;}
 .status{text-align:center;font-size:.85rem;margin-top:10px;color:#ccc;}
+.public-profile{display:none;text-align:center;width:100%;max-width:600px;}
+.public-profile .profile-pic{margin-bottom:20px;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
@@ -75,8 +77,16 @@ button:hover{background:white;color:black;}
     <button onclick="logout()">LOGOUT</button>
 </div>
 
+<!-- PUBLIC PROFILE -->
+<div class="public-profile card" id="publicProfile">
+    <div class="logo">EXILED</div>
+    <img src="" class="profile-pic" id="publicAvatar">
+    <h2 id="publicUsername"></h2>
+    <p id="publicVanityURL"></p>
+</div>
+
 <script>
-// Supabase setup
+// Supabase
 const supabase = window.supabase.createClient(
     "https://opixidygpndbfuisjkrk.supabase.co",
     "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI"
@@ -97,18 +107,11 @@ async function signup(){
     const email = signupEmail.value;
     const password = signupPassword.value;
     const username = signupUsername.value.trim().toLowerCase();
-
-    if(!username) {signupStatus.innerText="Enter a username";return;}
-
-    // Check username exists
+    if(!username){signupStatus.innerText="Enter a username";return;}
     let { data: existing } = await supabase.from('profiles').select('username').eq('username', username).single();
-    if(existing) {signupStatus.innerText="Username taken!"; return;}
-
-    // Create auth
+    if(existing){signupStatus.innerText="Username taken!"; return;}
     const { error, data } = await supabase.auth.signUp({ email, password });
     if(error){signupStatus.innerText = error.message; return;}
-
-    // Insert profile
     await supabase.from('profiles').insert([{id:data.user.id, username:username, avatar_url:""}]);
     signupStatus.innerText="Account created! Login now.";
 }
@@ -118,7 +121,6 @@ async function login(){
     loginStatus.innerText="Logging in...";
     const email = loginEmail.value;
     const password = loginPassword.value;
-
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if(error){loginStatus.innerText = error.message; return;}
     loadDashboard(data.user);
@@ -126,14 +128,11 @@ async function login(){
 
 // Load dashboard
 async function loadDashboard(user){
-    loginCard.style.display = "none";
-    signupCard.style.display = "none";
-    dashboard.style.display = "block";
+    loginCard.style.display="none";
+    signupCard.style.display="none";
+    dashboard.style.display="block";
     showPage('home');
-
-    // Fetch profile
     let { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-
     displayUsername.innerText = profile.username;
     vanityURL.innerText = `exiled.lat/${profile.username}`;
     profileImage.src = profile.avatar_url || "https://i.imgur.com/3GvwNBf.png";
@@ -146,15 +145,10 @@ async function updateProfile(){
     profileStatus.innerText="Updating...";
     let username = newUsername.value.trim().toLowerCase();
     let avatar = newAvatar.value;
-
-    // Check if username taken
+    let { data: user } = await supabase.auth.getUser();
     let { data: existing } = await supabase.from('profiles').select('username').eq('username', username).single();
-    const user = (await supabase.auth.getUser()).data.user;
-
-    if(existing && existing.id !== user.id){profileStatus.innerText="Username taken!"; return;}
-
-    await supabase.from('profiles').update({username:username, avatar_url:avatar}).eq('id', user.id);
-
+    if(existing && existing.id!==user.id){profileStatus.innerText="Username taken!"; return;}
+    await supabase.from('profiles').update({username, avatar_url:avatar}).eq('id', user.id);
     profileStatus.innerText="Updated!";
     loadDashboard(user);
 }
@@ -170,6 +164,28 @@ async function logout(){
 supabase.auth.getSession().then(({ data })=>{
     if(data.session){loadDashboard(data.session.user);}
 });
+
+// PUBLIC PROFILE ROUTING
+async function loadPublicProfile(username){
+    loginCard.style.display="none";
+    signupCard.style.display="none";
+    dashboard.style.display="none";
+    publicProfile.style.display="block";
+    const { data: profile } = await supabase.from('profiles').select('*').eq('username', username).single();
+    if(profile){
+        publicUsername.innerText = profile.username;
+        publicAvatar.src = profile.avatar_url || "https://i.imgur.com/3GvwNBf.png";
+        publicVanityURL.innerText = `exiled.lat/${profile.username}`;
+    } else {
+        publicUsername.innerText = "User not found";
+        publicAvatar.src = "https://i.imgur.com/3GvwNBf.png";
+        publicVanityURL.innerText = "";
+    }
+}
+
+// Detect URL path
+const path = window.location.pathname.slice(1).toLowerCase();
+if(path){loadPublicProfile(path);}
 </script>
 
 </body>
