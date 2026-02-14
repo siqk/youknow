@@ -106,7 +106,7 @@ button{
 </div>
 
 <div id="loginForm" class="auth-form">
-<input type="text" id="loginUsername" placeholder="Username">
+<input type="email" id="loginEmail" placeholder="Email">
 <input type="password" id="loginPassword" placeholder="Password">
 <button id="loginBtn" class="auth-button">Log In</button>
 </div>
@@ -135,7 +135,7 @@ button{
 document.addEventListener("DOMContentLoaded", function(){
 
 const supabaseUrl = "https://opixidygpndbfuisjkrk.supabase.co";
-const supabaseKey = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
+const supabaseKey = "YOUR_PUBLIC_ANON_KEY"; // <-- replace this
 
 const { createClient } = supabase;
 const supabaseClient = createClient(supabaseUrl, supabaseKey);
@@ -156,7 +156,6 @@ const usersContainer = document.getElementById("usersContainer");
 const logoutBtn = document.getElementById("logoutBtn");
 const userGreeting = document.getElementById("userGreeting");
 
-// TAB SWITCH
 loginTab.onclick = () => {
 loginTab.classList.add("active");
 signupTab.classList.remove("active");
@@ -191,35 +190,45 @@ return;
 
 const { data, error } = await supabaseClient.auth.signUp({
 email,
-password,
-options:{ data:{ username } }
+password
 });
 
 if(error){ showError(error.message); return; }
 
-alert("Signup successful! Confirm email.");
+const user = data.user;
+
+if(user){
+await supabaseClient.from("profiles").insert({
+id: user.id,
+username: username,
+email: email,
+is_admin: email === ADMIN_EMAIL
+});
+}
+
+alert("Signup successful! Confirm your email.");
 signupUsername.value="";
 signupEmail.value="";
 signupPassword.value="";
 loginTab.click();
 };
 
-// LOGIN
+// LOGIN (EMAIL REQUIRED)
 loginBtn.onclick = async () => {
-const username = loginUsername.value.trim();
+const email = loginEmail.value.trim();
 const password = loginPassword.value;
 
-if(!username || !password){
+if(!email || !password){
 showError("Fill all fields");
 return;
 }
 
-const { data, error } = await supabaseClient.auth.signInWithPassword({
-email: username.includes("@") ? username : username + "@gmail.com",
+const { error } = await supabaseClient.auth.signInWithPassword({
+email,
 password
 });
 
-if(error){ showError(error.message); return; }
+if(error){ showError(error.message); }
 };
 
 // LOGOUT
@@ -239,23 +248,30 @@ authSection.style.display="flex";
 }
 });
 
-// LOAD USERS
+// LOAD USERS FROM DATABASE
 async function loadUsers(){
 usersContainer.innerHTML="";
-const { data:{ user } } = await supabaseClient.auth.getUser();
-if(!user) return;
 
-userGreeting.textContent = "Welcome " + (user.user_metadata?.username || user.email);
+const { data: profiles, error } = await supabaseClient
+.from("profiles")
+.select("*");
 
+if(error){ console.error(error); return; }
+
+profiles.forEach(profile=>{
 const card = document.createElement("div");
-card.className = "user-card " + (user.email===ADMIN_EMAIL ? "admin-card":"");
+card.className = "user-card " + (profile.is_admin ? "admin-card":"");
+
 card.innerHTML = `
-<h3>${user.user_metadata?.username || user.email}
-${user.email===ADMIN_EMAIL ? '<span class="admin-tag">ADMIN</span>' : ''}
+<h3>
+${profile.username}
+${profile.is_admin ? '<span class="admin-tag">ADMIN</span>' : ''}
 </h3>
-<p>${user.email}</p>
+<p>${profile.email}</p>
 `;
+
 usersContainer.appendChild(card);
+});
 }
 
 });
