@@ -23,23 +23,20 @@
             padding: 1rem;
         }
 
-        /* Pure Glass Container - no blur */
+        /* Pure Glass Container - NO BLUR */
         .app-container {
             width: 100%;
             max-width: 1200px;
             min-height: 80vh;
-            background: rgba(255, 255, 255, 0.05);
+            background: transparent;
             border-radius: 40px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             padding: 2rem;
             display: flex;
             flex-direction: column;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
         }
 
-        /* Auth forms (hidden by default) */
+        /* Auth Section */
         .auth-section {
             display: flex;
             justify-content: center;
@@ -53,17 +50,15 @@
             padding: 2.5rem;
             width: 100%;
             max-width: 420px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .auth-tabs {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             padding-bottom: 1rem;
         }
 
@@ -81,7 +76,7 @@
         }
 
         .auth-tab.active {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             color: white;
         }
 
@@ -102,16 +97,16 @@
         }
 
         .input-group label {
-            color: rgba(255, 255, 255, 0.8);
+            color: white;
             font-size: 0.9rem;
             font-weight: 500;
             letter-spacing: 0.5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .input-group input {
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 16px;
             padding: 0.9rem 1.2rem;
             color: white;
@@ -121,7 +116,7 @@
         }
 
         .input-group input:focus {
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.6);
             background: rgba(0, 0, 0, 0.4);
         }
 
@@ -143,13 +138,18 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .auth-button:hover {
+        .auth-button:hover:not(:disabled) {
             background: white;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* Dashboard section (hidden by default) */
+        .auth-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Dashboard Section */
         .dashboard-section {
             display: none;
             flex-direction: column;
@@ -162,7 +162,7 @@
             justify-content: space-between;
             align-items: center;
             padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             margin-bottom: 2rem;
         }
 
@@ -176,9 +176,18 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .user-greeting {
+            color: white;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1.2rem;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
         .logout-btn {
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: white;
             padding: 0.7rem 1.5rem;
             border-radius: 100px;
@@ -199,46 +208,36 @@
             gap: 1.5rem;
             overflow-y: auto;
             padding: 0.5rem;
+            max-height: 60vh;
         }
 
         .user-card {
             background: rgba(0, 0, 0, 0.2);
             border-radius: 24px;
             padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
         }
 
         .user-card:hover {
             background: rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
 
-        /* Special admin card style - black with moving gradient */
+        /* Admin Card Style - Black with moving gradient */
         .user-card.admin-card {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid rgba(255, 0, 0, 0.5);
-            animation: adminGlow 3s infinite alternate;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            animation: adminPulse 2s infinite;
         }
 
-        @keyframes adminGlow {
-            0% { 
-                border-color: rgba(255, 0, 0, 0.5);
-                box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
-            }
-            50% { 
-                border-color: rgba(255, 255, 255, 0.5);
-                box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
-            }
-            100% { 
-                border-color: rgba(255, 0, 0, 0.5);
-                box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
-            }
+        @keyframes adminPulse {
+            0% { border-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); }
+            50% { border-color: #ffffff; box-shadow: 0 0 30px rgba(255, 0, 0, 0.6); }
+            100% { border-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); }
         }
 
         .user-card.admin-card::before {
@@ -250,9 +249,11 @@
             height: 200%;
             background: linear-gradient(
                 45deg,
-                transparent 30%,
-                rgba(255, 255, 255, 0.1) 50%,
-                transparent 70%
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.1) 75%,
+                transparent 100%
             );
             animation: gradientMove 4s linear infinite;
             pointer-events: none;
@@ -282,7 +283,7 @@
             color: white;
             font-size: 1.3rem;
             font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .admin-tag {
@@ -294,22 +295,23 @@
             border-radius: 100px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.5);
         }
 
         .user-email {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.9rem;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        /* Utility */
-        .hidden {
-            display: none;
+        .user-joined {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
         }
 
-        /* Loading state */
+        /* Loading State */
         .loading {
             text-align: center;
             color: white;
@@ -317,10 +319,24 @@
             font-size: 1.2rem;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            grid-column: 1 / -1;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            padding: 0.8rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
-    <!-- Add Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -328,6 +344,7 @@
         <!-- Auth Section -->
         <div id="authSection" class="auth-section">
             <div class="auth-card">
+                <div id="authError" class="error-message hidden"></div>
                 <div class="auth-tabs">
                     <button id="loginTab" class="auth-tab active">Login</button>
                     <button id="signupTab" class="auth-tab">Sign Up</button>
@@ -337,7 +354,7 @@
                 <div id="loginForm" class="auth-form">
                     <div class="input-group">
                         <label>Email</label>
-                        <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                        <input type="email" id="loginEmail" placeholder="your@gmail.com" required>
                     </div>
                     <div class="input-group">
                         <label>Password</label>
@@ -353,11 +370,11 @@
                         <input type="text" id="signupUsername" placeholder="cooluser123" required>
                     </div>
                     <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                        <label>Email (Gmail or any email)</label>
+                        <input type="email" id="signupEmail" placeholder="your@gmail.com" required>
                     </div>
                     <div class="input-group">
-                        <label>Password</label>
+                        <label>Password (min 6 characters)</label>
                         <input type="password" id="signupPassword" placeholder="••••••••" required>
                     </div>
                     <button id="signupBtn" class="auth-button">Create Account</button>
@@ -369,10 +386,13 @@
         <div id="dashboardSection" class="dashboard-section">
             <div class="dashboard-header">
                 <h1>Glass Dashboard</h1>
-                <button id="logoutBtn" class="logout-btn">Logout</button>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <span id="userGreeting" class="user-greeting"></span>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
             </div>
             <div id="usersContainer" class="users-grid">
-                <!-- Users will be injected here -->
+                <div class="loading">Loading users...</div>
             </div>
         </div>
     </div>
@@ -394,9 +414,18 @@
         const signupBtn = document.getElementById('signupBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const usersContainer = document.getElementById('usersContainer');
+        const authError = document.getElementById('authError');
+        const userGreeting = document.getElementById('userGreeting');
 
-        // 🔴 SET YOUR ADMIN EMAIL HERE - Change this to the email that should be admin
-        const ADMIN_EMAIL = 'admin@example.com'; // <-- PUT YOUR ADMIN EMAIL HERE
+        // 🔴 SET YOUR ADMIN EMAIL HERE - Change this to YOUR email to become admin
+        const ADMIN_EMAIL = 'admin@gmail.com'; // CHANGE THIS TO YOUR EMAIL (e.g., 'yourname@gmail.com')
+
+        // Show error message
+        function showError(message) {
+            authError.textContent = message;
+            authError.classList.remove('hidden');
+            setTimeout(() => authError.classList.add('hidden'), 5000);
+        }
 
         // Tab switching
         loginTab.addEventListener('click', () => {
@@ -404,6 +433,7 @@
             signupTab.classList.remove('active');
             loginForm.classList.remove('hidden');
             signupForm.classList.add('hidden');
+            authError.classList.add('hidden');
         });
 
         signupTab.addEventListener('click', () => {
@@ -411,6 +441,7 @@
             loginTab.classList.remove('active');
             signupForm.classList.remove('hidden');
             loginForm.classList.add('hidden');
+            authError.classList.add('hidden');
         });
 
         // Signup function
@@ -419,19 +450,25 @@
             const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
 
+            // Validation
             if (!username || !email || !password) {
-                alert('Please fill in all fields');
+                showError('Please fill in all fields');
                 return;
             }
 
             if (password.length < 6) {
-                alert('Password must be at least 6 characters');
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                showError('Please enter a valid email');
                 return;
             }
 
             try {
                 // Show loading state
-                signupBtn.textContent = 'Creating...';
+                signupBtn.textContent = 'Creating Account...';
                 signupBtn.disabled = true;
 
                 // Sign up with Supabase Auth
@@ -449,38 +486,39 @@
 
                 if (authData.user) {
                     // Check if this email should be admin
-                    const isAdmin = email === ADMIN_EMAIL;
+                    const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
                     
-                    // Insert into profiles table
-                    const { error: insertError } = await supabase
-                        .from('profiles')
-                        .insert([
-                            { 
-                                id: authData.user.id, 
-                                username: username,
-                                email: email,
-                                is_admin: isAdmin
-                            }
-                        ]);
+                    // Try to insert into profiles table (if trigger doesn't exist)
+                    try {
+                        const { error: insertError } = await supabase
+                            .from('profiles')
+                            .upsert([
+                                { 
+                                    id: authData.user.id, 
+                                    username: username,
+                                    email: email,
+                                    is_admin: isAdmin
+                                }
+                            ], { onConflict: 'id' });
 
-                    if (insertError) {
-                        console.warn('Profile insert warning:', insertError);
-                        // If profiles table doesn't exist, we'll just use auth metadata
+                        if (insertError) {
+                            console.log('Profile insert note:', insertError.message);
+                        }
+                    } catch (e) {
+                        console.log('Profile table may not exist yet');
                     }
-                }
 
-                alert('Signup successful! Please check your email for confirmation.');
+                    alert('Signup successful! Please check your email for confirmation before logging in.');
+                }
                 
-                // Clear form
+                // Clear form and switch to login
                 document.getElementById('signupUsername').value = '';
                 document.getElementById('signupEmail').value = '';
                 document.getElementById('signupPassword').value = '';
-                
-                // Switch to login tab
                 loginTab.click();
                 
             } catch (error) {
-                alert('Error: ' + error.message);
+                showError(error.message);
             } finally {
                 signupBtn.textContent = 'Create Account';
                 signupBtn.disabled = false;
@@ -493,7 +531,7 @@
             const password = document.getElementById('loginPassword').value;
 
             if (!email || !password) {
-                alert('Please fill in all fields');
+                showError('Please fill in all fields');
                 return;
             }
 
@@ -513,10 +551,10 @@
                 document.getElementById('loginEmail').value = '';
                 document.getElementById('loginPassword').value = '';
                 
-                // Show dashboard (handled by onAuthStateChange)
+                // Dashboard will show automatically via onAuthStateChange
                 
             } catch (error) {
-                alert('Login failed: ' + error.message);
+                showError('Login failed: ' + error.message);
                 loginBtn.textContent = 'Log In';
                 loginBtn.disabled = false;
             }
@@ -527,72 +565,121 @@
             await supabase.auth.signOut();
         });
 
-        // Load all users
+        // Load all users from database
         async function loadUsers() {
             try {
                 usersContainer.innerHTML = '<div class="loading">Loading users...</div>';
                 
-                // Try to fetch from profiles table first
-                let { data: profiles, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .order('created_at', { ascending: true });
+                // Get current user
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (user) {
+                    const username = user.user_metadata?.username || user.email?.split('@')[0] || 'User';
+                    userGreeting.textContent = `Welcome, ${username}`;
+                }
+                
+                // Try to fetch from profiles table
+                let profiles = [];
+                
+                try {
+                    const { data: profilesData, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .order('created_at', { ascending: true });
 
-                if (error) {
-                    console.log('Profiles table not found, using auth users metadata');
-                    // Fallback: get users from auth metadata
-                    const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
-                    
-                    if (authError) throw authError;
-                    
-                    profiles = users.map(user => ({
-                        id: user.id,
-                        username: user.user_metadata?.username || 'User',
-                        email: user.email,
-                        is_admin: user.email === ADMIN_EMAIL,
-                        created_at: user.created_at
-                    }));
+                    if (!error && profilesData) {
+                        profiles = profilesData;
+                    }
+                } catch (e) {
+                    console.log('Profiles table not found, using auth metadata');
+                }
+                
+                // If no profiles table or empty, get from auth users
+                if (profiles.length === 0) {
+                    // Get all users from auth (limited - would need admin API for full list)
+                    // For demo, we'll show current user plus mock data
+                    if (user) {
+                        profiles = [
+                            {
+                                id: user.id,
+                                username: user.user_metadata?.username || user.email?.split('@')[0],
+                                email: user.email,
+                                is_admin: user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase(),
+                                created_at: new Date().toISOString()
+                            }
+                        ];
+                    } else {
+                        // Mock data for demonstration
+                        profiles = [
+                            { 
+                                id: '1', 
+                                username: 'john_doe', 
+                                email: 'john@gmail.com', 
+                                is_admin: false, 
+                                created_at: new Date(Date.now() - 86400000).toISOString() 
+                            },
+                            { 
+                                id: '2', 
+                                username: 'jane_smith', 
+                                email: 'jane@gmail.com', 
+                                is_admin: false, 
+                                created_at: new Date().toISOString() 
+                            }
+                        ];
+                        
+                        // Add admin if not in list
+                        if (ADMIN_EMAIL !== 'admin@gmail.com') {
+                            profiles.unshift({
+                                id: 'admin',
+                                username: 'admin_user',
+                                email: ADMIN_EMAIL,
+                                is_admin: true,
+                                created_at: new Date(Date.now() - 172800000).toISOString()
+                            });
+                        }
+                    }
                 }
 
-                if (profiles && profiles.length > 0) {
-                    displayUsers(profiles);
-                } else {
-                    // Show mock data for demonstration if no users exist
-                    const mockUsers = [
-                        { id: '1', username: 'admin_user', email: ADMIN_EMAIL, is_admin: true, created_at: new Date().toISOString() },
-                        { id: '2', username: 'john_doe', email: 'john@example.com', is_admin: false, created_at: new Date().toISOString() },
-                        { id: '3', username: 'jane_smith', email: 'jane@example.com', is_admin: false, created_at: new Date().toISOString() },
-                    ];
-                    displayUsers(mockUsers);
-                }
+                displayUsers(profiles);
                 
             } catch (error) {
                 console.error('Error loading users:', error);
-                usersContainer.innerHTML = '<div class="loading">Error loading users</div>';
+                usersContainer.innerHTML = '<div class="loading">Error loading users. Please refresh.</div>';
             }
         }
 
         // Display users in grid
         function displayUsers(users) {
             if (!users || users.length === 0) {
-                usersContainer.innerHTML = '<div class="loading">No users found</div>';
+                usersContainer.innerHTML = '<div class="loading">No users found. Sign up to be the first!</div>';
                 return;
             }
             
             usersContainer.innerHTML = '';
             
             users.forEach(user => {
-                const isAdmin = user.email === ADMIN_EMAIL || user.is_admin === true;
+                // Check if this user is admin (case insensitive)
+                const isAdmin = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase() || user.is_admin === true;
+                
                 const card = document.createElement('div');
                 card.className = `user-card ${isAdmin ? 'admin-card' : ''}`;
+                
+                const joinedDate = user.created_at 
+                    ? new Date(user.created_at).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                    })
+                    : 'Recently';
                 
                 card.innerHTML = `
                     <div class="user-info">
                         <div class="user-name">
-                            <h3>${user.username || 'No username'}</h3>
-                            ${isAdmin ? '<span class="admin-tag">admin</span>' : ''}
+                            <h3>${user.username || user.email?.split('@')[0] || 'User'}</h3>
+                            ${isAdmin ? '<span class="admin-tag">ADMIN</span>' : ''}
                         </div>
                         <div class="user-email">${user.email}</div>
+                        <div class="user-joined">Joined: ${joinedDate}</div>
                     </div>
                 `;
                 
@@ -600,7 +687,7 @@
             });
         }
 
-        // Check if user is already logged in on page load
+        // Check auth state on load
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) {
                 authSection.style.display = 'none';
@@ -619,56 +706,18 @@
                 dashboardSection.style.display = 'none';
                 authSection.style.display = 'flex';
                 
-                // Reset login button state
+                // Reset login button
                 loginBtn.textContent = 'Log In';
                 loginBtn.disabled = false;
+                
+                // Clear forms
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('signupUsername').value = '';
+                document.getElementById('signupEmail').value = '';
+                document.getElementById('signupPassword').value = '';
             }
         });
-
-        // Create profiles table if it doesn't exist (run this once in Supabase SQL editor)
-        /*
-        CREATE TABLE IF NOT EXISTS profiles (
-            id UUID PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
-            username TEXT,
-            email TEXT,
-            is_admin BOOLEAN DEFAULT false,
-            created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-        );
-
-        -- Enable RLS
-        ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-
-        -- Create policy to allow users to read all profiles
-        CREATE POLICY "Anyone can view profiles" 
-            ON profiles FOR SELECT 
-            USING (true);
-
-        -- Create policy for users to insert their own profile
-        CREATE POLICY "Users can insert own profile" 
-            ON profiles FOR INSERT 
-            WITH CHECK (auth.uid() = id);
-
-        -- Create trigger to auto-create profile on signup
-        CREATE OR REPLACE FUNCTION public.handle_new_user()
-        RETURNS TRIGGER AS $$
-        BEGIN
-            INSERT INTO public.profiles (id, username, email, is_admin)
-            VALUES (
-                NEW.id,
-                NEW.raw_user_meta_data->>'username',
-                NEW.email,
-                NEW.email = '${ADMIN_EMAIL}'
-            );
-            RETURN NEW;
-        END;
-        $$ LANGUAGE plpgsql SECURITY DEFINER;
-
-        -- Drop trigger if exists and create new one
-        DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-        CREATE TRIGGER on_auth_user_created
-            AFTER INSERT ON auth.users
-            FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-        */
     </script>
 </body>
 </html>
