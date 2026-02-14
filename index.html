@@ -399,6 +399,7 @@
       min-height: 60px;
       font-size: 12px;
       border-radius: 4px;
+      word-break: break-word;
     }
 
     .profile-right {
@@ -697,7 +698,7 @@
 
     /* AUTH */
     .auth-box {
-      max-width: 350px;
+      max-width: 400px;
       margin: 40px auto;
       background: #111;
       border: 1px solid #222;
@@ -709,6 +710,7 @@
       text-align: center;
       margin-bottom: 20px;
       border: none;
+      color: #fff;
     }
 
     .auth-box input {
@@ -877,17 +879,18 @@
   <div id="pasteViewPage" class="hidden">
     <div id="pasteViewContainer"></div>
   </div>
+</div>
 
-  <!-- LOGIN PAGE -->
-  <div id="loginPage" class="hidden">
-    <div class="auth-box">
-      <h2>Login to exiled</h2>
-      <input type="email" id="email" placeholder="Email" autocomplete="email">
-      <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-      <button class="primary" onclick="handleLogin()" id="loginBtn">Login</button>
-      <button onclick="handleSignup()" id="signupBtn">Sign Up</button>
-      <div id="authMessage" class="message hidden"></div>
-    </div>
+<!-- LOGIN MODAL (always available) -->
+<div id="loginModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+  <div class="auth-box" style="width: 100%; max-width: 400px; margin: 0;">
+    <h2>Login to exiled</h2>
+    <input type="email" id="loginEmail" placeholder="Email" autocomplete="email">
+    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+    <button class="primary" onclick="handleLogin()" id="modalLoginBtn">Login</button>
+    <button onclick="handleSignup()" id="modalSignupBtn">Sign Up</button>
+    <button onclick="closeLoginModal()" style="background: transparent; border: none; color: #888; margin-top: 10px;">Close</button>
+    <div id="modalAuthMessage" class="message hidden"></div>
   </div>
 </div>
 
@@ -917,8 +920,7 @@
     profile: document.getElementById('profilePage'),
     pastes: document.getElementById('pastesPage'),
     users: document.getElementById('usersPage'),
-    paste: document.getElementById('pasteViewPage'),
-    login: document.getElementById('loginPage')
+    paste: document.getElementById('pasteViewPage')
   };
 
   const navLinks = {
@@ -931,12 +933,18 @@
   const heroSection = document.getElementById('heroSection');
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
+  const loginModal = document.getElementById('loginModal');
 
   // Initialize
   (async function init() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
       currentUser = session?.user || null;
+      
+      if (currentUser) {
+        await loadUserProfile();
+      }
+      
       updateUI();
       await Promise.all([
         loadUsers(),
@@ -951,6 +959,46 @@
     window.addEventListener('hashchange', checkURLHash);
   })();
 
+  // Load user profile
+  async function loadUserProfile() {
+    if (!currentUser) return;
+    
+    try {
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+        
+      if (error && error.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        const { error: insertError } = await supabaseClient
+          .from('profiles')
+          .insert([{
+            id: currentUser.id,
+            email: currentUser.email,
+            username: currentUser.email.split('@')[0],
+            created_at: new Date().toISOString()
+          }]);
+          
+        if (!insertError) {
+          const { data: newProfile } = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single();
+          currentProfile = newProfile;
+        }
+      } else if (error) {
+        console.error('Error loading profile:', error);
+      } else {
+        currentProfile = data;
+      }
+    } catch (error) {
+      console.error('Error in loadUserProfile:', error);
+    }
+  }
+
   // URL routing
   function checkURLHash() {
     const hash = window.location.hash.substring(1);
@@ -962,7 +1010,7 @@
       if (currentUser) {
         viewUserProfile(currentUser.id);
       } else {
-        showPage('login');
+        showLogin();
       }
     } else if (hash.startsWith('paste/')) {
       const pasteId = hash.replace('paste/', '');
@@ -1003,11 +1051,19 @@
         window.location.hash = page;
         heroSection.style.display = 'none';
       }
-    } else if (page === 'login') {
-      pages.login.classList.remove('hidden');
-      heroSection.style.display = 'none';
-      window.location.hash = 'login';
     }
+  }
+
+  // Show login modal
+  function showLogin() {
+    loginModal.classList.remove('hidden');
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+  }
+
+  // Close login modal
+  function closeLoginModal() {
+    loginModal.classList.add('hidden');
   }
 
   // Load recent pastes
@@ -1015,7 +1071,7 @@
     try {
       const { data, error } = await supabaseClient
         .from('pastes')
-        .select('*, profiles(username, email, avatar_url)')
+        .select('*, profiles!inner(username, email, avatar_url)')
         .eq('is_private', false)
         .order('created_at', { ascending: false })
         .limit(50);
@@ -1067,7 +1123,7 @@
 
       const { data: paste, error } = await supabaseClient
         .from('pastes')
-        .select('*, profiles(username, email, avatar_url)')
+        .select('*, profiles!inner(username, email, avatar_url)')
         .eq('id', pasteId)
         .single();
 
@@ -1108,7 +1164,6 @@
   // Upload paste
   async function uploadPaste() {
     if (!currentUser) {
-      alert('Please login to upload pastes');
       showLogin();
       return;
     }
@@ -1490,23 +1545,18 @@
     }
   }
 
-  // Show login
-  function showLogin() {
-    showPage('login');
-  }
-
   // Auth
   async function handleSignup() {
-    const email = document.getElementById('email')?.value.trim();
-    const password = document.getElementById('password')?.value;
+    const email = document.getElementById('loginEmail')?.value.trim();
+    const password = document.getElementById('loginPassword')?.value;
 
     if (!email || !password) {
-      showMessage('authMessage', 'Email and password required', 'error');
+      showModalMessage('Email and password required', 'error');
       return;
     }
 
     if (password.length < 6) {
-      showMessage('authMessage', 'Password must be at least 6 characters', 'error');
+      showModalMessage('Password must be at least 6 characters', 'error');
       return;
     }
 
@@ -1537,20 +1587,20 @@
         }
       }
 
-      showMessage('authMessage', 'Signup successful! Check email for confirmation.', 'success');
-      document.getElementById('email').value = '';
-      document.getElementById('password').value = '';
+      showModalMessage('Signup successful! Check email for confirmation.', 'success');
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
     } catch (error) {
-      showMessage('authMessage', error.message, 'error');
+      showModalMessage(error.message, 'error');
     }
   }
 
   async function handleLogin() {
-    const email = document.getElementById('email')?.value.trim();
-    const password = document.getElementById('password')?.value;
+    const email = document.getElementById('loginEmail')?.value.trim();
+    const password = document.getElementById('loginPassword')?.value;
 
     if (!email || !password) {
-      showMessage('authMessage', 'Email and password required', 'error');
+      showModalMessage('Email and password required', 'error');
       return;
     }
 
@@ -1562,14 +1612,19 @@
 
       if (error) throw error;
       
-      showMessage('authMessage', 'Login successful!', 'success');
+      showModalMessage('Login successful!', 'success');
       
-      setTimeout(() => {
+      setTimeout(async () => {
+        closeLoginModal();
+        currentUser = data.user;
+        await loadUserProfile();
+        updateUI();
         window.location.hash = '';
         showPage('home');
+        await loadRecentPastes();
       }, 1000);
     } catch (error) {
-      showMessage('authMessage', error.message, 'error');
+      showModalMessage(error.message, 'error');
     }
   }
 
@@ -1582,9 +1637,19 @@
       window.location.hash = '';
       showPage('home');
       await loadRecentPastes();
+      await loadUsers();
     } catch (error) {
       console.error('Logout error:', error);
     }
+  }
+
+  // Show message in modal
+  function showModalMessage(message, type) {
+    const msgEl = document.getElementById('modalAuthMessage');
+    msgEl.textContent = message;
+    msgEl.className = `message ${type}`;
+    msgEl.classList.remove('hidden');
+    setTimeout(() => msgEl.classList.add('hidden'), 5000);
   }
 
   // Update stats
@@ -1624,31 +1689,16 @@
 
   // Auth state change
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    currentUser = session?.user || null;
-    updateUI();
-    
-    if (currentUser) {
-      try {
-        const { data } = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-        currentProfile = data;
-      } catch (error) {
-        console.error('Error loading profile:', error);
-      }
-      
-      await Promise.all([
-        loadUsers(),
-        loadRecentPastes()
-      ]);
-      
-      if (window.location.hash === '#pastes') {
-        loadUserPastes();
-      }
-    } else {
+    if (event === 'SIGNED_IN' && session) {
+      currentUser = session.user;
+      await loadUserProfile();
+      updateUI();
+      await loadRecentPastes();
+      await loadUsers();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
       currentProfile = null;
+      updateUI();
     }
   });
 </script>
