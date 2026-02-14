@@ -2,431 +2,268 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>exiled</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>exiled</title>
   <style>
-    /* Reset and base styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      background-color: #0a0c10;
-      color: #d4d7de;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size: 13px;
-      line-height: 1.5;
+      margin: 0;
+      background-color: #000;
+      color: #ccc;
+      font-family: Arial, sans-serif;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 15px;
-    }
-
-    /* Header */
-    .header {
-      background: #111317;
-      border: 1px solid #282d38;
-      border-radius: 6px;
-      padding: 8px 15px;
-      margin-bottom: 15px;
+    /* NAVBAR */
+    .navbar {
+      background: #0d0d0d;
+      border-bottom: 1px solid #222;
+      padding: 12px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .nav-left a {
+      color: #aaa;
+      margin-right: 25px;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .nav-left a:hover {
+      color: #fff;
+    }
+
+    .nav-left a.active {
+      color: #fff;
+      border-bottom: 1px solid #fff;
+      padding-bottom: 3px;
+    }
+
+    .nav-right {
+      font-size: 13px;
+      color: #0f0;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      text-align: center;
+      padding: 40px 20px 20px;
     }
 
     .logo {
-      font-size: 28px;
-      font-weight: 800;
-      background: linear-gradient(90deg, #ff4444, #ffffff, #ff4444);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradient 3s linear infinite;
-      text-transform: uppercase;
+      font-size: 48px;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 10px;
       letter-spacing: 2px;
     }
 
-    @keyframes gradient {
-      0% { background-position: 0% center; }
-      100% { background-position: 200% center; }
+    .hero p {
+      color: #888;
+      font-size: 14px;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 2px;
-    }
-
-    .nav-link {
-      color: #d4d7de;
-      text-decoration: none;
-      padding: 5px 12px;
-      border: 1px solid #282d38;
-      border-radius: 4px;
-      font-size: 12px;
-      background: #1a1e26;
-      cursor: pointer;
-    }
-
-    .nav-link:hover {
-      border-color: #ff4444;
-    }
-
-    .nav-link.active {
-      border-color: #ff4444;
-      background: #ff4444;
-      color: #0a0c10;
-    }
-
-    .user-stats {
-      display: flex;
-      gap: 15px;
-      background: #111317;
-      padding: 8px 15px;
-      border: 1px solid #282d38;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 12px;
-    }
-
-    .user-stats span {
-      color: #ff4444;
-      font-weight: bold;
-    }
-
-    .user-stats a {
-      color: #ff4444;
-      text-decoration: none;
-    }
-
-    /* Main layout */
-    .main-layout {
-      display: grid;
-      grid-template-columns: 180px 1fr 220px;
-      gap: 15px;
-    }
-
-    /* Left sidebar */
-    .left-sidebar {
-      background: #111317;
-      border: 1px solid #282d38;
-      border-radius: 6px;
-      padding: 15px;
-    }
-
-    .sidebar-section {
-      margin-bottom: 20px;
-    }
-
-    .sidebar-title {
-      color: #8f96a3;
-      font-size: 11px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .stat-item {
-      color: #ff4444;
-      font-size: 13px;
-      margin-bottom: 5px;
-    }
-
-    .stat-item span {
-      color: #8f96a3;
-    }
-
-    .telegram-box {
-      background: #1a1e26;
-      border: 1px solid #282d38;
-      border-radius: 4px;
-      padding: 12px;
-      text-align: center;
-      margin: 15px 0;
-    }
-
-    .telegram-box a {
-      color: #ff4444;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 13px;
-    }
-
-    .mirrors {
-      font-size: 11px;
-      color: #8f96a3;
-      margin-top: 8px;
-    }
-
-    .mirrors a {
-      color: #8f96a3;
-      text-decoration: none;
-      margin: 0 2px;
-    }
-
+    /* SEARCH */
     .search-box {
-      background: #1a1e26;
-      border: 1px solid #282d38;
-      border-radius: 4px;
-      padding: 12px;
-    }
-
-    .search-box input[type="text"] {
-      width: 100%;
-      background: #111317;
-      border: 1px solid #282d38;
-      border-radius: 4px;
-      padding: 6px 8px;
-      color: #d4d7de;
-      margin-bottom: 8px;
-    }
-
-    .search-options {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
-      font-size: 11px;
-    }
-
-    .search-options label {
-      color: #8f96a3;
-    }
-
-    .search-btn {
-      width: 100%;
-      background: #ff4444;
-      border: none;
-      border-radius: 4px;
-      padding: 6px;
-      color: #0a0c10;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /* Main content */
-    .main-content {
-      background: #111317;
-      border: 1px solid #282d38;
-      border-radius: 6px;
-      padding: 20px;
-      min-height: 500px;
-    }
-
-    .content-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .content-header h2 {
-      font-size: 18px;
-      color: #ff4444;
-    }
-
-    /* Page content */
-    .page-content {
-      color: #d4d7de;
-      line-height: 1.6;
-    }
-
-    /* Users grid */
-    .users-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
       margin-top: 20px;
     }
 
-    .user-card {
-      background: #1a1e26;
-      border: 1px solid #282d38;
-      border-radius: 6px;
-      padding: 15px;
-      text-align: center;
+    .search-box input[type="text"] {
+      background: #111;
+      border: 1px solid #333;
+      padding: 10px;
+      width: 250px;
+      color: #fff;
     }
 
-    .user-card:hover {
-      border-color: #ff4444;
+    .search-box button {
+      background: #222;
+      border: 1px solid #444;
+      padding: 10px 15px;
+      color: #fff;
+      cursor: pointer;
     }
 
-    .user-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #282d38;
-      margin: 0 auto 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      color: #ff4444;
+    .search-box button:hover {
+      background: #333;
     }
 
-    .user-name {
-      color: #ff4444;
-      font-weight: bold;
-      margin-bottom: 5px;
+    .radio-options {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #888;
     }
 
-    .user-stats-small {
-      color: #8f96a3;
+    .radio-options label {
+      margin: 0 10px;
+    }
+
+    /* CONTENT */
+    .container {
+      width: 85%;
+      margin: 30px auto;
+    }
+
+    h2 {
+      color: #fff;
+      border-bottom: 1px solid #222;
+      padding-bottom: 10px;
+      font-size: 18px;
+      font-weight: normal;
+    }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      background: #111;
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #333;
+      font-size: 13px;
+      color: #888;
+      font-weight: normal;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #222;
+      font-size: 13px;
+    }
+
+    tr:hover {
+      background: #111;
+    }
+
+    .title {
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .title:hover {
+      text-decoration: underline;
+    }
+
+    .views {
+      color: #0f0;
+    }
+
+    .username-blue {
+      color: #4a9eff;
+    }
+
+    .username-white {
+      color: #fff;
+    }
+
+    .rich-badge {
+      color: #ffd700;
+      margin-left: 3px;
       font-size: 11px;
     }
 
-    /* Upgrades grid */
-    .upgrades-grid {
+    .admin-badge {
+      color: #ff4444;
+      margin-left: 3px;
+      font-size: 11px;
+    }
+
+    .comment-count {
+      color: #888;
+    }
+
+    .date {
+      color: #888;
+    }
+
+    /* PAGINATION */
+    .pagination {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .pagination a {
+      display: inline-block;
+      padding: 6px 12px;
+      margin: 0 3px;
+      background: #111;
+      color: #aaa;
+      border: 1px solid #333;
+      text-decoration: none;
+    }
+
+    .pagination a:hover {
+      background: #222;
+      color: #fff;
+    }
+
+    /* PROFILE PAGE */
+    .profile-view {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: 280px 1fr;
       gap: 20px;
       margin-top: 20px;
     }
 
-    .upgrade-card {
-      background: #1a1e26;
-      border: 1px solid #282d38;
-      border-radius: 6px;
+    .profile-left {
+      background: #111;
+      border: 1px solid #222;
       padding: 20px;
-      text-align: center;
     }
 
-    .upgrade-title {
-      color: #ff4444;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .upgrade-price {
-      font-size: 24px;
-      color: #ffffff;
-      margin-bottom: 15px;
-    }
-
-    .upgrade-price span {
-      font-size: 14px;
-      color: #8f96a3;
-    }
-
-    .upgrade-features {
-      list-style: none;
-      margin: 15px 0;
-    }
-
-    .upgrade-features li {
-      padding: 5px 0;
-      color: #8f96a3;
-      font-size: 12px;
-    }
-
-    .buy-btn {
-      width: 100%;
-      padding: 10px;
-      background: #ff4444;
-      border: none;
-      border-radius: 4px;
-      color: #0a0c10;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /* Hall of Fame */
-    .hall-list {
-      margin-top: 20px;
-    }
-
-    .hall-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 15px;
-      background: #1a1e26;
-      border: 1px solid #282d38;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-
-    .hall-rank {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffd700;
-      min-width: 50px;
-    }
-
-    .hall-info {
-      flex: 1;
-    }
-
-    .hall-name {
-      color: #ff4444;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .hall-achievement {
-      color: #8f96a3;
-      font-size: 12px;
-    }
-
-    /* Help section */
-    .help-section {
-      margin-top: 20px;
-    }
-
-    .help-item {
-      margin-bottom: 25px;
-    }
-
-    .help-question {
-      color: #ff4444;
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .help-answer {
-      color: #8f96a3;
-      padding-left: 20px;
-    }
-
-    /* Right sidebar */
-    .right-sidebar {
-      background: #111317;
-      border: 1px solid #282d38;
-      border-radius: 6px;
-      padding: 15px;
-    }
-
-    .profile-card {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .profile-avatar {
-      width: 64px;
-      height: 64px;
+    .profile-avatar-large {
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
-      background: #1a1e26;
-      border: 2px solid #282d38;
-      margin: 0 auto 10px;
+      border: 2px solid #333;
+      margin: 0 auto 15px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      color: #ff4444;
+      font-size: 48px;
+      color: #888;
+      background: #1a1a1a;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
     }
 
-    .profile-name {
-      font-size: 16px;
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-avatar-large:hover::after {
+      content: 'Change';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      text-align: center;
+      padding: 5px;
+      font-size: 11px;
+    }
+
+    .profile-username-large {
+      font-size: 20px;
       font-weight: bold;
+      text-align: center;
+      margin-bottom: 5px;
     }
 
     .profile-uid {
-      color: #8f96a3;
+      color: #888;
       font-size: 11px;
-      margin: 5px 0;
+      text-align: center;
+      margin-bottom: 15px;
     }
 
     .profile-stats {
@@ -434,8 +271,8 @@
       justify-content: space-around;
       margin: 15px 0;
       padding: 10px 0;
-      border-top: 1px solid #282d38;
-      border-bottom: 1px solid #282d38;
+      border-top: 1px solid #222;
+      border-bottom: 1px solid #222;
     }
 
     .stat {
@@ -444,756 +281,920 @@
 
     .stat-value {
       font-size: 16px;
-      color: #ff4444;
+      color: #0f0;
       font-weight: bold;
     }
 
     .stat-label {
-      font-size: 9px;
-      color: #8f96a3;
-      text-transform: uppercase;
+      font-size: 10px;
+      color: #888;
     }
 
-    .username-gradient {
-      background: linear-gradient(90deg, #000000, #ffffff, #000000);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradient 3s linear infinite;
-      font-weight: 500;
+    .profile-bio {
+      border: 1px solid #222;
+      padding: 12px;
+      margin: 15px 0;
+      min-height: 60px;
+      font-size: 12px;
     }
 
-    .rich-badge {
-      color: #ffd700;
-      font-weight: bold;
-      margin-left: 3px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Auth section */
-    .auth-section {
-      background: #111317;
-      border: 1px solid #282d38;
-      border-radius: 6px;
+    .profile-right {
+      background: #111;
+      border: 1px solid #222;
       padding: 20px;
-      max-width: 400px;
-      margin: 50px auto;
     }
 
-    .auth-section input {
-      width: 100%;
-      background: #1a1e26;
-      border: 1px solid #282d38;
-      border-radius: 4px;
-      padding: 10px;
-      color: #d4d7de;
-      margin: 10px 0;
+    .profile-tabs {
+      display: flex;
+      gap: 20px;
+      border-bottom: 1px solid #222;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
     }
 
-    .auth-section button {
+    .profile-tab {
+      cursor: pointer;
+      color: #888;
+      font-size: 13px;
+    }
+
+    .profile-tab.active {
+      color: #fff;
+    }
+
+    .share-url {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .share-url input {
+      flex: 1;
+      background: #000;
+      border: 1px solid #333;
+      padding: 6px;
+      color: #888;
+      font-size: 11px;
+    }
+
+    .share-url button {
+      padding: 6px 12px;
+      background: #222;
+      border: 1px solid #333;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .share-url button:hover {
+      background: #333;
+    }
+
+    /* EDIT FORM */
+    .edit-form {
+      margin-top: 15px;
+    }
+
+    .edit-form input,
+    .edit-form textarea {
       width: 100%;
-      padding: 10px;
-      background: #ff4444;
-      border: none;
-      border-radius: 4px;
-      color: #0a0c10;
-      font-weight: bold;
+      background: #000;
+      border: 1px solid #333;
+      padding: 8px;
+      color: #fff;
+      margin: 5px 0;
+    }
+
+    .edit-form textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    .edit-form button {
+      width: 100%;
+      padding: 8px;
+      background: #222;
+      border: 1px solid #333;
+      color: #fff;
       cursor: pointer;
       margin: 5px 0;
     }
 
-    /* Messages */
+    .edit-form button.primary {
+      background: #0f0;
+      color: #000;
+      border: none;
+    }
+
+    .edit-form button:hover {
+      background: #333;
+    }
+
+    /* USERS GRID */
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .user-card {
+      background: #111;
+      border: 1px solid #222;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .user-card:hover {
+      border-color: #444;
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #888;
+      overflow: hidden;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .user-joined {
+      color: #888;
+      font-size: 11px;
+    }
+
+    /* PASTE VIEW */
+    .paste-view {
+      background: #111;
+      border: 1px solid #222;
+      padding: 25px;
+    }
+
+    .paste-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #222;
+    }
+
+    .paste-title {
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .paste-meta {
+      display: flex;
+      gap: 20px;
+      color: #888;
+    }
+
+    .paste-content {
+      border: 1px solid #222;
+      padding: 20px;
+      min-height: 200px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      margin: 20px 0;
+      background: #0a0a0a;
+    }
+
+    .back-btn {
+      padding: 8px 15px;
+      background: #222;
+      border: 1px solid #333;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: #333;
+    }
+
+    /* HIDDEN */
+    .hidden {
+      display: none !important;
+    }
+
+    /* MESSAGES */
     .message {
-      padding: 8px;
-      border-radius: 4px;
+      padding: 10px;
+      border: 1px solid #333;
       margin: 10px 0;
-      font-size: 12px;
+      text-align: center;
     }
 
     .message.success {
-      background: rgba(255, 68, 68, 0.2);
-      border: 1px solid #ff4444;
-      color: #ff4444;
+      border-color: #0f0;
+      color: #0f0;
     }
 
     .message.error {
-      background: rgba(255, 68, 68, 0.2);
-      border: 1px solid #ff4444;
+      border-color: #ff4444;
       color: #ff4444;
+    }
+
+    /* AUTH */
+    .auth-box {
+      max-width: 350px;
+      margin: 40px auto;
+      background: #111;
+      border: 1px solid #222;
+      padding: 30px;
+    }
+
+    .auth-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      border: none;
+    }
+
+    .auth-box input {
+      width: 100%;
+      background: #000;
+      border: 1px solid #333;
+      padding: 10px;
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    .auth-box button {
+      width: 100%;
+      padding: 10px;
+      background: #222;
+      border: 1px solid #333;
+      color: #fff;
+      cursor: pointer;
+      margin: 5px 0;
+    }
+
+    .auth-box button.primary {
+      background: #0f0;
+      color: #000;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <div class="header">
-      <div class="logo">exiled</div>
-      <div class="nav-links">
-        <a class="nav-link" onclick="showPage('home')" id="nav-home">Home</a>
-        <a class="nav-link" onclick="showPage('addPaste')" id="nav-addPaste">Add Paste</a>
-        <a class="nav-link" onclick="showPage('users')" id="nav-users">Users</a>
-        <a class="nav-link" onclick="showPage('upgrades')" id="nav-upgrades">Upgrades</a>
-        <a class="nav-link" onclick="showPage('hall')" id="nav-hall">Hall of Autism</a>
-        <a class="nav-link" onclick="showPage('help')" id="nav-help">Help</a>
-        <span class="nav-link" id="totalUsersDisplay">0ct</span>
-        <span class="nav-link" id="onlineUsersDisplay">0ct</span>
-        <a class="nav-link" onclick="showProfile()" id="profileLink">Profile</a>
-        <a class="nav-link" onclick="handleLogout()" id="logoutLink">Logout</a>
-        <a class="nav-link" onclick="showLogin()" id="loginLink">Login</a>
-      </div>
+
+<div class="navbar">
+  <div class="nav-left">
+    <a onclick="showPage('home')" id="nav-home" class="active">Home</a>
+    <a onclick="showPage('profile')" id="nav-profile">Profile</a>
+    <a onclick="showPage('pastes')" id="nav-pastes">Pastes</a>
+    <a onclick="showPage('users')" id="nav-users">Users</a>
+  </div>
+  <div class="nav-right" id="onlineCount">
+    ● <span id="onlineUsers">569</span>
+  </div>
+</div>
+
+<!-- HERO SECTION (only on home) -->
+<div id="heroSection" class="hero">
+  <div class="logo">exiled</div>
+  <p>anonymous pastebin</p>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search for a paste...">
+    <button onclick="searchPastes()">Search</button>
+
+    <div class="radio-options">
+      <label><input type="radio" name="search" id="searchTitle" checked> Search in title</label>
+      <label><input type="radio" name="search" id="searchPaste"> Search in paste</label>
     </div>
+  </div>
+</div>
 
-    <!-- Stats Header -->
-    <div class="user-stats">
-      <span>JOIN @LICK</span>
-      <span>JOIN EXILED TELEGRAM</span>
-      <span>Mirrors: <a href="#">exiled.cc</a> | <a href="#">exiled.net</a></span>
-    </div>
+<!-- MAIN CONTENT -->
+<div class="container">
+  <!-- HOME PAGE (Pinned Pastes) -->
+  <div id="homePage">
+    <h2>Pinned Pastes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Comments</th>
+          <th>Views</th>
+          <th>Created By</th>
+          <th>Added</th>
+        </tr>
+      </thead>
+      <tbody id="pinnedPastes">
+        <tr>
+          <td class="title" onclick="viewPaste('Can Blabcity Owner')">Can Blabcity Owner</td>
+          <td class="comment-count">851</td>
+          <td class="views">—</td>
+          <td><span class="username-white">vvsivsvs</span><span class="rich-badge">[Rich]</span></td>
+          <td class="date">Feb 12, 2026</td>
+        </tr>
+        <tr>
+          <td class="title" onclick="viewPaste('Revenge Jack Butterfield')">Revenge Jack Butterfield</td>
+          <td class="comment-count">2028</td>
+          <td class="views">—</td>
+          <td><span class="username-blue">Anonymous</span></td>
+          <td class="date">Feb 8, 2026</td>
+        </tr>
+        <tr>
+          <td class="title" onclick="viewPaste('JOIN LICK ON TELEGRAM')">JOIN LICK ON TELEGRAM</td>
+          <td class="comment-count">2418</td>
+          <td class="views">—</td>
+          <td><span class="username-blue">Anonymous</span></td>
+          <td class="date">Feb 7, 2026</td>
+        </tr>
+        <tr>
+          <td class="title" onclick="viewPaste('NCSC UK undercover agents')">NCSC UK undercover agents</td>
+          <td class="comment-count">174</td>
+          <td class="views">12556</td>
+          <td><span class="username-blue">Anonymous</span></td>
+          <td class="date">Jan 8, 2026</td>
+        </tr>
+        <tr>
+          <td class="title" onclick="viewPaste('How to Ensure Your Paste Stays Up')">How to Ensure Your Paste Stays Up</td>
+          <td class="comment-count">260266</td>
+          <td class="views">—</td>
+          <td><span class="username-blue">Admin</span><span class="admin-badge">[Admin]</span></td>
+          <td class="date">Nov 20, 2020</td>
+        </tr>
+        <tr>
+          <td class="title" onclick="viewPaste('Transparency Report')">Transparency Report</td>
+          <td class="comment-count">156673</td>
+          <td class="views">—</td>
+          <td><span class="username-blue">hardline</span><span class="admin-badge">[Manager]</span></td>
+          <td class="date">Jun 20, 2020</td>
+        </tr>
+      </tbody>
+    </table>
 
-    <!-- Main Layout -->
-    <div class="main-layout">
-      <!-- Left Sidebar -->
-      <div class="left-sidebar">
-        <div class="sidebar-section">
-          <div class="sidebar-title">TOTAL USERS</div>
-          <div class="stat-item"><span id="sidebarTotalUsers">0</span></div>
-        </div>
-
-        <div class="sidebar-section">
-          <div class="sidebar-title">ONLINE NOW</div>
-          <div class="stat-item"><span id="sidebarOnlineUsers">0</span></div>
-        </div>
-
-        <div class="telegram-box">
-          <a href="#">JOIN @LICK ON TELEGRAM</a>
-          <div class="mirrors">
-            Mirrors: <a href="#">exiled.cc</a> | <a href="#">exiled.net</a>
-          </div>
-        </div>
-
-        <div class="search-box">
-          <div style="color: #ff4444; margin-bottom: 8px;">Search for a paste</div>
-          <input type="text" id="searchInput" placeholder="Search...">
-          <div class="search-options">
-            <label><input type="checkbox" id="searchTitle"> Search in title</label>
-            <label><input type="checkbox" id="searchPaste"> Search in paste</label>
-          </div>
-          <button class="search-btn" onclick="searchPastes()">Search</button>
-        </div>
-      </div>
-
-      <!-- Main Content -->
-      <div class="main-content">
-        <!-- Home Page -->
-        <div id="homePage" class="page-content">
-          <div class="content-header">
-            <h2>Welcome to exiled</h2>
-          </div>
-          <p>Welcome to the most secure pastebin platform. Share text anonymously with the community.</p>
-          <p style="margin-top: 20px; color: #8f96a3;">Use the navigation above to get started.</p>
-        </div>
-
-        <!-- Add Paste Page -->
-        <div id="addPastePage" class="page-content hidden">
-          <div class="content-header">
-            <h2>Create New Paste</h2>
-          </div>
-          <input type="text" id="pasteTitle" placeholder="Title" style="width: 100%; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; padding: 10px; color: #d4d7de; margin-bottom: 10px;">
-          <textarea id="pasteContent" placeholder="Paste content..." rows="15" style="width: 100%; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; padding: 10px; color: #d4d7de; margin-bottom: 10px;"></textarea>
-          <div style="margin-bottom: 10px;">
-            <label style="color: #8f96a3;"><input type="checkbox" id="privatePaste"> Private</label>
-          </div>
-          <button onclick="uploadPaste()" style="padding: 10px 20px; background: #ff4444; border: none; border-radius: 4px; color: #0a0c10; font-weight: bold;">Upload Paste</button>
-          <div id="uploadMessage" class="message hidden"></div>
-        </div>
-
-        <!-- Users Page -->
-        <div id="usersPage" class="page-content hidden">
-          <div class="content-header">
-            <h2>Users</h2>
-          </div>
-          <div class="users-grid" id="usersList"></div>
-        </div>
-
-        <!-- Upgrades Page -->
-        <div id="upgradesPage" class="page-content hidden">
-          <div class="content-header">
-            <h2>Upgrades</h2>
-          </div>
-          <div class="upgrades-grid">
-            <div class="upgrade-card">
-              <div class="upgrade-title">Basic</div>
-              <div class="upgrade-price">$5 <span>/month</span></div>
-              <ul class="upgrade-features">
-                <li>✓ 100 pastes per day</li>
-                <li>✓ Basic support</li>
-                <li>✓ No ads</li>
-              </ul>
-              <button class="buy-btn" onclick="alert('Upgrade feature coming soon')">Upgrade</button>
-            </div>
-            <div class="upgrade-card">
-              <div class="upgrade-title">Premium</div>
-              <div class="upgrade-price">$15 <span>/month</span></div>
-              <ul class="upgrade-features">
-                <li>✓ Unlimited pastes</li>
-                <li>✓ Priority support</li>
-                <li>✓ No ads</li>
-                <li>✓ Custom branding</li>
-              </ul>
-              <button class="buy-btn" onclick="alert('Upgrade feature coming soon')">Upgrade</button>
-            </div>
-            <div class="upgrade-card">
-              <div class="upgrade-title">Enterprise</div>
-              <div class="upgrade-price">$50 <span>/month</span></div>
-              <ul class="upgrade-features">
-                <li>✓ Everything in Premium</li>
-                <li>✓ API access</li>
-                <li>✓ Dedicated support</li>
-                <li>✓ Custom features</li>
-              </ul>
-              <button class="buy-btn" onclick="alert('Upgrade feature coming soon')">Upgrade</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Hall of Autism Page -->
-        <div id="hallPage" class="page-content hidden">
-          <div class="content-header">
-            <h2>Hall of Autism</h2>
-          </div>
-          <div class="hall-list">
-            <div class="hall-item">
-              <div class="hall-rank">#1</div>
-              <div class="hall-info">
-                <div class="hall-name">Anonymous</div>
-                <div class="hall-achievement">Most pastes uploaded - 15,234 pastes</div>
-              </div>
-            </div>
-            <div class="hall-item">
-              <div class="hall-rank">#2</div>
-              <div class="hall-info">
-                <div class="hall-name">vvsivsvs</div>
-                <div class="hall-achievement">Most viewed content - 1.2M views</div>
-              </div>
-            </div>
-            <div class="hall-item">
-              <div class="hall-rank">#3</div>
-              <div class="hall-info">
-                <div class="hall-name">handline</div>
-                <div class="hall-achievement">Longest membership - 5 years</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Help Page -->
-        <div id="helpPage" class="page-content hidden">
-          <div class="content-header">
-            <h2>Help & Support</h2>
-          </div>
-          <div class="help-section">
-            <div class="help-item">
-              <div class="help-question">How do I create a paste?</div>
-              <div class="help-answer">Click on "Add Paste" in the navigation bar, fill in the title and content, then click upload. You can choose to make it private if you want.</div>
-            </div>
-            <div class="help-item">
-              <div class="help-question">How do I upgrade my account?</div>
-              <div class="help-answer">Go to the "Upgrades" page and choose a plan that suits your needs. You can pay with crypto or credit card.</div>
-            </div>
-            <div class="help-item">
-              <div class="help-question">Is my data secure?</div>
-              <div class="help-answer">All pastes are encrypted and stored securely. We never share your data with third parties.</div>
-            </div>
-            <div class="help-item">
-              <div class="help-question">How do I report content?</div>
-              <div class="help-answer">Contact us through Telegram or email support@exiled.cc with the paste URL and reason for reporting.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Auth Section -->
-        <div id="authSection" class="auth-section hidden">
-          <h2 style="color: #ff4444; text-align: center; margin-bottom: 20px;">Login to exiled</h2>
-          <input type="email" id="email" placeholder="Email">
-          <input type="password" id="password" placeholder="Password">
-          <button onclick="handleLogin()" id="loginBtn">Login</button>
-          <button onclick="handleSignup()" id="signupBtn" style="background: #1a1e26; color: #ff4444;">Sign Up</button>
-          <div id="authMessage" class="message hidden"></div>
-        </div>
-
-        <!-- Profile Section -->
-        <div id="profileSection" class="page-content hidden">
-          <div style="display: grid; grid-template-columns: 300px 1fr; gap: 20px;">
-            <div style="background: #1a1e26; border: 1px solid #282d38; border-radius: 6px; padding: 20px;">
-              <div style="text-align: center;">
-                <div class="profile-avatar" style="width: 100px; height: 100px; font-size: 48px; margin: 0 auto 15px;" id="profileAvatar">
-                  <span id="profileAvatarText">?</span>
-                </div>
-                <div class="profile-name" id="profileUsername">Loading...</div>
-                <div class="profile-uid" id="profileUID">UID: </div>
-              </div>
-
-              <div class="profile-stats">
-                <div class="stat">
-                  <div class="stat-value" id="profilePastes">0</div>
-                  <div class="stat-label">Pastes</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-value" id="profileLikes">0</div>
-                  <div class="stat-label">Likes</div>
-                </div>
-                <div class="stat">
-                  <div class="stat-value" id="profileFollowers">0</div>
-                  <div class="stat-label">Followers</div>
-                </div>
-              </div>
-
-              <div style="background: #111317; border: 1px solid #282d38; border-radius: 4px; padding: 12px; margin: 15px 0;">
-                <div style="color: #8f96a3; font-size: 11px;">Member since</div>
-                <div id="profileJoined" style="color: #ff4444;">Loading...</div>
-              </div>
-
-              <div id="profileBio" style="color: #d4d7de; margin: 15px 0;">No bio yet.</div>
-
-              <button onclick="toggleEditProfile()" id="editProfileBtn" style="width: 100%; padding: 8px; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; color: #d4d7de; cursor: pointer;">Edit Profile</button>
-
-              <div id="editProfileForm" class="hidden" style="margin-top: 15px;">
-                <input type="text" id="editUsername" placeholder="Username" style="width: 100%; background: #111317; border: 1px solid #282d38; border-radius: 4px; padding: 8px; color: #d4d7de; margin: 5px 0;">
-                <textarea id="editBio" placeholder="Bio" rows="3" style="width: 100%; background: #111317; border: 1px solid #282d38; border-radius: 4px; padding: 8px; color: #d4d7de; margin: 5px 0;"></textarea>
-                <button onclick="saveProfile()" style="width: 100%; padding: 8px; background: #ff4444; border: none; border-radius: 4px; color: #0a0c10; font-weight: bold;">Save Changes</button>
-              </div>
-            </div>
-
-            <div style="background: #1a1e26; border: 1px solid #282d38; border-radius: 6px; padding: 20px;">
-              <div style="display: flex; gap: 10px; border-bottom: 1px solid #282d38; padding-bottom: 10px; margin-bottom: 20px;">
-                <div style="color: #ff4444; font-weight: bold;">Your Pastes</div>
-              </div>
-              <div id="userPastes">No pastes yet.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Sidebar -->
-      <div class="right-sidebar">
-        <!-- Profile Card (logged in) -->
-        <div id="profileCard" class="hidden">
-          <div class="profile-card">
-            <div class="profile-avatar" onclick="showProfile()">
-              <span id="sidebarAvatar">?</span>
-            </div>
-            <div class="profile-name" id="sidebarUsername">Guest</div>
-            <div class="profile-uid" id="sidebarUID">UID: </div>
-            
-            <div class="profile-stats">
-              <div class="stat">
-                <div class="stat-value" id="sidebarPastes">0</div>
-                <div class="stat-label">Pastes</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value" id="sidebarLikes">0</div>
-                <div class="stat-label">Likes</div>
-              </div>
-              <div class="stat">
-                <div class="stat-value" id="sidebarFollowers">0</div>
-                <div class="stat-label">Followers</div>
-              </div>
-            </div>
-
-            <button onclick="showProfile()" style="width: 100%; padding: 6px; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; color: #d4d7de; cursor: pointer;">View Profile</button>
-          </div>
-        </div>
-
-        <!-- Login Prompt (logged out) -->
-        <div id="loginPrompt">
-          <div class="profile-card">
-            <div class="profile-avatar">?</div>
-            <div class="profile-name">Guest</div>
-            <button onclick="showLogin()" style="width: 100%; padding: 6px; background: #1a1e26; border: 1px solid #282d38; border-radius: 4px; color: #d4d7de; cursor: pointer;">Login / Sign Up</button>
-          </div>
-        </div>
-      </div>
+    <div class="pagination">
+      <a href="#"><</a>
+      <a href="#">1</a>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">></a>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // Supabase setup
-    const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
+  <!-- PROFILE PAGE -->
+  <div id="profilePage" class="hidden">
+    <div id="profileViewContainer"></div>
+  </div>
+
+  <!-- PASTES PAGE (All Pastes) -->
+  <div id="pastesPage" class="hidden">
+    <h2>All Pastes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Comments</th>
+          <th>Views</th>
+          <th>Created By</th>
+          <th>Added</th>
+        </tr>
+      </thead>
+      <tbody id="allPastes">
+        <!-- Will be populated with real data -->
+        <tr>
+          <td class="title" onclick="viewPaste('Example Paste 1')">Example Paste 1</td>
+          <td class="comment-count">12</td>
+          <td class="views">855</td>
+          <td><span class="username-blue">User1</span></td>
+          <td class="date">Feb 14, 2026</td>
+        </tr>
+        <tr>
+          <td class="title" onclick="viewPaste('Example Paste 2')">Example Paste 2</td>
+          <td class="comment-count">5</td>
+          <td class="views">2030</td>
+          <td><span class="username-blue">User2</span></td>
+          <td class="date">Feb 13, 2026</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination">
+      <a href="#"><</a>
+      <a href="#">1</a>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">></a>
+    </div>
+  </div>
+
+  <!-- USERS PAGE -->
+  <div id="usersPage" class="hidden">
+    <h2>Users</h2>
+    <div class="users-grid" id="usersList"></div>
+  </div>
+
+  <!-- PASTE VIEW PAGE -->
+  <div id="pasteViewPage" class="hidden">
+    <div id="pasteViewContainer"></div>
+  </div>
+
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="hidden">
+    <div class="auth-box">
+      <h2>Login to exiled</h2>
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Password">
+      <button class="primary" onclick="handleLogin()">Login</button>
+      <button onclick="handleSignup()">Sign Up</button>
+      <div id="authMessage" class="message hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Supabase setup
+  const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
+  
+  const { createClient } = supabase;
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true
+    }
+  });
+
+  // Global state
+  let currentUser = null;
+  let currentProfile = null;
+  const RICH_USER_EMAIL = "ikiikikikijujijij@gmail.com";
+
+  // DOM Elements
+  const pages = {
+    home: document.getElementById('homePage'),
+    profile: document.getElementById('profilePage'),
+    pastes: document.getElementById('pastesPage'),
+    users: document.getElementById('usersPage'),
+    paste: document.getElementById('pasteViewPage'),
+    login: document.getElementById('loginPage')
+  };
+
+  const navLinks = {
+    home: document.getElementById('nav-home'),
+    profile: document.getElementById('nav-profile'),
+    pastes: document.getElementById('nav-pastes'),
+    users: document.getElementById('nav-users')
+  };
+
+  const heroSection = document.getElementById('heroSection');
+
+  // Initialize
+  (async function init() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    currentUser = session?.user || null;
+    updateUI();
+    loadUsers();
+    updateStats();
+    checkURLHash();
+    window.addEventListener('hashchange', checkURLHash);
+  })();
+
+  // URL routing
+  function checkURLHash() {
+    const hash = window.location.hash.substring(1);
     
-    const { createClient } = supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // Global state
-    let currentUser = null;
-    let currentProfile = null;
-    let currentPage = 'home';
-    const RICH_USER_EMAIL = "ikiikikikijujijij@gmail.com";
-
-    // DOM Elements
-    const pages = {
-      home: document.getElementById('homePage'),
-      addPaste: document.getElementById('addPastePage'),
-      users: document.getElementById('usersPage'),
-      upgrades: document.getElementById('upgradesPage'),
-      hall: document.getElementById('hallPage'),
-      help: document.getElementById('helpPage'),
-      auth: document.getElementById('authSection'),
-      profile: document.getElementById('profileSection')
-    };
-
-    const navLinks = {
-      home: document.getElementById('nav-home'),
-      addPaste: document.getElementById('nav-addPaste'),
-      users: document.getElementById('nav-users'),
-      upgrades: document.getElementById('nav-upgrades'),
-      hall: document.getElementById('nav-hall'),
-      help: document.getElementById('nav-help')
-    };
-
-    // Initialize
-    (async function init() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      currentUser = session?.user || null;
-      updateUI();
-      loadUsers();
-      updateStats();
-      showPage('home');
-    })();
-
-    // Page navigation
-    function showPage(page) {
-      // Hide all pages
-      Object.values(pages).forEach(p => {
-        if (p) p.classList.add('hidden');
-      });
-      
-      // Remove active class from all nav links
-      Object.values(navLinks).forEach(link => {
-        if (link) link.classList.remove('active');
-      });
-      
-      // Show selected page
-      if (pages[page]) {
-        pages[page].classList.remove('hidden');
-        currentPage = page;
-        
-        // Add active class to selected nav link
-        if (navLinks[page]) {
-          navLinks[page].classList.add('active');
-        }
-      }
-    }
-
-    function showLogin() {
-      showPage('auth');
-    }
-
-    function showProfile() {
-      if (!currentUser) {
-        showLogin();
-        return;
-      }
-      showPage('profile');
-      loadUserProfile();
-    }
-
-    // Load users
-    async function loadUsers() {
-      try {
-        const { data, error } = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .limit(20);
-
-        if (error) throw error;
-
-        const usersList = document.getElementById('usersList');
-        usersList.innerHTML = '';
-
-        if (data && data.length > 0) {
-          data.forEach(user => {
-            const isRichUser = user.email === RICH_USER_EMAIL;
-            usersList.innerHTML += `
-              <div class="user-card">
-                <div class="user-avatar">👤</div>
-                <div class="user-name ${isRichUser ? 'username-gradient' : ''}">${escapeHtml(user.username || 'Anonymous')}${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}</div>
-                <div class="user-stats-small">Joined: ${new Date(user.created_at).toLocaleDateString()}</div>
-              </div>
-            `;
-          });
-        } else {
-          usersList.innerHTML = '<p style="color: #8f96a3;">No users found.</p>';
-        }
-      } catch (error) {
-        console.error('Error loading users:', error);
-      }
-    }
-
-    // Upload paste
-    function uploadPaste() {
-      const title = document.getElementById('pasteTitle')?.value.trim();
-      const content = document.getElementById('pasteContent')?.value.trim();
-
-      if (!title || !content) {
-        showMessage('uploadMessage', 'Title and content required', 'error');
-        return;
-      }
-
-      showMessage('uploadMessage', 'Paste uploaded successfully!', 'success');
-      document.getElementById('pasteTitle').value = '';
-      document.getElementById('pasteContent').value = '';
-    }
-
-    // Search pastes
-    function searchPastes() {
-      const query = document.getElementById('searchInput').value;
-      alert(`Searching for: ${query || 'all pastes'}`);
-    }
-
-    // Load user profile
-    async function loadUserProfile() {
-      if (!currentUser) return;
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-
-        if (error && error.code === 'PGRST116') {
-          const { error: insertError } = await supabaseClient
-            .from('profiles')
-            .insert([{
-              id: currentUser.id,
-              email: currentUser.email,
-              username: currentUser.email.split('@')[0],
-              created_at: new Date().toISOString()
-            }]);
-          
-          if (!insertError) {
-            setTimeout(loadUserProfile, 500);
-          }
-          return;
-        }
-
-        if (error) throw error;
-
-        currentProfile = data;
-        const isRichUser = currentUser.email === RICH_USER_EMAIL;
-
-        document.getElementById('profileUsername').innerHTML = `
-          <span class="${isRichUser ? 'username-gradient' : ''}">${escapeHtml(data.username || 'Anonymous')}</span>
-          ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
-        `;
-        document.getElementById('profileUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
-        document.getElementById('profileJoined').textContent = new Date(data.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        document.getElementById('profileBio').textContent = data.bio || 'No bio yet.';
-        
-        document.getElementById('editUsername').value = data.username || '';
-        document.getElementById('editBio').value = data.bio || '';
-
-        document.getElementById('profilePastes').textContent = data.paste_count || '0';
-        document.getElementById('profileLikes').textContent = data.likes || '0';
-        document.getElementById('profileFollowers').textContent = data.followers || '0';
-      } catch (error) {
-        console.error('Error loading profile:', error);
-      }
-    }
-
-    // Load sidebar profile
-    async function loadSidebarProfile() {
-      if (!currentUser) return;
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-
-        if (error) throw error;
-
-        const isRichUser = currentUser.email === RICH_USER_EMAIL;
-
-        document.getElementById('sidebarUsername').innerHTML = `
-          <span class="${isRichUser ? 'username-gradient' : ''}">${escapeHtml(data.username || 'Anonymous')}</span>
-        `;
-        document.getElementById('sidebarUID').textContent = `UID: ${currentUser.id.substring(0, 6)}`;
-        document.getElementById('sidebarPastes').textContent = data.paste_count || '0';
-        document.getElementById('sidebarLikes').textContent = data.likes || '0';
-        document.getElementById('sidebarFollowers').textContent = data.followers || '0';
-      } catch (error) {
-        console.error('Error loading sidebar profile:', error);
-      }
-    }
-
-    // Update UI based on auth state
-    function updateUI() {
-      const profileLink = document.getElementById('profileLink');
-      const logoutLink = document.getElementById('logoutLink');
-      const loginLink = document.getElementById('loginLink');
-      const profileCard = document.getElementById('profileCard');
-      const loginPrompt = document.getElementById('loginPrompt');
-
+    if (hash.startsWith('user/')) {
+      const userId = hash.replace('user/', '');
+      viewUserProfile(userId);
+    } else if (hash === 'profile') {
       if (currentUser) {
-        profileLink.classList.remove('hidden');
-        logoutLink.classList.remove('hidden');
-        loginLink.classList.add('hidden');
-        profileCard.classList.remove('hidden');
-        loginPrompt.classList.add('hidden');
-        loadSidebarProfile();
+        viewUserProfile(currentUser.id);
       } else {
-        profileLink.classList.add('hidden');
-        logoutLink.classList.add('hidden');
-        loginLink.classList.remove('hidden');
-        profileCard.classList.add('hidden');
-        loginPrompt.classList.remove('hidden');
+        showPage('login');
       }
-    }
-
-    // Profile editing
-    function toggleEditProfile() {
-      const form = document.getElementById('editProfileForm');
-      const btn = document.getElementById('editProfileBtn');
-      
-      if (form.classList.contains('hidden')) {
-        form.classList.remove('hidden');
-        btn.textContent = 'Cancel';
-      } else {
-        form.classList.add('hidden');
-        btn.textContent = 'Edit Profile';
-      }
-    }
-
-    async function saveProfile() {
-      const username = document.getElementById('editUsername').value.trim();
-      const bio = document.getElementById('editBio').value.trim();
-
-      try {
-        const { error } = await supabaseClient
-          .from('profiles')
-          .update({
-            username: username || null,
-            bio: bio || null
-          })
-          .eq('id', currentUser.id);
-
-        if (error) throw error;
-
-        await loadUserProfile();
-        await loadSidebarProfile();
-        toggleEditProfile();
-        showMessage('authMessage', 'Profile updated!', 'success');
-      } catch (error) {
-        showMessage('authMessage', error.message, 'error');
-      }
-    }
-
-    // Authentication
-    async function handleSignup() {
-      const email = document.getElementById('email')?.value.trim();
-      const password = document.getElementById('password')?.value;
-
-      if (!email || !password) {
-        showMessage('authMessage', 'Email and password required', 'error');
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient.auth.signUp({ 
-          email, 
-          password 
-        });
-
-        if (error) throw error;
-
-        showMessage('authMessage', 'Signup successful! Check email for confirmation.', 'success');
-      } catch (error) {
-        showMessage('authMessage', error.message, 'error');
-      }
-    }
-
-    async function handleLogin() {
-      const email = document.getElementById('email')?.value.trim();
-      const password = document.getElementById('password')?.value;
-
-      try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ 
-          email, 
-          password 
-        });
-
-        if (error) throw error;
-        
-        showMessage('authMessage', 'Login successful!', 'success');
-        setTimeout(() => showPage('home'), 1000);
-      } catch (error) {
-        showMessage('authMessage', error.message, 'error');
-      }
-    }
-
-    async function handleLogout() {
-      await supabaseClient.auth.signOut();
-      currentUser = null;
-      currentProfile = null;
-      updateUI();
+    } else if (hash.startsWith('paste/')) {
+      const pasteTitle = decodeURIComponent(hash.replace('paste/', ''));
+      viewPaste(pasteTitle);
+    } else if (hash === 'pastes') {
+      showPage('pastes');
+    } else if (hash === 'users') {
+      showPage('users');
+    } else {
       showPage('home');
     }
+  }
 
-    // Update stats
-    async function updateStats() {
-      try {
-        const { count } = await supabaseClient
-          .from('profiles')
-          .select('*', { count: 'exact', head: true });
-
-        document.getElementById('totalUsersDisplay').textContent = `${count || 0}ct`;
-        document.getElementById('sidebarTotalUsers').textContent = count || 0;
-        
-        const online = Math.floor(Math.random() * 100) + 500;
-        document.getElementById('onlineUsersDisplay').textContent = `${online}ct`;
-        document.getElementById('sidebarOnlineUsers').textContent = online;
-      } catch (error) {
-        console.error('Error updating stats:', error);
-      }
-    }
-
-    // Utility functions
-    function showMessage(elementId, message, type) {
-      const element = document.getElementById(elementId);
-      if (element) {
-        element.textContent = message;
-        element.className = `message ${type}`;
-        element.classList.remove('hidden');
-        setTimeout(() => element.classList.add('hidden'), 5000);
-      }
-    }
-
-    function escapeHtml(unsafe) {
-      if (!unsafe) return '';
-      return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    // Auth state change listener
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      currentUser = session?.user || null;
-      updateUI();
-      if (currentUser) {
-        loadSidebarProfile();
-        loadUsers();
-      }
+  // Page navigation
+  function showPage(page) {
+    // Hide all pages
+    Object.values(pages).forEach(p => {
+      if (p) p.classList.add('hidden');
     });
-  </script>
+    
+    // Remove active class from nav links
+    Object.values(navLinks).forEach(link => {
+      if (link) link.classList.remove('active');
+    });
+    
+    // Show selected page
+    if (pages[page]) {
+      pages[page].classList.remove('hidden');
+      
+      // Add active class to nav link
+      if (navLinks[page]) {
+        navLinks[page].classList.add('active');
+      }
+      
+      // Update hash
+      if (page === 'home') {
+        window.location.hash = '';
+        heroSection.style.display = 'block';
+      } else {
+        window.location.hash = page;
+        heroSection.style.display = 'none';
+      }
+    } else if (page === 'login') {
+      pages.login.classList.remove('hidden');
+      heroSection.style.display = 'none';
+      window.location.hash = 'login';
+    }
+  }
+
+  // Show login
+  function showLogin() {
+    showPage('login');
+  }
+
+  // Show my profile
+  function showMyProfile() {
+    if (!currentUser) {
+      showLogin();
+      return;
+    }
+    window.location.hash = 'profile';
+    viewUserProfile(currentUser.id);
+  }
+
+  // View paste
+  function viewPaste(title) {
+    window.location.hash = 'paste/' + encodeURIComponent(title);
+    
+    const container = document.getElementById('pasteViewContainer');
+    container.innerHTML = `
+      <div class="paste-view">
+        <div class="paste-header">
+          <h1 class="paste-title">${title}</h1>
+          <div class="paste-meta">
+            <span>👁️ 0 views</span>
+            <span>💬 0 comments</span>
+            <span>📅 ${new Date().toLocaleDateString()}</span>
+          </div>
+        </div>
+        <div class="paste-content">
+          Paste content would appear here...
+        </div>
+        <button class="back-btn" onclick="showPage('home')">← Back</button>
+      </div>
+    `;
+    
+    showPage('paste');
+  }
+
+  // View user profile
+  async function viewUserProfile(userId) {
+    showPage('profile');
+    
+    try {
+      const { data: profile, error } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) throw error;
+
+      const { data: pastes } = await supabaseClient
+        .from('pastes')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      const isRichUser = profile.email === RICH_USER_EMAIL;
+      const isOwnProfile = currentUser && currentUser.id === userId;
+
+      const container = document.getElementById('profileViewContainer');
+      container.innerHTML = `
+        <div class="profile-view">
+          <div class="profile-left">
+            <div class="profile-avatar-large" ${isOwnProfile ? 'onclick="document.getElementById(\'avatarUpload\').click()"' : ''}>
+              ${profile.avatar_url ? 
+                `<img src="${profile.avatar_url}">` : 
+                `<span>${profile.username ? profile.username.charAt(0).toUpperCase() : '👤'}</span>`
+              }
+            </div>
+            ${isOwnProfile ? `
+              <input type="file" id="avatarUpload" class="hidden" accept="image/*" onchange="handleAvatarUpload(event)">
+            ` : ''}
+            
+            <div class="profile-username-large">
+              <span class="${isRichUser ? 'username-white' : 'username-blue'}">${escapeHtml(profile.username || 'Anonymous')}</span>
+              ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+            </div>
+            <div class="profile-uid">UID: ${userId.substring(0, 8)}</div>
+            
+            <div class="profile-stats">
+              <div class="stat">
+                <div class="stat-value">${pastes?.length || 0}</div>
+                <div class="stat-label">PASTES</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">${profile.likes || 0}</div>
+                <div class="stat-label">LIKES</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">${profile.followers || 0}</div>
+                <div class="stat-label">FOLLOWERS</div>
+              </div>
+            </div>
+
+            <div class="profile-bio">
+              ${profile.bio || 'No bio yet.'}
+            </div>
+
+            ${isOwnProfile ? `
+              <button class="back-btn" style="width: 100%;" onclick="toggleEditProfile()" id="profileEditBtn">Edit Profile</button>
+              
+              <div id="profileEditForm" class="edit-form hidden">
+                <input type="text" id="editUsernameInput" placeholder="Username" value="${escapeHtml(profile.username || '')}">
+                <textarea id="editBioInput" placeholder="Bio">${escapeHtml(profile.bio || '')}</textarea>
+                <button class="primary" onclick="saveProfileChanges()">Save Changes</button>
+                <button onclick="toggleEditProfile()">Cancel</button>
+              </div>
+            ` : ''}
+
+            <div class="share-url">
+              <input type="text" id="profileShareUrl" value="${window.location.origin}/#user/${userId}" readonly>
+              <button onclick="copyProfileUrl()">Copy</button>
+            </div>
+          </div>
+
+          <div class="profile-right">
+            <div class="profile-tabs">
+              <div class="profile-tab active">Pastes</div>
+            </div>
+            <div id="userPastesContainer">
+              ${pastes && pastes.length > 0 ? 
+                pastes.slice(0, 5).map(paste => `
+                  <div style="padding: 10px; border-bottom: 1px solid #222;">
+                    <div style="color: #fff; cursor: pointer;" onclick="viewPaste('${escapeHtml(paste.title)}')">${escapeHtml(paste.title)}</div>
+                    <div style="color: #888; font-size: 11px; margin-top: 4px;">
+                      ${new Date(paste.created_at).toLocaleDateString()} · ${paste.views || 0} views
+                    </div>
+                  </div>
+                `).join('') : 
+                '<p style="color: #888;">No pastes yet.</p>'
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Error loading profile:', error);
+    }
+  }
+
+  // Avatar upload
+  async function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file || !currentUser) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Image must be less than 2MB');
+      return;
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${currentUser.id}/${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabaseClient.storage
+        .from('avatars')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabaseClient.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      const { error: updateError } = await supabaseClient
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', currentUser.id);
+
+      if (updateError) throw updateError;
+
+      alert('Avatar updated!');
+      viewUserProfile(currentUser.id);
+      loadSidebarProfile();
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  // Toggle edit profile
+  function toggleEditProfile() {
+    const form = document.getElementById('profileEditForm');
+    const btn = document.getElementById('profileEditBtn');
+    
+    if (form.classList.contains('hidden')) {
+      form.classList.remove('hidden');
+      btn.textContent = 'Cancel';
+    } else {
+      form.classList.add('hidden');
+      btn.textContent = 'Edit Profile';
+    }
+  }
+
+  // Save profile changes
+  async function saveProfileChanges() {
+    const username = document.getElementById('editUsernameInput').value.trim();
+    const bio = document.getElementById('editBioInput').value.trim();
+
+    try {
+      const { error } = await supabaseClient
+        .from('profiles')
+        .update({
+          username: username || null,
+          bio: bio || null
+        })
+        .eq('id', currentUser.id);
+
+      if (error) throw error;
+
+      alert('Profile updated!');
+      toggleEditProfile();
+      viewUserProfile(currentUser.id);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  // Copy profile URL
+  function copyProfileUrl() {
+    const urlInput = document.getElementById('profileShareUrl');
+    urlInput.select();
+    document.execCommand('copy');
+    alert('Profile URL copied!');
+  }
+
+  // Load users
+  async function loadUsers() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .limit(20);
+
+      if (error) throw error;
+
+      const usersList = document.getElementById('usersList');
+      usersList.innerHTML = '';
+
+      if (data && data.length > 0) {
+        data.forEach(user => {
+          const isRichUser = user.email === RICH_USER_EMAIL;
+          usersList.innerHTML += `
+            <div class="user-card" onclick="viewUserProfile('${user.id}')">
+              <div class="user-avatar">
+                ${user.avatar_url ? 
+                  `<img src="${user.avatar_url}">` : 
+                  '👤'
+                }
+              </div>
+              <div class="user-name ${isRichUser ? 'username-white' : 'username-blue'}">
+                ${escapeHtml(user.username || 'Anonymous')}
+                ${isRichUser ? '<span class="rich-badge">[Rich]</span>' : ''}
+              </div>
+              <div class="user-joined">
+                Joined: ${new Date(user.created_at).toLocaleDateString()}
+              </div>
+            </div>
+          `;
+        });
+      }
+    } catch (error) {
+      console.error('Error loading users:', error);
+    }
+  }
+
+  // Search pastes
+  function searchPastes() {
+    const query = document.getElementById('searchInput').value;
+    alert(`Searching for: ${query || 'all pastes'}`);
+  }
+
+  // Update UI based on auth
+  function updateUI() {
+    const profileLink = document.getElementById('nav-profile');
+    
+    if (currentUser) {
+      profileLink.style.display = 'inline-block';
+    } else {
+      profileLink.style.display = 'inline-block'; // Always show, but redirects to login
+    }
+  }
+
+  // Auth
+  async function handleSignup() {
+    const email = document.getElementById('email')?.value.trim();
+    const password = document.getElementById('password')?.value;
+
+    if (!email || !password) {
+      alert('Email and password required');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabaseClient.auth.signUp({ 
+        email, 
+        password 
+      });
+
+      if (error) throw error;
+
+      alert('Signup successful! Check email for confirmation.');
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  async function handleLogin() {
+    const email = document.getElementById('email')?.value.trim();
+    const password = document.getElementById('password')?.value;
+
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
+
+      if (error) throw error;
+      
+      alert('Login successful!');
+      window.location.hash = '';
+      showPage('home');
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  async function handleLogout() {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    window.location.hash = '';
+    showPage('home');
+  }
+
+  // Update stats
+  function updateStats() {
+    document.getElementById('onlineUsers').textContent = Math.floor(Math.random() * 100) + 500;
+  }
+
+  // Utility
+  function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // Auth state change
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    currentUser = session?.user || null;
+    updateUI();
+    if (currentUser) {
+      loadUsers();
+    }
+  });
+</script>
 </body>
 </html>
