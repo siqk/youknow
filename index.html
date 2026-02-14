@@ -537,7 +537,7 @@
 
 <script>
   (function() {
-    // Supabase setup
+    // Supabase setup - USING YOUR EXISTING CREDENTIALS
     const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -577,7 +577,6 @@
     // State
     let currentUser = null;
     let allUsers = [];
-    let isInitialized = false;
 
     // Helper functions
     function showMessage(element, text, isError = false) {
@@ -627,6 +626,8 @@
         loadingState.style.display = 'none';
         if (data.session) {
           dashboard.style.display = 'block';
+          // Refresh user data if logged in
+          await loadUserData(data.session.user);
         } else {
           loginCard.style.display = 'flex';
         }
@@ -639,7 +640,7 @@
         // Try to find this username
         const { data, error } = await supabase
           .from('profiles')
-          .select('username')
+          .select('username, id')
           .eq('username', username)
           .maybeSingle();
         
@@ -662,6 +663,23 @@
       }
     }
 
+    // Load user data after login
+    async function loadUserData(user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .maybeSingle();
+      
+      let username = profile?.username || user.email?.split('@')[0] || 'exile';
+      
+      currentUser = { id: user.id, email: user.email, username };
+      currentUserBadge.textContent = `@${username}`;
+      currentUserSlug.textContent = username;
+      
+      await fetchAllUsers();
+    }
+
     // Profile page
     function showProfilePage(username) {
       hideAllViews();
@@ -680,7 +698,7 @@
       
       if (error) {
         console.warn('Fetch error:', error);
-        usernameList.innerHTML = '<div class="user-card" style="grid-column: 1/-1;">⚠️ no users yet</div>';
+        usernameList.innerHTML = '<div class="user-card" style="grid-column: 1/-1;">⚠️ error loading users</div>';
         return [];
       }
       
@@ -724,8 +742,7 @@
         .from('profiles')
         .upsert({ 
           id: userId, 
-          username: username, 
-          updated_at: new Date() 
+          username: username
         });
       
       if (error) {
@@ -755,30 +772,13 @@
         return;
       }
       
-      const user = data.user;
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      let username = profile?.username || user.email?.split('@')[0] || 'exile';
-      
-      if (!profile) {
-        await upsertProfile(user.id, username);
-      }
-      
-      currentUser = { id: user.id, email: user.email, username };
-      currentUserBadge.textContent = `@${username}`;
-      currentUserSlug.textContent = username;
-      
-      await fetchAllUsers();
+      await loadUserData(data.user);
       
       hideAllViews();
       dashboard.style.display = 'block';
       
       window.history.pushState({}, '', '/');
-      showNotification(`welcome back, @${username}!`);
+      showNotification(`welcome back, @${currentUser.username}!`);
     });
 
     // Signup
@@ -897,31 +897,6 @@
     async function init() {
       // Handle the current route
       await handleRoute();
-      
-      // Get session and update UI
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        const user = data.session.user;
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('id', user.id)
-          .maybeSingle();
-        
-        let username = profile?.username || user.email?.split('@')[0] || 'exile';
-        
-        if (!profile) {
-          await upsertProfile(user.id, username);
-        }
-        
-        currentUser = { id: user.id, email: user.email, username };
-        currentUserBadge.textContent = `@${username}`;
-        currentUserSlug.textContent = username;
-        
-        await fetchAllUsers();
-      }
-      
-      isInitialized = true;
     }
 
     init();
