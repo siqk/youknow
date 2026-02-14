@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>exiled · flex your profile</title>
+  <title>exiled · chat</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -15,343 +15,299 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    body, html {
-      width: 100%;
-      min-height: 100vh;
-      background: url('https://i.pinimg.com/originals/f2/f3/93/f2f393327208542afade5799bcd3814a.gif') center/cover fixed;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    body {
+      background: #1a1a1a;
       color: white;
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(10px);
-      z-index: 0;
-      animation: fadeBlur 1s ease-out;
-    }
-
-    @keyframes fadeBlur {
-      0% { backdrop-filter: blur(0px); background: rgba(0,0,0,0.3); }
-      100% { backdrop-filter: blur(10px); background: rgba(0,0,0,0.75); }
-    }
-
-    .container {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 1300px;
-      padding: 20px;
-      animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes slideUp {
-      0% { opacity: 0; transform: translateY(50px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    .glass-card {
-      background: rgba(15, 15, 15, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 30px;
-      padding: 35px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-      transition: all 0.4s;
-    }
-
-    .glass-card:hover {
-      border-color: rgba(255,255,255,0.2);
-    }
-
-    .auth-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 80vh;
-    }
-
-    .auth-card {
-      width: 450px;
-      max-width: 100%;
-      animation: popIn 0.6s ease;
-    }
-
-    @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.9) translateY(20px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    h1 {
-      font-size: 4rem;
-      font-weight: 700;
-      letter-spacing: 8px;
-      text-align: center;
-      background: linear-gradient(135deg, #fff, #aaa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 30px;
-      filter: drop-shadow(0 4px 20px black);
-    }
-
-    .input-group {
-      margin: 20px 0;
-      position: relative;
-    }
-
-    .input-group input, .input-group textarea {
-      width: 100%;
-      background: rgba(255,255,255,0.07);
-      border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 50px;
-      padding: 18px 25px;
-      font-size: 1rem;
-      color: white;
-      outline: none;
-      transition: all 0.3s;
-    }
-
-    .input-group textarea {
-      border-radius: 25px;
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .input-group input:focus, .input-group textarea:focus {
-      border-color: rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.12);
-      transform: scale(1.02);
-    }
-
-    .input-group label {
-      position: absolute;
-      left: 25px;
-      top: 18px;
-      color: #aaa;
-      transition: 0.3s;
-      pointer-events: none;
-      background: transparent;
-      padding: 0 8px;
-    }
-
-    .input-group input:focus ~ label,
-    .input-group input:not(:placeholder-shown) ~ label,
-    .input-group textarea:focus ~ label,
-    .input-group textarea:not(:placeholder-shown) ~ label {
-      top: -12px;
-      left: 20px;
-      font-size: 0.8rem;
-      color: white;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
-      border-radius: 20px;
-      padding: 4px 15px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .btn {
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-      border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 50px;
-      padding: 18px 30px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin: 10px 0;
-      position: relative;
+      height: 100vh;
       overflow: hidden;
     }
 
-    .btn::before {
-      content: '';
+    /* Auth Pages */
+    .auth-container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: url('https://i.pinimg.com/originals/f2/f3/93/f2f393327208542afade5799bcd3814a.gif') center/cover;
+      position: relative;
+    }
+
+    .auth-overlay {
       position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
     }
 
-    .btn:hover::before {
-      left: 100%;
+    .auth-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(30,30,30,0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      width: 400px;
+      border: 1px solid rgba(255,255,255,0.1);
+      animation: slideUp 0.5s ease;
     }
 
-    .btn:hover {
-      background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
-      border-color: rgba(255,255,255,0.4);
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px -10px black;
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .link {
-      color: #aaa;
+    .auth-card h1 {
+      font-size: 3rem;
       text-align: center;
-      display: block;
-      margin-top: 20px;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #fff, #aaa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .auth-input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      background: rgba(0,0,0,0.3);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .auth-input:focus {
+      border-color: #5865f2;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 15px;
+      margin: 20px 0;
+      background: #5865f2;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
       cursor: pointer;
       transition: 0.3s;
     }
 
-    .link:hover {
+    .auth-btn:hover {
+      background: #4752c4;
+      transform: translateY(-2px);
+    }
+
+    .auth-link {
+      color: #aaa;
+      text-align: center;
+      display: block;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .auth-link:hover {
       color: white;
-      transform: translateX(5px);
     }
 
     .message {
-      min-height: 30px;
       color: #ffd966;
       text-align: center;
-      font-size: 0.9rem;
       margin: 10px 0;
+      font-size: 0.9rem;
     }
 
-    /* Dashboard Styles */
-    .dashboard {
+    /* Main App */
+    .app-container {
       display: none;
+      height: 100vh;
+      background: #1a1a1a;
     }
 
-    .dash-nav {
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: #1e1e1e;
+      border-right: 1px solid rgba(255,255,255,0.1);
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .server-list {
+      width: 72px;
+      background: #1a1a1a;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 0;
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 60px;
+      gap: 8px;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 15px;
-    }
-
-    .nav-btn {
-      background: transparent;
-      border: 2px solid rgba(255,255,255,0.1);
-      border-radius: 40px;
-      padding: 12px 25px;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-      font-size: 0.95rem;
-    }
-
-    .nav-btn:hover, .nav-btn.active {
-      background: rgba(255,255,255,0.15);
-      border-color: rgba(255,255,255,0.3);
-    }
-
-    .user-badge {
-      background: rgba(255,255,255,0.1);
-      padding: 12px 25px;
-      border-radius: 40px;
-      border: 1px solid rgba(255,255,255,0.2);
-      font-weight: 500;
-    }
-
-    .dash-content {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 25px;
-    }
-
-    /* Profile Sidebar */
-    .profile-sidebar {
-      background: rgba(0,0,0,0.3);
-      border-radius: 30px;
-      padding: 25px;
-      text-align: center;
-    }
-
-    .avatar {
-      width: 150px;
-      height: 150px;
-      margin: 0 auto 20px;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
+    .server-icon {
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      border: 3px solid rgba(255,255,255,0.2);
-      object-fit: cover;
-    }
-
-    .avatar-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      border-radius: 50%;
+      background: #2a2a2a;
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0;
-      transition: 0.3s;
-    }
-
-    .avatar:hover .avatar-overlay {
-      opacity: 1;
-    }
-
-    .avatar-overlay i {
-      font-size: 2rem;
-      color: white;
-    }
-
-    .avatar-input {
-      display: none;
-    }
-
-    .profile-stats {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin: 20px 0;
-      padding: 15px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 30px;
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-value {
       font-size: 1.5rem;
       font-weight: 600;
-      color: #ffd700;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      position: relative;
     }
 
-    .stat-label {
+    .server-icon:hover {
+      border-radius: 16px;
+      background: #5865f2;
+    }
+
+    .server-icon.active {
+      border-radius: 16px;
+      background: #5865f2;
+    }
+
+    .server-icon.active::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      width: 4px;
+      height: 20px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    /* Channel List */
+    .channel-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .channel-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .channel-header i {
+      color: #aaa;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .channel-header i:hover {
+      color: white;
+    }
+
+    .channel-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .channel-category {
+      color: #aaa;
       font-size: 0.8rem;
+      text-transform: uppercase;
+      padding: 10px 10px 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .channel-item {
+      padding: 8px 12px;
+      margin: 2px 0;
+      border-radius: 8px;
+      color: #aaa;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.3s;
+    }
+
+    .channel-item:hover {
+      background: #2a2a2a;
+      color: white;
+    }
+
+    .channel-item.active {
+      background: #2a2a2a;
+      color: white;
+    }
+
+    .channel-item i {
+      font-size: 1rem;
+      width: 20px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #2a2a2a;
+    }
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-header-left i {
       color: #aaa;
     }
 
-    /* Main Content Area */
-    .main-content {
-      background: rgba(0,0,0,0.3);
-      border-radius: 30px;
-      padding: 30px;
+    .chat-header-right {
+      display: flex;
+      gap: 15px;
+      color: #aaa;
     }
 
-    .edit-section {
-      display: none;
+    .chat-header-right i {
+      cursor: pointer;
+      transition: 0.3s;
     }
 
-    .edit-section.active {
-      display: block;
-      animation: fadeIn 0.5s;
+    .chat-header-right i:hover {
+      color: white;
+    }
+
+    /* Messages */
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message-wrapper {
+      display: flex;
+      gap: 15px;
+      animation: fadeIn 0.3s;
     }
 
     @keyframes fadeIn {
@@ -359,995 +315,1029 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 25px;
-      color: #ffd700;
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      cursor: pointer;
     }
 
-    .social-links {
-      display: grid;
-      gap: 15px;
+    .message-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
-    .social-input {
+    .message-content {
+      flex: 1;
+    }
+
+    .message-header {
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 50px;
-      padding: 5px 5px 5px 20px;
+      margin-bottom: 5px;
     }
 
-    .social-input i {
-      font-size: 1.2rem;
+    .message-author {
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .message-author:hover {
+      color: #5865f2;
+    }
+
+    .message-time {
+      font-size: 0.8rem;
       color: #aaa;
-      width: 25px;
     }
 
-    .social-input input {
+    .message-text {
+      color: #ddd;
+      line-height: 1.4;
+    }
+
+    .message-text img {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+
+    /* Message Input */
+    .message-input-container {
+      padding: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .message-input-wrapper {
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .message-input-wrapper i {
+      color: #aaa;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .message-input-wrapper i:hover {
+      color: white;
+    }
+
+    .message-input {
       flex: 1;
       background: transparent;
       border: none;
-      padding: 15px;
       color: white;
+      font-size: 1rem;
       outline: none;
     }
 
-    .save-btn {
-      width: auto;
-      padding: 15px 40px;
-      margin-top: 20px;
+    .message-input::placeholder {
+      color: #aaa;
     }
 
-    /* Username Grid */
-    .username-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .user-card {
-      background: rgba(30,30,30,0.6);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 20px 10px;
-      text-align: center;
+    /* User Panel */
+    .user-panel {
+      padding: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       cursor: pointer;
       transition: 0.3s;
-      animation: cardAppear 0.5s;
     }
 
-    @keyframes cardAppear {
+    .user-panel:hover {
+      background: #2a2a2a;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .user-status {
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    .user-status i {
+      font-size: 0.6rem;
+      color: #3ba55d;
+      margin-right: 4px;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #2a2a2a;
+      border-radius: 20px;
+      padding: 30px;
+      width: 500px;
+      max-width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: modalPop 0.3s;
+    }
+
+    @keyframes modalPop {
       from { opacity: 0; transform: scale(0.9); }
       to { opacity: 1; transform: scale(1); }
     }
 
-    .user-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      border-color: rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.1);
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
-    .user-card.highlight {
-      border: 2px solid #ffd700;
-      background: rgba(255,215,0,0.1);
+    .modal-header h2 {
+      color: white;
     }
 
-    .user-avatar-small {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      margin: 0 auto 10px;
-      border: 2px solid rgba(255,255,255,0.2);
-      object-fit: cover;
+    .modal-header i {
+      color: #aaa;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1.5rem;
     }
 
-    /* Profile View */
-    .profile-view {
-      display: none;
+    .modal-header i:hover {
+      color: white;
+    }
+
+    .profile-section {
       text-align: center;
-    }
-
-    .profile-header {
       margin-bottom: 30px;
     }
 
-    .profile-avatar-large {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      border: 4px solid #ffd700;
+    .profile-banner {
+      width: 100%;
+      height: 150px;
+      background: #1e1e1e;
+      border-radius: 10px;
+      margin-bottom: -50px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .profile-banner img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
 
-    .profile-bio {
-      max-width: 500px;
-      margin: 20px auto;
-      color: #aaa;
-      line-height: 1.6;
-    }
-
-    .profile-socials {
+    .banner-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
       display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 20px;
-      margin: 30px 0;
-    }
-
-    .profile-socials a {
-      color: white;
-      font-size: 1.5rem;
+      opacity: 0;
       transition: 0.3s;
     }
 
-    .profile-socials a:hover {
-      color: #ffd700;
-      transform: translateY(-3px);
+    .profile-banner:hover .banner-overlay {
+      opacity: 1;
     }
 
-    .profile-url {
-      background: rgba(0,0,0,0.3);
-      padding: 15px 25px;
-      border-radius: 50px;
-      display: inline-block;
-      margin: 20px 0;
+    .profile-avatar-large {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid #2a2a2a;
+      margin: 0 auto;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
     }
 
-    .back-btn {
-      width: auto;
-      padding: 15px 40px;
-      margin-top: 20px;
+    .profile-avatar-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .loading {
+    .avatar-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: 0.3s;
+    }
+
+    .profile-avatar-large:hover .avatar-overlay {
+      opacity: 1;
+    }
+
+    .profile-input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      background: #1e1e1e;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: white;
+      outline: none;
+    }
+
+    .profile-input:focus {
+      border-color: #5865f2;
+    }
+
+    .friends-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .friend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .friend-item:hover {
+      background: #3a3a3a;
+    }
+
+    .friend-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #5865f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .friend-info {
+      flex: 1;
+    }
+
+    .friend-name {
+      font-weight: 600;
+    }
+
+    .friend-status {
+      font-size: 0.8rem;
+      color: #3ba55d;
+    }
+
+    .add-friend-btn {
+      background: #5865f2;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .add-friend-btn:hover {
+      background: #4752c4;
+    }
+
+    .loading-spinner {
       text-align: center;
       padding: 50px;
+    }
+
+    .loading-spinner i {
+      font-size: 3rem;
+      color: #5865f2;
+      margin-bottom: 20px;
     }
 
     .notification {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: rgba(0,0,0,0.9);
+      background: #5865f2;
       color: white;
       padding: 15px 25px;
-      border-radius: 50px;
-      border-left: 4px solid #ffd700;
+      border-radius: 10px;
       animation: slideIn 0.3s;
-      z-index: 1000;
+      z-index: 2000;
     }
 
     @keyframes slideIn {
       from { transform: translateX(100%); }
       to { transform: translateX(0); }
     }
-
-    .not-found {
-      text-align: center;
-      padding: 60px;
-    }
-
-    .not-found i {
-      font-size: 4rem;
-      color: #ffd700;
-      margin-bottom: 20px;
-    }
-
-    .logout-btn {
-      background: rgba(255,0,0,0.2);
-      border-color: rgba(255,0,0,0.3);
-    }
-
-    .logout-btn:hover {
-      background: rgba(255,0,0,0.3);
-      border-color: rgba(255,0,0,0.5);
-    }
-
-    .debug-info {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.8);
-      color: #0f0;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 12px;
-      z-index: 9999;
-      display: none;
-    }
   </style>
 </head>
 <body>
-<div class="overlay"></div>
-<div class="container">
-
-  <!-- DEBUG INFO (hidden by default) -->
-  <div id="debugInfo" class="debug-info"></div>
-
-  <!-- LOADING STATE -->
-  <div id="loadingState" class="loading" style="display: none;">
-    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 20px;"></i>
-    <h2>loading exile...</h2>
-  </div>
-
-  <!-- NOT FOUND STATE -->
-  <div id="notFoundView" class="profile-view">
-    <div class="glass-card" style="max-width: 600px; margin: 0 auto;">
-      <div class="not-found">
-        <i class="fas fa-user-slash"></i>
-        <h2>exile not found</h2>
-        <p style="color: #aaa; margin: 20px 0;">the username you're looking for doesn't exist</p>
-        <p style="color: #666; font-size: 0.9rem;" id="notFoundUsername"></p>
-        <button class="btn" id="backToHomeFromNotFound">← back to home</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LOGIN -->
-  <div id="loginCard" class="auth-wrapper">
-    <div class="glass-card auth-card">
+  <!-- Auth Container -->
+  <div class="auth-container" id="authContainer">
+    <div class="auth-overlay"></div>
+    
+    <!-- Login Card -->
+    <div class="auth-card" id="loginCard">
       <h1>EXILED</h1>
-      <div class="input-group">
-        <input type="email" id="loginEmail" placeholder=" ">
-        <label>email</label>
-      </div>
-      <div class="input-group">
-        <input type="password" id="loginPassword" placeholder=" ">
-        <label>password</label>
-      </div>
-      <button class="btn" id="loginBtn">log in</button>
+      <input type="email" class="auth-input" id="loginEmail" placeholder="Email">
+      <input type="password" class="auth-input" id="loginPassword" placeholder="Password">
+      <button class="auth-btn" id="loginBtn">Log In</button>
       <div class="message" id="loginMessage"></div>
-      <span class="link" id="switchToSignup">no account? sign up →</span>
+      <span class="auth-link" id="showSignup">Don't have an account? Sign Up</span>
     </div>
-  </div>
 
-  <!-- SIGNUP -->
-  <div id="signupCard" class="auth-wrapper" style="display: none;">
-    <div class="glass-card auth-card">
+    <!-- Signup Card -->
+    <div class="auth-card" id="signupCard" style="display: none;">
       <h1>EXILED</h1>
-      <div class="input-group">
-        <input type="text" id="signupUsername" placeholder=" ">
-        <label>username</label>
-      </div>
-      <div class="input-group">
-        <input type="email" id="signupEmail" placeholder=" ">
-        <label>email</label>
-      </div>
-      <div class="input-group">
-        <input type="password" id="signupPassword" placeholder=" ">
-        <label>password</label>
-      </div>
-      <button class="btn" id="signupBtn">sign up & flex</button>
+      <input type="text" class="auth-input" id="signupUsername" placeholder="Username">
+      <input type="email" class="auth-input" id="signupEmail" placeholder="Email">
+      <input type="password" class="auth-input" id="signupPassword" placeholder="Password">
+      <button class="auth-btn" id="signupBtn">Sign Up</button>
       <div class="message" id="signupMessage"></div>
-      <span class="link" id="switchToLogin">← back to login</span>
+      <span class="auth-link" id="showLogin">Already have an account? Log In</span>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="dashboard">
-    <div class="glass-card">
-      <div class="dash-nav">
-        <div class="nav-links">
-          <button class="nav-btn active" data-section="profile">my profile</button>
-          <button class="nav-btn" data-section="edit">edit profile</button>
-          <button class="nav-btn" data-section="social">social links</button>
-          <button class="nav-btn" data-section="explore">explore</button>
-        </div>
-        <div class="user-badge" id="currentUserBadge">@loading</div>
+  <!-- Main App Container -->
+  <div class="app-container" id="appContainer">
+    <!-- Left Sidebar -->
+    <div style="display: flex; height: 100%;">
+      <!-- Server List -->
+      <div class="server-list">
+        <div class="server-icon active">E</div>
+        <div class="server-icon">+</div>
       </div>
 
-      <div class="dash-content">
-        <!-- Sidebar -->
-        <div class="profile-sidebar">
-          <div class="avatar" id="avatarUpload">
-            <img id="profileAvatar" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="avatar">
-            <div class="avatar-overlay">
-              <i class="fas fa-camera"></i>
-            </div>
-            <input type="file" id="avatarInput" class="avatar-input" accept="image/*">
+      <!-- Channel Sidebar -->
+      <div class="sidebar">
+        <div class="channel-container">
+          <div class="channel-header">
+            <i class="fas fa-bars"></i>
+            <span>Exiled</span>
+            <i class="fas fa-plus-circle" style="margin-left: auto;" onclick="showModal('friendsModal')"></i>
           </div>
-          <h2 id="sidebarUsername">@username</h2>
-          <p id="sidebarBio" style="color: #aaa; margin: 10px 0;">no bio yet</p>
+
+          <div class="channel-list">
+            <div class="channel-category">Text Channels</div>
+            <div class="channel-item active" onclick="switchChannel('general')">
+              <i class="fas fa-hashtag"></i> general
+            </div>
+            <div class="channel-item" onclick="switchChannel('off-topic')">
+              <i class="fas fa-hashtag"></i> off-topic
+            </div>
+            <div class="channel-item" onclick="switchChannel('music')">
+              <i class="fas fa-music"></i> music
+            </div>
+
+            <div class="channel-category" style="margin-top: 20px;">Voice Channels</div>
+            <div class="channel-item">
+              <i class="fas fa-volume-up"></i> General Voice
+            </div>
+            <div class="channel-item">
+              <i class="fas fa-volume-up"></i> Music Lounge
+            </div>
+
+            <div class="channel-category" style="margin-top: 20px;">Friends</div>
+            <div class="channel-item" onclick="showModal('friendsModal')">
+              <i class="fas fa-user-friends"></i> Online Friends
+            </div>
+          </div>
+        </div>
+
+        <!-- User Panel -->
+        <div class="user-panel" onclick="showModal('profileModal')">
+          <div class="user-avatar" id="currentUserAvatar">
+            <span id="avatarInitial">U</span>
+          </div>
+          <div class="user-info">
+            <div class="user-name" id="currentUsername">Loading...</div>
+            <div class="user-status">
+              <i class="fas fa-circle"></i> Online
+            </div>
+          </div>
+          <i class="fas fa-microphone" style="color: #aaa;"></i>
+          <i class="fas fa-headphones" style="color: #aaa;"></i>
+          <i class="fas fa-cog" style="color: #aaa;" onclick="event.stopPropagation(); showModal('settingsModal')"></i>
+        </div>
+      </div>
+
+      <!-- Main Chat Area -->
+      <div class="main-content">
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <i class="fas fa-hashtag"></i>
+            <span id="currentChannel">general</span>
+          </div>
+          <div class="chat-header-right">
+            <i class="fas fa-phone-alt"></i>
+            <i class="fas fa-video"></i>
+            <i class="fas fa-user-plus" onclick="showModal('friendsModal')"></i>
+            <i class="fas fa-search"></i>
+            <i class="fas fa-inbox"></i>
+            <i class="fas fa-question-circle"></i>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages-container" id="messagesContainer">
+          <!-- Messages will be inserted here -->
+        </div>
+
+        <!-- Message Input -->
+        <div class="message-input-container">
+          <div class="message-input-wrapper">
+            <i class="fas fa-plus-circle"></i>
+            <input type="text" class="message-input" id="messageInput" placeholder="Message #general">
+            <i class="fas fa-gift"></i>
+            <i class="fas fa-gif"></i>
+            <i class="fas fa-smile"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal" id="profileModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Profile</h2>
+        <i class="fas fa-times" onclick="hideModal('profileModal')"></i>
+      </div>
+
+      <div class="profile-section">
+        <!-- Banner -->
+        <div class="profile-banner" id="bannerUpload">
+          <img id="profileBanner" src="https://via.placeholder.com/500x150/1e1e1e/666666?text=Click+to+upload+banner" alt="banner">
+          <div class="banner-overlay">
+            <i class="fas fa-camera"></i>
+          </div>
+          <input type="file" id="bannerInput" style="display: none;" accept="image/*">
+        </div>
+
+        <!-- Avatar -->
+        <div class="profile-avatar-large" id="avatarUpload">
+          <img id="profileAvatar" src="https://via.placeholder.com/100/5865f2/ffffff?text=User" alt="avatar">
+          <div class="avatar-overlay">
+            <i class="fas fa-camera"></i>
+          </div>
+          <input type="file" id="avatarInput" style="display: none;" accept="image/*">
+        </div>
+      </div>
+
+      <input type="text" class="profile-input" id="editUsername" placeholder="Username">
+      <textarea class="profile-input" id="editBio" placeholder="About me" rows="3"></textarea>
+      <input type="text" class="profile-input" id="editStatus" placeholder="Custom status">
+
+      <button class="auth-btn" id="saveProfileBtn">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- Friends Modal -->
+  <div class="modal" id="friendsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Friends</h2>
+        <i class="fas fa-times" onclick="hideModal('friendsModal')"></i>
+      </div>
+
+      <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+        <input type="text" class="profile-input" id="friendUsername" placeholder="Enter username to add" style="flex: 1;">
+        <button class="add-friend-btn" onclick="addFriend()">Add Friend</button>
+      </div>
+
+      <div class="friends-list" id="friendsList">
+        <!-- Friends will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <i class="fas fa-times" onclick="hideModal('settingsModal')"></i>
+      </div>
+
+      <div style="padding: 10px 0;">
+        <div style="margin: 15px 0;">
+          <label style="color: #aaa;">Theme</label>
+          <select class="profile-input">
+            <option>Dark</option>
+            <option>Light</option>
+            <option>Sync with system</option>
+          </select>
+        </div>
+
+        <div style="margin: 15px 0;">
+          <label style="color: #aaa;">Notifications</label>
+          <select class="profile-input">
+            <option>All messages</option>
+            <option>Mentions only</option>
+            <option>Nothing</option>
+          </select>
+        </div>
+
+        <button class="auth-btn" id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Supabase setup
+      const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: { persistSession: true, autoRefreshToken: true }
+      });
+
+      // DOM Elements
+      const authContainer = document.getElementById('authContainer');
+      const appContainer = document.getElementById('appContainer');
+      const loginCard = document.getElementById('loginCard');
+      const signupCard = document.getElementById('signupCard');
+      const loginEmail = document.getElementById('loginEmail');
+      const loginPassword = document.getElementById('loginPassword');
+      const loginBtn = document.getElementById('loginBtn');
+      const loginMessage = document.getElementById('loginMessage');
+      const signupUsername = document.getElementById('signupUsername');
+      const signupEmail = document.getElementById('signupEmail');
+      const signupPassword = document.getElementById('signupPassword');
+      const signupBtn = document.getElementById('signupBtn');
+      const signupMessage = document.getElementById('signupMessage');
+      const showSignup = document.getElementById('showSignup');
+      const showLogin = document.getElementById('showLogin');
+      const logoutBtn = document.getElementById('logoutBtn');
+      
+      // Profile elements
+      const currentUsername = document.getElementById('currentUsername');
+      const currentUserAvatar = document.getElementById('currentUserAvatar');
+      const avatarInitial = document.getElementById('avatarInitial');
+      const profileAvatar = document.getElementById('profileAvatar');
+      const profileBanner = document.getElementById('profileBanner');
+      const editUsername = document.getElementById('editUsername');
+      const editBio = document.getElementById('editBio');
+      const editStatus = document.getElementById('editStatus');
+      const saveProfileBtn = document.getElementById('saveProfileBtn');
+      
+      // Message elements
+      const messagesContainer = document.getElementById('messagesContainer');
+      const messageInput = document.getElementById('messageInput');
+      const currentChannel = document.getElementById('currentChannel');
+      
+      // Friends
+      const friendsList = document.getElementById('friendsList');
+      const friendUsername = document.getElementById('friendUsername');
+
+      // State
+      let currentUser = null;
+      let currentProfile = null;
+      let activeChannel = 'general';
+      let messages = [];
+      let friends = [];
+      let messageSubscription = null;
+
+      // Show notification
+      function showNotification(text, isError = false) {
+        const notif = document.createElement('div');
+        notif.className = 'notification';
+        notif.textContent = text;
+        notif.style.background = isError ? '#ed4245' : '#5865f2';
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 3000);
+      }
+
+      // Modal functions
+      window.showModal = (modalId) => {
+        document.getElementById(modalId).classList.add('active');
+      };
+
+      window.hideModal = (modalId) => {
+        document.getElementById(modalId).classList.remove('active');
+      };
+
+      // Switch channel
+      window.switchChannel = async (channel) => {
+        activeChannel = channel;
+        currentChannel.textContent = channel;
+        document.querySelectorAll('.channel-item').forEach(c => c.classList.remove('active'));
+        event.target.closest('.channel-item').classList.add('active');
+        await loadMessages();
+      };
+
+      // Load messages
+      async function loadMessages() {
+        const { data, error } = await supabase
+          .from('messages')
+          .select(`
+            *,
+            profiles:user_id (username, avatar_url)
+          `)
+          .eq('channel', activeChannel)
+          .order('created_at', { ascending: true });
+
+        if (data) {
+          messages = data;
+          renderMessages();
+        }
+      }
+
+      // Render messages
+      function renderMessages() {
+        messagesContainer.innerHTML = '';
+        messages.forEach(msg => {
+          const msgEl = document.createElement('div');
+          msgEl.className = 'message-wrapper';
+          msgEl.innerHTML = `
+            <div class="message-avatar">
+              <img src="${msg.profiles?.avatar_url || 'https://via.placeholder.com/40/5865f2/ffffff?text=' + (msg.profiles?.username?.[0] || 'U')}" alt="avatar">
+            </div>
+            <div class="message-content">
+              <div class="message-header">
+                <span class="message-author">${msg.profiles?.username || 'Unknown'}</span>
+                <span class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</span>
+              </div>
+              <div class="message-text">${msg.content}</div>
+            </div>
+          `;
+          messagesContainer.appendChild(msgEl);
+        });
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      // Send message
+      messageInput.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter' && messageInput.value.trim()) {
+          const content = messageInput.value.trim();
+          messageInput.value = '';
+
+          const { error } = await supabase
+            .from('messages')
+            .insert({
+              content,
+              channel: activeChannel,
+              user_id: currentUser.id
+            });
+
+          if (error) {
+            showNotification('Failed to send message', true);
+          }
+        }
+      });
+
+      // Subscribe to messages
+      function subscribeToMessages() {
+        if (messageSubscription) {
+          messageSubscription.unsubscribe();
+        }
+
+        messageSubscription = supabase
+          .channel('messages')
+          .on('postgres_changes', { 
+            event: 'INSERT', 
+            schema: 'public', 
+            table: 'messages',
+            filter: `channel=eq.${activeChannel}`
+          }, async (payload) => {
+            // Fetch the full message with profile
+            const { data } = await supabase
+              .from('messages')
+              .select(`
+                *,
+                profiles:user_id (username, avatar_url)
+              `)
+              .eq('id', payload.new.id)
+              .single();
+
+            if (data) {
+              messages.push(data);
+              renderMessages();
+            }
+          })
+          .subscribe();
+      }
+
+      // Load friends
+      async function loadFriends() {
+        const { data, error } = await supabase
+          .from('friends')
+          .select(`
+            friend_id,
+            profiles:friend_id (username, avatar_url, status)
+          `)
+          .eq('user_id', currentUser.id)
+          .eq('status', 'accepted');
+
+        if (data) {
+          friends = data.map(f => f.profiles);
+          renderFriends();
+        }
+      }
+
+      // Render friends
+      function renderFriends() {
+        if (!friendsList) return;
+        
+        if (friends.length === 0) {
+          friendsList.innerHTML = '<div style="text-align: center; color: #aaa; padding: 20px;">No friends yet. Add some!</div>';
+          return;
+        }
+
+        friendsList.innerHTML = friends.map(friend => `
+          <div class="friend-item" onclick="startDM('${friend.username}')">
+            <div class="friend-avatar">
+              <img src="${friend.avatar_url || 'https://via.placeholder.com/40/5865f2/ffffff?text=' + (friend.username?.[0] || 'U')}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+            </div>
+            <div class="friend-info">
+              <div class="friend-name">${friend.username}</div>
+              <div class="friend-status">
+                <i class="fas fa-circle"></i> Online
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // Add friend
+      window.addFriend = async () => {
+        const username = friendUsername.value.trim();
+        if (!username) return;
+
+        // Find user by username
+        const { data: user } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', username)
+          .single();
+
+        if (!user) {
+          showNotification('User not found', true);
+          return;
+        }
+
+        // Send friend request
+        const { error } = await supabase
+          .from('friends')
+          .insert({
+            user_id: currentUser.id,
+            friend_id: user.id,
+            status: 'pending'
+          });
+
+        if (error) {
+          showNotification('Failed to add friend', true);
+        } else {
+          showNotification('Friend request sent!');
+          friendUsername.value = '';
+        }
+      };
+
+      // Avatar upload
+      document.getElementById('avatarUpload').addEventListener('click', () => {
+        document.getElementById('avatarInput').click();
+      });
+
+      document.getElementById('avatarInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64 = reader.result;
+          profileAvatar.src = base64;
           
-          <div class="profile-stats">
-            <div class="stat-item">
-              <div class="stat-value" id="statPosts">0</div>
-              <div class="stat-label">flexes</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-value" id="statViews">0</div>
-              <div class="stat-label">views</div>
-            </div>
-          </div>
-
-          <div class="profile-socials" id="sidebarSocials">
-            <!-- Social icons will be added here -->
-          </div>
-
-          <button class="btn logout-btn" id="logoutBtn" style="margin-top: 20px;">logout</button>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-          <!-- Profile Section -->
-          <div id="profileSection" class="edit-section active">
-            <h3 class="section-title">your profile</h3>
-            <div style="text-align: center; padding: 40px;">
-              <i class="fas fa-user-circle" style="font-size: 5rem; color: #ffd700; margin-bottom: 20px;"></i>
-              <p style="color: #aaa; margin-bottom: 20px;">this is how others see you</p>
-              <div class="profile-url" id="profileUrlDisplay" style="cursor: pointer;" onclick="copyProfileUrl()">
-                <i class="fas fa-link"></i> exiled.lat/<span id="profileSlug">username</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Edit Profile Section -->
-          <div id="editSection" class="edit-section">
-            <h3 class="section-title">edit profile</h3>
-            <div class="input-group">
-              <input type="text" id="editUsername" placeholder=" ">
-              <label>username</label>
-            </div>
-            <div class="input-group">
-              <textarea id="editBio" placeholder=" " rows="4"></textarea>
-              <label>bio</label>
-            </div>
-            <button class="btn save-btn" id="saveProfileBtn">save changes</button>
-          </div>
-
-          <!-- Social Links Section -->
-          <div id="socialSection" class="edit-section">
-            <h3 class="section-title">social links</h3>
-            <div class="social-links">
-              <div class="social-input">
-                <i class="fab fa-github"></i>
-                <input type="text" id="githubLink" placeholder="github username">
-              </div>
-              <div class="social-input">
-                <i class="fab fa-twitter"></i>
-                <input type="text" id="twitterLink" placeholder="twitter username">
-              </div>
-              <div class="social-input">
-                <i class="fab fa-instagram"></i>
-                <input type="text" id="instagramLink" placeholder="instagram username">
-              </div>
-              <div class="social-input">
-                <i class="fab fa-linkedin"></i>
-                <input type="text" id="linkedinLink" placeholder="linkedin username">
-              </div>
-              <div class="social-input">
-                <i class="fas fa-globe"></i>
-                <input type="text" id="websiteLink" placeholder="your website">
-              </div>
-            </div>
-            <button class="btn save-btn" id="saveSocialBtn">save social links</button>
-          </div>
-
-          <!-- Explore Section -->
-          <div id="exploreSection" class="edit-section">
-            <h3 class="section-title">explore exiles</h3>
-            <div class="username-grid" id="usernameList"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PROFILE VIEW (Public) -->
-  <div id="profileView" class="profile-view">
-    <div class="glass-card" style="max-width: 800px; margin: 0 auto;">
-      <img id="viewAvatar" class="profile-avatar-large" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="avatar">
-      <h1 id="viewUsername" class="big-username" style="font-size: 4rem;">@username</h1>
-      <p id="viewBio" class="profile-bio">no bio yet</p>
-      
-      <div class="profile-socials" id="viewSocials">
-        <!-- Social icons will be added here -->
-      </div>
-      
-      <div class="profile-url">
-        <i class="fas fa-link"></i> exiled.lat/<span id="viewSlug">username</span>
-      </div>
-      
-      <button class="btn back-btn" id="backFromProfile">← back to explore</button>
-    </div>
-  </div>
-
-</div>
-
-<script>
-  (function() {
-    // Supabase setup
-    const SUPABASE_URL = "https://opixidygpndbfuisjkrk.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_N6RdTgjgUHQbdtvPX9uPqA_VTraUegI";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
-    });
-
-    // DOM elements
-    const loginCard = document.getElementById('loginCard');
-    const signupCard = document.getElementById('signupCard');
-    const dashboard = document.getElementById('dashboard');
-    const profileView = document.getElementById('profileView');
-    const notFoundView = document.getElementById('notFoundView');
-    const loadingState = document.getElementById('loadingState');
-    const debugInfo = document.getElementById('debugInfo');
-    const notFoundUsername = document.getElementById('notFoundUsername');
-    
-    const loginEmail = document.getElementById('loginEmail');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginMessage = document.getElementById('loginMessage');
-    
-    const signupUsername = document.getElementById('signupUsername');
-    const signupEmail = document.getElementById('signupEmail');
-    const signupPassword = document.getElementById('signupPassword');
-    const signupBtn = document.getElementById('signupBtn');
-    const signupMessage = document.getElementById('signupMessage');
-    
-    const switchToSignup = document.getElementById('switchToSignup');
-    const switchToLogin = document.getElementById('switchToLogin');
-    const backToHomeFromNotFound = document.getElementById('backToHomeFromNotFound');
-    
-    const currentUserBadge = document.getElementById('currentUserBadge');
-    const usernameList = document.getElementById('usernameList');
-    const logoutBtn = document.getElementById('logoutBtn');
-    
-    // Profile elements
-    const profileAvatar = document.getElementById('profileAvatar');
-    const avatarInput = document.getElementById('avatarInput');
-    const sidebarUsername = document.getElementById('sidebarUsername');
-    const sidebarBio = document.getElementById('sidebarBio');
-    const profileSlug = document.getElementById('profileSlug');
-    const editUsername = document.getElementById('editUsername');
-    const editBio = document.getElementById('editBio');
-    
-    // Social inputs
-    const githubLink = document.getElementById('githubLink');
-    const twitterLink = document.getElementById('twitterLink');
-    const instagramLink = document.getElementById('instagramLink');
-    const linkedinLink = document.getElementById('linkedinLink');
-    const websiteLink = document.getElementById('websiteLink');
-    
-    const sidebarSocials = document.getElementById('sidebarSocials');
-    const viewSocials = document.getElementById('viewSocials');
-    
-    // View profile elements
-    const viewAvatar = document.getElementById('viewAvatar');
-    const viewUsername = document.getElementById('viewUsername');
-    const viewBio = document.getElementById('viewBio');
-    const viewSlug = document.getElementById('viewSlug');
-    
-    const backFromProfile = document.getElementById('backFromProfile');
-    const saveProfileBtn = document.getElementById('saveProfileBtn');
-    const saveSocialBtn = document.getElementById('saveSocialBtn');
-
-    // State
-    let currentUser = null;
-    let currentProfile = null;
-    let allUsers = [];
-
-    // Helper Functions
-    function debugLog(message, data = null) {
-      const timestamp = new Date().toLocaleTimeString();
-      const logMessage = `[${timestamp}] ${message} ${data ? JSON.stringify(data) : ''}`;
-      console.log(logMessage);
-      debugInfo.style.display = 'block';
-      debugInfo.innerHTML = logMessage;
-      setTimeout(() => { debugInfo.style.display = 'none'; }, 5000);
-    }
-
-    function hideAllViews() {
-      loginCard.style.display = 'none';
-      signupCard.style.display = 'none';
-      dashboard.style.display = 'none';
-      profileView.style.display = 'none';
-      notFoundView.style.display = 'none';
-      loadingState.style.display = 'none';
-    }
-
-    function showLoading(show) {
-      loadingState.style.display = show ? 'block' : 'none';
-    }
-
-    function showMessage(element, text, isError = false) {
-      element.textContent = text;
-      element.style.color = isError ? '#ff9999' : '#ffd966';
-      setTimeout(() => { element.textContent = ''; }, 3000);
-    }
-
-    function showNotification(text, isError = false) {
-      const notif = document.createElement('div');
-      notif.className = 'notification';
-      notif.textContent = text;
-      notif.style.background = isError ? 'rgba(255,0,0,0.8)' : 'rgba(0,0,0,0.9)';
-      document.body.appendChild(notif);
-      setTimeout(() => notif.remove(), 3000);
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '"') return '&quot;';
-        return m;
-      });
-    }
-
-    // Copy profile URL
-    window.copyProfileUrl = function() {
-      if (currentProfile) {
-        const text = `exiled.lat/${currentProfile.username}`;
-        navigator.clipboard.writeText(text);
-        showNotification('✨ url copied!');
-      }
-    };
-
-    // Navigation
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        document.querySelectorAll('.edit-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(btn.dataset.section + 'Section').classList.add('active');
-      });
-    });
-
-    // Avatar upload
-    document.getElementById('avatarUpload').addEventListener('click', () => {
-      avatarInput.click();
-    });
-
-    avatarInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64 = reader.result;
-        profileAvatar.src = base64;
-        
-        if (currentUser) {
           await supabase
             .from('profiles')
             .update({ avatar_url: base64 })
             .eq('id', currentUser.id);
-          showNotification('avatar updated!');
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+          
+          showNotification('Avatar updated!');
+        };
+        reader.readAsDataURL(file);
+      });
 
-    // Save profile
-    saveProfileBtn.addEventListener('click', async () => {
-      const newUsername = editUsername.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      const newBio = editBio.value.trim();
-      
-      if (!newUsername) {
-        showNotification('username cannot be empty', true);
-        return;
-      }
-      
-      if (currentUser) {
-        // Check if username is taken
-        const { data: existing } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('username', newUsername)
-          .neq('id', currentUser.id)
-          .maybeSingle();
-        
-        if (existing) {
-          showNotification('username taken', true);
-          return;
-        }
-        
+      // Banner upload
+      document.getElementById('bannerUpload').addEventListener('click', () => {
+        document.getElementById('bannerInput').click();
+      });
+
+      document.getElementById('bannerInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64 = reader.result;
+          profileBanner.src = base64;
+          
+          await supabase
+            .from('profiles')
+            .update({ banner_url: base64 })
+            .eq('id', currentUser.id);
+          
+          showNotification('Banner updated!');
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Save profile
+      saveProfileBtn.addEventListener('click', async () => {
+        const updates = {};
+        if (editUsername.value) updates.username = editUsername.value;
+        if (editBio.value) updates.bio = editBio.value;
+        if (editStatus.value) updates.status = editStatus.value;
+
         await supabase
           .from('profiles')
-          .update({ 
-            username: newUsername,
-            bio: newBio
-          })
+          .update(updates)
           .eq('id', currentUser.id);
-        
-        currentProfile.username = newUsername;
-        sidebarUsername.textContent = `@${newUsername}`;
-        currentUserBadge.textContent = `@${newUsername}`;
-        profileSlug.textContent = newUsername;
-        
-        showNotification('profile updated!');
-        await fetchAllUsers();
-      }
-    });
 
-    // Save social links
-    saveSocialBtn.addEventListener('click', async () => {
-      const socials = {
-        github: githubLink.value.trim(),
-        twitter: twitterLink.value.trim(),
-        instagram: instagramLink.value.trim(),
-        linkedin: linkedinLink.value.trim(),
-        website: websiteLink.value.trim()
-      };
-      
-      await supabase
-        .from('profiles')
-        .update({ socials })
-        .eq('id', currentUser.id);
-      
-      currentProfile.socials = socials;
-      updateSocialIcons(socials);
-      showNotification('social links updated!');
-    });
+        currentUsername.textContent = editUsername.value;
+        avatarInitial.textContent = editUsername.value[0].toUpperCase();
+        showNotification('Profile updated!');
+        hideModal('profileModal');
+      });
 
-    function updateSocialIcons(socials) {
-      sidebarSocials.innerHTML = '';
-      
-      const platforms = ['github', 'twitter', 'instagram', 'linkedin', 'website'];
-      platforms.forEach(platform => {
-        if (socials && socials[platform]) {
-          const icon = document.createElement('a');
-          icon.href = platform === 'website' ? socials[platform] : `https://${platform}.com/${socials[platform]}`;
-          icon.target = '_blank';
-          icon.innerHTML = `<i class="fab fa-${platform === 'website' ? 'globe' : platform}"></i>`;
-          sidebarSocials.appendChild(icon);
+      // Login
+      loginBtn.addEventListener('click', async () => {
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value.trim();
+
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        
+        if (error) {
+          loginMessage.textContent = error.message;
+          return;
+        }
+
+        currentUser = data.user;
+        await loadUserData();
+      });
+
+      // Signup
+      signupBtn.addEventListener('click', async () => {
+        const username = signupUsername.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        const email = signupEmail.value.trim();
+        const password = signupPassword.value.trim();
+
+        if (username.length < 3) {
+          signupMessage.textContent = 'Username must be at least 3 characters';
+          return;
+        }
+
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        
+        if (error) {
+          signupMessage.textContent = error.message;
+          return;
+        }
+
+        if (data.user) {
+          await supabase
+            .from('profiles')
+            .insert({ 
+              id: data.user.id, 
+              username, 
+              bio: '', 
+              status: 'online',
+              avatar_url: null,
+              banner_url: null
+            });
+
+          // Auto login
+          const { data: loginData } = await supabase.auth.signInWithPassword({ email, password });
+          currentUser = loginData.user;
+          await loadUserData();
         }
       });
-    }
 
-    // Load user data
-    async function loadUserData(user) {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .maybeSingle();
-      
-      if (profile) {
+      // Load user data
+      async function loadUserData() {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+
         currentProfile = profile;
-        sidebarUsername.textContent = `@${profile.username}`;
-        sidebarBio.textContent = profile.bio || 'no bio yet';
-        profileSlug.textContent = profile.username;
-        editUsername.value = profile.username;
-        editBio.value = profile.bio || '';
+        currentUsername.textContent = profile.username;
+        avatarInitial.textContent = profile.username[0].toUpperCase();
         
         if (profile.avatar_url) {
           profileAvatar.src = profile.avatar_url;
-        }
-        
-        if (profile.socials) {
-          githubLink.value = profile.socials.github || '';
-          twitterLink.value = profile.socials.twitter || '';
-          instagramLink.value = profile.socials.instagram || '';
-          linkedinLink.value = profile.socials.linkedin || '';
-          websiteLink.value = profile.socials.website || '';
-          updateSocialIcons(profile.socials);
-        }
-      }
-      return profile;
-    }
-
-    // Fetch all users for explore
-    async function fetchAllUsers() {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, username, avatar_url, bio')
-        .order('username');
-      
-      if (error) {
-        console.error('Fetch error:', error);
-        return [];
-      }
-      
-      allUsers = data || [];
-      renderUserGrid();
-      return allUsers;
-    }
-
-    function renderUserGrid() {
-      if (!allUsers.length) {
-        usernameList.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">🌀 no exiles yet</div>';
-        return;
-      }
-      
-      let html = '';
-      allUsers.forEach(user => {
-        const isYou = currentUser && user.id === currentUser.id;
-        html += `<div class="user-card ${isYou ? 'highlight' : ''}" data-username="${escapeHtml(user.username)}">
-          <img src="${user.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}" class="user-avatar-small">
-          <div>@${escapeHtml(user.username)}</div>
-          <small style="color: #aaa;">${user.bio ? user.bio.substring(0, 30) + '...' : ''}</small>
-        </div>`;
-      });
-      
-      usernameList.innerHTML = html;
-      
-      document.querySelectorAll('.user-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const username = card.dataset.username;
-          if (username) {
-            window.history.pushState({}, '', `/${username}`);
-            showUserProfile(username);
-          }
-        });
-      });
-    }
-
-    // Show public user profile
-    async function showUserProfile(username) {
-      debugLog('Showing profile for:', username);
-      showLoading(true);
-      hideAllViews();
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('username', username)
-        .maybeSingle();
-      
-      debugLog('Supabase response:', { data, error });
-      showLoading(false);
-      
-      if (data && !error) {
-        viewAvatar.src = data.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
-        viewUsername.textContent = `@${data.username}`;
-        viewBio.textContent = data.bio || 'no bio yet';
-        viewSlug.textContent = data.username;
-        
-        viewSocials.innerHTML = '';
-        if (data.socials) {
-          const platforms = ['github', 'twitter', 'instagram', 'linkedin', 'website'];
-          platforms.forEach(platform => {
-            if (data.socials[platform]) {
-              const icon = document.createElement('a');
-              icon.href = platform === 'website' ? data.socials[platform] : `https://${platform}.com/${data.socials[platform]}`;
-              icon.target = '_blank';
-              icon.innerHTML = `<i class="fab fa-${platform === 'website' ? 'globe' : platform}"></i>`;
-              viewSocials.appendChild(icon);
+          document.querySelectorAll('.user-avatar img, .message-avatar img').forEach(img => {
+            if (img.closest('.user-avatar') || img.closest('.message-avatar[data-user="' + currentUser.id + '"]')) {
+              img.src = profile.avatar_url;
             }
           });
         }
-        
-        profileView.style.display = 'block';
-      } else {
-        notFoundUsername.textContent = `username: "${username}"`;
-        notFoundView.style.display = 'block';
-      }
-    }
 
-    // Handle public profile routes
-    async function handlePublicProfile() {
-      const path = window.location.pathname;
-      debugLog('Current path:', path);
-      
-      // If it's the root path or index.html
-      if (path === '/' || path === '/index.html' || path === '') {
-        debugLog('Root path, showing normal flow');
-        return false;
-      }
-      
-      // Get username from path (remove leading /)
-      const username = path.substring(1);
-      debugLog('Extracted username:', username);
-      
-      // Check if it's a valid username (no slashes, dots, etc.)
-      if (username && !username.includes('/') && !username.includes('.') && username.length > 0) {
-        debugLog('Valid username format, showing profile for:', username);
-        await showUserProfile(username);
-        return true;
-      }
-      
-      debugLog('Invalid username format');
-      return false;
-    }
+        if (profile.banner_url) {
+          profileBanner.src = profile.banner_url;
+        }
 
-    // Login
-    loginBtn.addEventListener('click', async () => {
-      const email = loginEmail.value.trim();
-      const password = loginPassword.value.trim();
-      
-      if (!email || !password) {
-        showMessage(loginMessage, 'fill all fields', true);
-        return;
-      }
-      
-      showLoading(true);
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      showLoading(false);
-      
-      if (error) {
-        showMessage(loginMessage, error.message, true);
-        return;
-      }
-      
-      currentUser = data.user;
-      await loadUserData(currentUser);
-      await fetchAllUsers();
-      
-      currentUserBadge.textContent = `@${currentProfile.username}`;
-      
-      hideAllViews();
-      dashboard.style.display = 'block';
-      showNotification(`welcome back, @${currentProfile.username}!`);
-    });
+        editUsername.value = profile.username;
+        editBio.value = profile.bio || '';
+        editStatus.value = profile.status || '';
 
-    // Signup
-    signupBtn.addEventListener('click', async () => {
-      const username = signupUsername.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-      const email = signupEmail.value.trim();
-      const password = signupPassword.value.trim();
-      
-      if (!username || !email || !password) {
-        showMessage(signupMessage, 'all fields required', true);
-        return;
+        authContainer.style.display = 'none';
+        appContainer.style.display = 'block';
+
+        await loadMessages();
+        await loadFriends();
+        subscribeToMessages();
       }
-      
-      if (username.length < 3) {
-        showMessage(signupMessage, 'username must be at least 3 characters', true);
-        return;
-      }
-      
-      showLoading(true);
-      
-      // Check if username exists
-      const { data: existing } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('username', username)
-        .maybeSingle();
-      
-      if (existing) {
-        showLoading(false);
-        showMessage(signupMessage, 'username taken', true);
-        return;
-      }
-      
-      const { data, error } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          data: { username }
+
+      // Logout
+      logoutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        currentUser = null;
+        currentProfile = null;
+        appContainer.style.display = 'none';
+        authContainer.style.display = 'flex';
+        if (messageSubscription) {
+          messageSubscription.unsubscribe();
         }
       });
-      
-      if (error) {
-        showLoading(false);
-        showMessage(signupMessage, error.message, true);
-        return;
-      }
-      
-      if (data.user) {
-        // Create profile
-        await supabase
-          .from('profiles')
-          .insert({ 
-            id: data.user.id, 
-            username, 
-            bio: '', 
-            socials: {},
-            avatar_url: null
-          });
-        
-        // Auto login
-        const { data: loginData } = await supabase.auth.signInWithPassword({ email, password });
-        showLoading(false);
-        
-        if (loginData.user) {
-          currentUser = loginData.user;
-          await loadUserData(currentUser);
-          await fetchAllUsers();
-          
-          currentUserBadge.textContent = `@${username}`;
-          hideAllViews();
-          dashboard.style.display = 'block';
-          showNotification(`welcome to exile, @${username}!`);
-        }
-      }
-    });
 
-    // Logout
-    logoutBtn.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      currentUser = null;
-      currentProfile = null;
-      hideAllViews();
-      loginCard.style.display = 'flex';
-      window.history.pushState({}, '', '/');
-      showNotification('logged out');
-    });
+      // Navigation
+      showSignup.addEventListener('click', () => {
+        loginCard.style.display = 'none';
+        signupCard.style.display = 'block';
+      });
 
-    // Navigation
-    switchToSignup.addEventListener('click', () => {
-      loginCard.style.display = 'none';
-      signupCard.style.display = 'flex';
-    });
+      showLogin.addEventListener('click', () => {
+        signupCard.style.display = 'none';
+        loginCard.style.display = 'block';
+      });
 
-    switchToLogin.addEventListener('click', () => {
-      signupCard.style.display = 'none';
-      loginCard.style.display = 'flex';
-    });
-
-    backFromProfile.addEventListener('click', async () => {
-      window.history.pushState({}, '', '/');
-      const { data } = await supabase.auth.getSession();
-      hideAllViews();
-      if (data.session) {
-        dashboard.style.display = 'block';
-      } else {
-        loginCard.style.display = 'flex';
-      }
-    });
-
-    backToHomeFromNotFound.addEventListener('click', async () => {
-      window.history.pushState({}, '', '/');
-      const { data } = await supabase.auth.getSession();
-      hideAllViews();
-      if (data.session) {
-        dashboard.style.display = 'block';
-      } else {
-        loginCard.style.display = 'flex';
-      }
-    });
-
-    // Handle browser back/forward
-    window.addEventListener('popstate', async () => {
-      const handled = await handlePublicProfile();
-      if (!handled) {
-        const { data } = await supabase.auth.getSession();
-        hideAllViews();
+      // Check session on load
+      supabase.auth.getSession().then(({ data }) => {
         if (data.session) {
-          dashboard.style.display = 'block';
-        } else {
-          loginCard.style.display = 'flex';
+          currentUser = data.session.user;
+          loadUserData();
         }
-      }
-    });
-
-    // Initialize
-    async function init() {
-      debugLog('Initializing app...');
-      showLoading(true);
-      
-      // First check if it's a public profile URL
-      const publicProfileHandled = await handlePublicProfile();
-      if (publicProfileHandled) {
-        debugLog('Public profile handled, stopping init');
-        showLoading(false);
-        return;
-      }
-      
-      // Check auth session
-      debugLog('Checking auth session...');
-      const { data } = await supabase.auth.getSession();
-      debugLog('Auth session:', data.session ? 'logged in' : 'not logged in');
-      
-      if (data.session) {
-        currentUser = data.session.user;
-        await loadUserData(currentUser);
-        await fetchAllUsers();
-        currentUserBadge.textContent = `@${currentProfile?.username || 'user'}`;
-        hideAllViews();
-        dashboard.style.display = 'block';
-        debugLog('Dashboard shown');
-      } else {
-        hideAllViews();
-        loginCard.style.display = 'flex';
-        debugLog('Login shown');
-      }
-      
-      showLoading(false);
-    }
-
-    init();
-  })();
-</script>
+      });
+    })();
+  </script>
 </body>
 </html>
